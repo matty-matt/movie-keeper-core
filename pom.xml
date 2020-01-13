@@ -15,6 +15,7 @@
 
 	<properties>
 		<java.version>11</java.version>
+		<axon.version>4.2.1</axon.version>
 	</properties>
 
 	<dependencies>
@@ -22,16 +23,32 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 		<dependency>
+			<groupId>org.axonframework</groupId>
+			<artifactId>axon-spring-boot-starter</artifactId>
+			<version>${axon.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.axonframework</groupId>
+			<artifactId>axon-test</artifactId>
+			<version>${axon.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<version>1.18.8</version>
+			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -43,6 +60,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 	</dependencies>
 
 	<build>
