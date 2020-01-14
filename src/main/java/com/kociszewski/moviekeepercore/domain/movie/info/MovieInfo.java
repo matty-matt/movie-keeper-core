@@ -1,11 +1,11 @@
 package com.kociszewski.moviekeepercore.domain.movie.info;
 
-import com.kociszewski.moviekeepercore.domain.trailers.Trailer;
+import com.kociszewski.moviekeepercore.domain.trailers.TrailerSection;
 
 import java.util.List;
 
 public class MovieInfo {
-    private List<Trailer> trailers;
+    private List<TrailerSection> trailers;
     private Cover cover;
     private Title title;
     private Title originalTitle;

@@ -6,7 +6,7 @@ import com.kociszewski.moviekeepercore.domain.movie.events.MovieQueriedForSearch
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieInfo;
 import com.kociszewski.moviekeepercore.domain.movie.info.Watched;
-import com.kociszewski.moviekeepercore.domain.movie.info.releases.ReleaseDate;
+import com.kociszewski.moviekeepercore.domain.movie.info.releases.Releases;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -23,7 +23,7 @@ public class MovieAggregate {
     private MovieId movieId;
     private ExternalId externalId;
     private MovieInfo movieInfo;
-    private ReleaseDate releaseDate;
+    private Releases releases;
     private Watched watched;
     private Date insertionDate;
     private Date lastRefreshDate;

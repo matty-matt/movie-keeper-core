@@ -4,6 +4,5 @@ import lombok.Value;
 
 @Value
 public class ReleaseDate {
-    private Release digitalRelease;
-    private Release premiereRelease;
+    private String date;
 }
