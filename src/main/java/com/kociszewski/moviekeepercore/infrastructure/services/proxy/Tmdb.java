@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.proxy;
+package com.kociszewski.moviekeepercore.infrastructure.services.proxy;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
