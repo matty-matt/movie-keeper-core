@@ -1,13 +1,14 @@
 package com.kociszewski.moviekeepercore.domain.movie;
 
 import com.kociszewski.moviekeepercore.domain.ExternalId;
-import com.kociszewski.moviekeepercore.domain.movie.commands.AddMovieCommand;
-import com.kociszewski.moviekeepercore.domain.movie.events.MovieAddedEvent;
+import com.kociszewski.moviekeepercore.domain.movie.commands.SearchMovieCommand;
+import com.kociszewski.moviekeepercore.domain.movie.events.MovieQueriedForSearch;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieInfo;
 import com.kociszewski.moviekeepercore.domain.movie.info.Watched;
 import com.kociszewski.moviekeepercore.domain.movie.info.releases.ReleaseDate;
 import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 
@@ -28,8 +29,14 @@ public class MovieAggregate {
     private Date lastRefreshDate;
 
     @CommandHandler
-    public MovieAggregate(AddMovieCommand command) {
-        apply(new MovieAddedEvent());
+    public MovieAggregate(SearchMovieCommand command) {
+        apply(new MovieQueriedForSearch(command.getMovieId(), command.getTitle()));
+    }
+
+    @EventSourcingHandler
+    public void on(MovieQueriedForSearch event) {
+        this.movieId = event.getMovieId();
+        // TODO search for movie
     }
 
 }
