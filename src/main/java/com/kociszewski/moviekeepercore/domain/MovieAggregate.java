@@ -14,6 +14,7 @@ public class MovieAggregate {
 
     @AggregateIdentifier
     private MovieId movieId;
+    private TmdbId tmdbId;
     private MovieInfo movieInfo;
     private ReleaseDate releaseDate;
     private Watched watched;
