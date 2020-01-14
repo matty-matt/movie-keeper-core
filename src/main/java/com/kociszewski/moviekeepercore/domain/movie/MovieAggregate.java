@@ -4,7 +4,7 @@ import com.kociszewski.moviekeepercore.domain.ExternalId;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieInfo;
 import com.kociszewski.moviekeepercore.domain.movie.info.Watched;
-import com.kociszewski.moviekeepercore.domain.movie.info.releases.ReleaseDate;
+import com.kociszewski.moviekeepercore.domain.movie.releases.ReleaseDate;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 
@@ -19,7 +19,7 @@ public class MovieAggregate {
     private MovieInfo movieInfo;
     private ReleaseDate releaseDate;
     private Watched watched;
+    private Date insertionDate;
     private Date lastRefreshDate;
-    private Date findDate;
 
 }
