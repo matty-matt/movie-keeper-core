@@ -1,6 +1,6 @@
 package com.kociszewski.moviekeepercore.domain.movie.info;
 
-import com.kociszewski.moviekeepercore.domain.movie.info.trailers.Trailer;
+import com.kociszewski.moviekeepercore.domain.trailers.Trailer;
 
 import java.util.List;
 
