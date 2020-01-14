@@ -3,6 +3,6 @@ package com.kociszewski.moviekeepercore.domain;
 import lombok.Value;
 
 @Value
-public class TmdbId {
+public class ExternalId {
     private String id;
 }
