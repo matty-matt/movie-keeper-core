@@ -1,6 +1,6 @@
 package com.kociszewski.moviekeepercore.infrastructure.access;
 
-import com.kociszewski.moviekeepercore.domain.movie.AddMovieCommand;
+import com.kociszewski.moviekeepercore.domain.movie.commands.AddMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.Title;
 import lombok.RequiredArgsConstructor;

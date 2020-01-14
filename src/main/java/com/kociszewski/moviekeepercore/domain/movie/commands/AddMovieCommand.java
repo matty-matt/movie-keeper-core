@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.domain.movie;
+package com.kociszewski.moviekeepercore.domain.movie.commands;
 
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.Title;
