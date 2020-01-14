@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.movie.info;
+package com.kociszewski.moviekeepercore.domain.movie.info;
 
 import lombok.Value;
 
