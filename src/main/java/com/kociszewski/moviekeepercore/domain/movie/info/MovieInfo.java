@@ -6,7 +6,7 @@ import java.util.List;
 
 public class MovieInfo {
     private List<TrailerSection> trailers;
-    private Cover cover;
+    private Poster poster;
     private Title title;
     private Title originalTitle;
     private Overview overview;

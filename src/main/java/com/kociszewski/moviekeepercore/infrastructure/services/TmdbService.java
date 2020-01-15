@@ -8,12 +8,12 @@ import com.kociszewski.moviekeepercore.domain.movie.info.Title;
 import com.kociszewski.moviekeepercore.domain.movie.info.Vote;
 import com.kociszewski.moviekeepercore.domain.movie.info.releases.Releases;
 import com.kociszewski.moviekeepercore.domain.trailers.TrailerSection;
-import com.kociszewski.moviekeepercore.infrastructure.access.exception.MovieNotFoundException;
+import com.kociszewski.moviekeepercore.infrastructure.access.model.ExternalMovie;
+import com.kociszewski.moviekeepercore.infrastructure.exception.MovieNotFoundException;
 import com.kociszewski.moviekeepercore.infrastructure.access.model.FoundMovieId;
 import com.kociszewski.moviekeepercore.infrastructure.access.model.SearchMovieResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +24,7 @@ public class TmdbService implements ExternalService {
     @Override
     public MovieInfo findMovie(Title title) {
 
-        WebClient webClient = tmdbClient.searchClient(title.getTitle());
-
-        FoundMovieId foundMovieId = webClient
+        FoundMovieId foundMovieId = tmdbClient.search(title.getTitle())
                 .get()
                 .retrieve()
                 .bodyToMono(SearchMovieResult.class)
@@ -37,6 +35,15 @@ public class TmdbService implements ExternalService {
                 .orElseThrow(() -> new MovieNotFoundException(String.format("Movie with title '%s' not found.", title)));
 
         System.out.println(foundMovieId);
+
+        ExternalMovie movie = tmdbClient.movieDetails(foundMovieId.getId())
+                .get()
+                .retrieve()
+                .bodyToMono(ExternalMovie.class)
+                .block();
+
+        System.out.println(movie);
+
         // getDetails should be also called here
         return null;
     }

@@ -24,16 +24,29 @@ public class TmdbClient {
         this.baseUrl = baseUrl;
     }
 
-    public WebClient searchClient(String title) {
+    public WebClient search(String title) {
         return WebClient
                 .builder()
                 .baseUrl(buildSearchUri(title))
                 .build();
     }
 
+    public WebClient movieDetails(String movieId) {
+        return WebClient
+                .builder()
+                .baseUrl(buildDetailsUri(String.format(MOVIE_DETAILS_ENDPOINT, movieId)))
+                .build();
+    }
+
     private String buildSearchUri(String query) {
         return buildBaseUri(SEARCH_MOVIE_ENDPOINT)
                 .queryParam(QUERY, query)
+                .queryParam(LANGUAGE, PL_PL)
+                .build(false).toUriString();
+    }
+
+    private String buildDetailsUri(String endpoint) {
+        return buildBaseUri(endpoint)
                 .queryParam(LANGUAGE, PL_PL)
                 .build(false).toUriString();
     }
