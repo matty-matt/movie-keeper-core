@@ -8,56 +8,37 @@ import com.kociszewski.moviekeepercore.domain.movie.info.Title;
 import com.kociszewski.moviekeepercore.domain.movie.info.Vote;
 import com.kociszewski.moviekeepercore.domain.movie.info.releases.Releases;
 import com.kociszewski.moviekeepercore.domain.trailers.TrailerSection;
-import org.springframework.beans.factory.annotation.Value;
+import com.kociszewski.moviekeepercore.infrastructure.access.exception.MovieNotFoundException;
+import com.kociszewski.moviekeepercore.infrastructure.access.model.FoundMovieId;
+import com.kociszewski.moviekeepercore.infrastructure.access.model.SearchMovieResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
+@RequiredArgsConstructor
 public class TmdbService implements ExternalService {
 
-    private static final String SEARCH_MOVIE_ENDPOINT = "/search/movie";
-    private static final String API_KEY = "api_key";
-    private static final String QUERY = "query";
-    private static final String LANGUAGE = "language";
-    private static final String PL_PL = "pl-PL";
-    private final String apiKey;
-    private final String baseUrl;
-
-    public TmdbService(@Value("${api.url}") String baseUrl, @Value("${api.key}") String apiKey) {
-        this.apiKey = apiKey;
-        this.baseUrl = baseUrl;
-    }
+    private final TmdbClient tmdbClient;
 
     @Override
     public MovieInfo findMovie(Title title) {
 
-        WebClient webClient = WebClient
-                .builder()
-                .baseUrl(buildSearchUri(SEARCH_MOVIE_ENDPOINT, title.getTitle()))
-                .build();
+        WebClient webClient = tmdbClient.searchClient(title.getTitle());
 
-        String response = webClient
+        FoundMovieId foundMovieId = webClient
                 .get()
                 .retrieve()
-                .bodyToMono(String.class)
-                .block();
+                .bodyToMono(SearchMovieResult.class)
+                .block()
+                .getResults()
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new MovieNotFoundException(String.format("Movie with title '%s' not found.", title)));
 
-        System.out.println(response);
+        System.out.println(foundMovieId);
         // getDetails should be also called here
         return null;
-    }
-
-    private UriComponentsBuilder buildBaseUri(String endpoint) {
-        return UriComponentsBuilder.fromHttpUrl(baseUrl.concat(endpoint))
-                .queryParam(API_KEY, apiKey);
-    }
-
-    private String buildSearchUri(String endpoint, String query) {
-        return buildBaseUri(endpoint)
-                .queryParam(QUERY, query)
-                .queryParam(LANGUAGE, PL_PL)
-                .build(false).toUriString();
     }
 
     @Override

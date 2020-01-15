@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.infrastructure.access;
+package com.kociszewski.moviekeepercore.infrastructure.access.model;
 
 import lombok.Data;
 

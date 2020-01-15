@@ -3,6 +3,7 @@ package com.kociszewski.moviekeepercore.infrastructure.access;
 import com.kociszewski.moviekeepercore.domain.movie.commands.SearchMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.Title;
+import com.kociszewski.moviekeepercore.infrastructure.access.model.TitleBody;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.http.ResponseEntity;
