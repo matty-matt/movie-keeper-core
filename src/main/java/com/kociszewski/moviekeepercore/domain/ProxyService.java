@@ -8,7 +8,7 @@ import com.kociszewski.moviekeepercore.domain.movie.info.Vote;
 import com.kociszewski.moviekeepercore.domain.movie.info.releases.Releases;
 import com.kociszewski.moviekeepercore.domain.trailers.TrailerSection;
 
-public interface DataService {
+public interface ProxyService {
     MovieInfo findMovie(Title title);
     Releases getReleases(MovieId movieId);
     Vote getVote(MovieId movieId);

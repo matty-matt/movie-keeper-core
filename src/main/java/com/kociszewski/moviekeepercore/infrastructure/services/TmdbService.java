@@ -1,6 +1,6 @@
 package com.kociszewski.moviekeepercore.infrastructure.services;
 
-import com.kociszewski.moviekeepercore.domain.DataService;
+import com.kociszewski.moviekeepercore.domain.ProxyService;
 import com.kociszewski.moviekeepercore.domain.cast.Cast;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieInfo;
@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TmdbService implements DataService {
+public class TmdbService implements ProxyService {
+
+    private final String apiKey;
 
     public TmdbService(@Value("${api.key}") String apiKey) {
-        System.out.println(apiKey);
+        this.apiKey = apiKey;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.kociszewski.moviekeepercore.domain.movie;
 
 import com.kociszewski.moviekeepercore.domain.ExternalId;
 import com.kociszewski.moviekeepercore.domain.movie.commands.SearchMovieCommand;
-import com.kociszewski.moviekeepercore.domain.movie.events.MovieQueriedForSearch;
+import com.kociszewski.moviekeepercore.domain.movie.events.MovieQueriedForSearchEvent;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieInfo;
 import com.kociszewski.moviekeepercore.domain.movie.info.Watched;
@@ -30,13 +30,12 @@ public class MovieAggregate {
 
     @CommandHandler
     public MovieAggregate(SearchMovieCommand command) {
-        apply(new MovieQueriedForSearch(command.getMovieId(), command.getTitle()));
+        apply(new MovieQueriedForSearchEvent(command.getMovieId(), command.getTitle()));
     }
 
     @EventSourcingHandler
-    public void on(MovieQueriedForSearch event) {
+    public void on(MovieQueriedForSearchEvent event) {
         this.movieId = event.getMovieId();
-        // TODO search for movie
     }
 
 }

@@ -5,7 +5,7 @@ import com.kociszewski.moviekeepercore.domain.movie.info.Title;
 import lombok.Value;
 
 @Value
-public class MovieQueriedForSearch {
+public class MovieQueriedForSearchEvent {
     private MovieId movieId;
     private Title title;
 }

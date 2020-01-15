@@ -7,11 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -25,6 +24,12 @@ public class MovieController {
     public ResponseEntity<Void> addMovieByTitle(@RequestBody TitleBody titleBody) {
         String movieId = UUID.randomUUID().toString();
         commandGateway.send(new SearchMovieCommand(new MovieId(movieId), new Title(titleBody.getTitle())));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Object>> getAllMovies() {
+        //TODO some kind of axon streaming to keep movies list always up to date?
+        return ResponseEntity.ok(Collections.emptyList());
     }
 }
