@@ -29,12 +29,12 @@ public class MovieAggregate {
     private Date lastRefreshDate;
 
     @CommandHandler
-    public MovieAggregate(SearchMovieCommand command) {
+    private MovieAggregate(SearchMovieCommand command) {
         apply(new MovieQueriedForSearchEvent(command.getMovieId(), command.getTitle()));
     }
 
     @EventSourcingHandler
-    public void on(MovieQueriedForSearchEvent event) {
+    private void on(MovieQueriedForSearchEvent event) {
         this.movieId = event.getMovieId();
     }
 
