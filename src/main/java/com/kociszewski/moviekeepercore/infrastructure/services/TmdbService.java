@@ -2,10 +2,7 @@ package com.kociszewski.moviekeepercore.infrastructure.services;
 
 import com.kociszewski.moviekeepercore.domain.ExternalService;
 import com.kociszewski.moviekeepercore.domain.cast.Cast;
-import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
-import com.kociszewski.moviekeepercore.domain.movie.info.MovieInfo;
-import com.kociszewski.moviekeepercore.domain.movie.info.Title;
-import com.kociszewski.moviekeepercore.domain.movie.info.Vote;
+import com.kociszewski.moviekeepercore.domain.movie.info.*;
 import com.kociszewski.moviekeepercore.domain.movie.info.releases.Releases;
 import com.kociszewski.moviekeepercore.domain.trailers.TrailerSection;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
@@ -22,8 +19,8 @@ public class TmdbService implements ExternalService {
     private final TmdbClient tmdbClient;
 
     @Override
-    public ExternalMovieId searchMovie(Title title) {
-        return tmdbClient.search(title.getTitle())
+    public ExternalMovieId searchMovie(SearchPhrase searchPhrase) {
+        return tmdbClient.search(searchPhrase.getPhrase())
                 .get()
                 .retrieve()
                 .bodyToMono(SearchMovieResult.class)
@@ -31,7 +28,7 @@ public class TmdbService implements ExternalService {
                 .getResults()
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new MovieNotFoundException(String.format("Movie with title '%s' not found.", title)));
+                .orElseThrow(() -> new MovieNotFoundException(String.format("Movie with title '%s' not found.", searchPhrase.getPhrase())));
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.kociszewski.moviekeepercore.infrastructure.access;
 
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
+import com.kociszewski.moviekeepercore.domain.movie.info.SearchPhrase;
 import com.kociszewski.moviekeepercore.domain.movie.info.Title;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
 import com.kociszewski.moviekeepercore.infrastructure.access.model.TitleBody;
@@ -22,19 +23,20 @@ import java.util.UUID;
 public class MovieController {
 
     private final CommandGateway commandGateway;
-    private final QueryGateway queryGateway;
+//    private final QueryGateway queryGateway;
 
     @PostMapping
     public Mono<Void> addMovieByTitle(@RequestBody TitleBody titleBody) {
         MovieId movieId = commandGateway.sendAndWait(
                 new FindMovieCommand(
                         new MovieId(UUID.randomUUID().toString()),
-                        new Title(titleBody.getTitle())));
+                        new SearchPhrase(titleBody.getTitle())));
         System.out.println("I FOUND IT: " + movieId);
         // TODO now another commands should be dispatched asynchronously
         //  [send instead of sendAndWait] (as they're just requests) based on fetched id
         // TODO examine if this request will not return empty json
-        return Mono.fromFuture(queryGateway.query(new FindMovieQuery(movieId), Void.class));
+        return Mono.empty();
+//        return Mono.fromFuture(queryGateway.query(new FindMovieQuery(movieId), Void.class));
     }
 
     @GetMapping
