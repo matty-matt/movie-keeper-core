@@ -19,8 +19,8 @@ public class TmdbService implements ExternalService {
     private final TmdbClient tmdbClient;
 
     @Override
-    public ExternalMovieId searchMovie(SearchPhrase searchPhrase) {
-        return tmdbClient.search(searchPhrase.getPhrase())
+    public ExternalMovieId searchMovie(SearchPhrase searchPhrase, MovieId movieId) {
+        ExternalMovieId externalMovieId = tmdbClient.search(searchPhrase.getPhrase())
                 .get()
                 .retrieve()
                 .bodyToMono(SearchMovieResult.class)
@@ -29,6 +29,7 @@ public class TmdbService implements ExternalService {
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new MovieNotFoundException(String.format("Movie with title '%s' not found.", searchPhrase.getPhrase())));
+        return externalMovieId;
     }
 
     @Override

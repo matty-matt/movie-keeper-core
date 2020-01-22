@@ -7,7 +7,7 @@ import com.kociszewski.moviekeepercore.domain.trailers.TrailerSection;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
 
 public interface ExternalService {
-    ExternalMovieId searchMovie(SearchPhrase searchPhrase);
+    ExternalMovieId searchMovie(SearchPhrase searchPhrase, MovieId movieId);
     MovieInfo findMovie(ExternalMovieId externalMovieId);
     Releases getReleases(MovieId movieId);
     Vote getVote(MovieId movieId);

@@ -1,9 +1,9 @@
 package com.kociszewski.moviekeepercore.domain.movie;
 
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
+import com.kociszewski.moviekeepercore.domain.movie.commands.SetExternalMovieIdCommand;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieIdFoundEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.SearchDelegatedEvent;
-import com.kociszewski.moviekeepercore.domain.movie.events.SetExternalMovieIdCommand;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieInfo;
 import com.kociszewski.moviekeepercore.domain.movie.info.SearchPhrase;
@@ -45,13 +45,13 @@ public class MovieAggregate {
     }
 
 //    @CommandHandler
-//    private void on(SetExternalMovieIdCommand command) {
+//    private void handle(SetExternalMovieIdCommand command) {
 //        apply(new MovieIdFoundEvent(command.getMovieId(), command.getExternalMovieId()));
 //    }
 //
 //    @EventSourcingHandler
 //    private void on(MovieIdFoundEvent event) {
-//        System.out.println("Handling MovieIdFoundEvent");
+//        System.out.println(">>>>>>> Handling MovieIdFoundEvent");
 //        this.externalMovieId = event.getExternalMovieId();
 //    }
 

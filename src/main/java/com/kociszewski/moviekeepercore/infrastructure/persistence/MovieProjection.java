@@ -1,15 +1,20 @@
 package com.kociszewski.moviekeepercore.infrastructure.persistence;
 
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
+import lombok.RequiredArgsConstructor;
 import org.axonframework.queryhandling.QueryHandler;
+import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
+@Component
 public class MovieProjection {
-    // TODO repository
-    // private Repository<MovieSth?> repository
+
+    private final MovieIdRepository movieIdRepository;
 
     @QueryHandler
-    public Void handle(FindMovieQuery findMovieQuery) {
-//        return repository.movie(fetchMovieQuery.getMovieId());
-        return null;
+    public TemporaryMovieId handle(FindMovieQuery findMovieQuery) {
+        return movieIdRepository.
+                findById(findMovieQuery.getMovieId().getId())
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
