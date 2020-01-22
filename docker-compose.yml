@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  mongo:
+    container_name: mongodb
+    image: 'mongo:latest'
+    command: mongod --port 38550
+    ports:
+      - '38550:38550'
+  axon:
+    container_name: axon-server
+    image: 'axoniq/axonserver:4.2.4-jdk11'
+    ports:
+      - '8024:8024'
+      - '8124:8124'

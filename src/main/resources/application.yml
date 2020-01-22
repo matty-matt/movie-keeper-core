@@ -4,7 +4,7 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://mongo:38550/moviekeeper
+      uri: mongodb://localhost:38550/moviekeeper
 
 api:
   url: https://api.themoviedb.org/3
