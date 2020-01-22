@@ -36,24 +36,10 @@ public class MovieController {
     @PostMapping
     public MovieId addMovieByTitle(@RequestBody TitleBody titleBody) {
         MovieId movieId = new MovieId(UUID.randomUUID().toString());
-
-        FutureCallback<FindMovieCommand, MovieId> callback = new FutureCallback<>();
-        commandBus.dispatch(new GenericCommandMessage<>(new FindMovieCommand(
-                movieId,
-                new SearchPhrase(titleBody.getTitle()))), callback);
-        try {
-            return callback.get().getPayload();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
-
-//        commandGateway.sendAndWait(
-//                new FindMovieCommand(
-//                        movieId,
-//                        new SearchPhrase(titleBody.getTitle())));
+        return commandGateway.sendAndWait(
+                new FindMovieCommand(
+                        movieId,
+                        new SearchPhrase(titleBody.getTitle())));
         // TODO now another commands should be dispatched asynchronously
         //  [send instead of sendAndWait] (as they're just requests) based on fetched id
         // TODO examine if this request will not return empty json
