@@ -8,6 +8,9 @@ import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
 import com.kociszewski.moviekeepercore.infrastructure.access.model.TitleBody;
 import com.kociszewski.moviekeepercore.infrastructure.persistence.TemporaryMovieId;
 import lombok.RequiredArgsConstructor;
+import org.axonframework.commandhandling.CommandBus;
+import org.axonframework.commandhandling.GenericCommandMessage;
+import org.axonframework.commandhandling.callbacks.FutureCallback;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
@@ -19,6 +22,7 @@ import reactor.core.publisher.Mono;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,19 +31,33 @@ public class MovieController {
 
     private final CommandGateway commandGateway;
     private final QueryGateway queryGateway;
+    private final CommandBus commandBus;
 
     @PostMapping
-    public Mono<TemporaryMovieId> addMovieByTitle(@RequestBody TitleBody titleBody) {
+    public MovieId addMovieByTitle(@RequestBody TitleBody titleBody) {
         MovieId movieId = new MovieId(UUID.randomUUID().toString());
 
-        commandGateway.sendAndWait(
-                new FindMovieCommand(
-                        movieId,
-                        new SearchPhrase(titleBody.getTitle())));
+        FutureCallback<FindMovieCommand, MovieId> callback = new FutureCallback<>();
+        commandBus.dispatch(new GenericCommandMessage<>(new FindMovieCommand(
+                movieId,
+                new SearchPhrase(titleBody.getTitle()))), callback);
+        try {
+            return callback.get().getPayload();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+//        commandGateway.sendAndWait(
+//                new FindMovieCommand(
+//                        movieId,
+//                        new SearchPhrase(titleBody.getTitle())));
         // TODO now another commands should be dispatched asynchronously
         //  [send instead of sendAndWait] (as they're just requests) based on fetched id
         // TODO examine if this request will not return empty json
-        return Mono.fromFuture(queryGateway.query(new FindMovieQuery(movieId), TemporaryMovieId.class));
+//        return Mono.fromFuture(queryGateway.query(new FindMovieQuery(movieId), TemporaryMovieId.class));
     }
 
     @GetMapping
