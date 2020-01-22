@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component;
 public class MovieEventsHandler {
     private final ExternalService externalService;
 //    private final EventGateway eventGateway;
-    private final CommandGateway commandGateway;
+//    private final CommandGateway commandGateway;
 
     @EventHandler
     public void on(SearchDelegatedEvent event) {
         ExternalMovieId externalMovieId = externalService.searchMovie(event.getSearchPhrase());
 //        eventGateway.publish(new MovieIdFoundEvent(event.getMovieId(), externalMovieId));
-        commandGateway.send(new SetExternalMovieIdCommand(event.getMovieId(), externalMovieId));
+//        commandGateway.send(new SetExternalMovieIdCommand(event.getMovieId(), externalMovieId));
     }
 }

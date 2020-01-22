@@ -10,7 +10,6 @@ import com.kociszewski.moviekeepercore.domain.movie.info.SearchPhrase;
 import com.kociszewski.moviekeepercore.domain.movie.info.Watched;
 import com.kociszewski.moviekeepercore.domain.movie.info.releases.Releases;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
-import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -40,20 +39,20 @@ public class MovieAggregate {
 
     @EventSourcingHandler
     private void on(SearchDelegatedEvent event) {
-        System.out.println("Handling SearchDelegatedEvent");
+        System.out.println(">>>>>> Handling SearchDelegatedEvent");
         this.movieId = event.getMovieId();
         this.searchPhrase = event.getSearchPhrase();
     }
 
-    @CommandHandler
-    private void on(SetExternalMovieIdCommand command) {
-        apply(new MovieIdFoundEvent(command.getMovieId(), command.getExternalMovieId()));
-    }
-
-    @EventSourcingHandler
-    private void on(MovieIdFoundEvent event) {
-        System.out.println("Handling MovieIdFoundEvent");
-        this.externalMovieId = event.getExternalMovieId();
-    }
+//    @CommandHandler
+//    private void on(SetExternalMovieIdCommand command) {
+//        apply(new MovieIdFoundEvent(command.getMovieId(), command.getExternalMovieId()));
+//    }
+//
+//    @EventSourcingHandler
+//    private void on(MovieIdFoundEvent event) {
+//        System.out.println("Handling MovieIdFoundEvent");
+//        this.externalMovieId = event.getExternalMovieId();
+//    }
 
 }
