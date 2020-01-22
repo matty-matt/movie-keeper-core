@@ -33,7 +33,7 @@ public class TmdbService implements ExternalService {
     }
 
     @Override
-    public MovieInfo findMovie(ExternalMovieId externalMovieId) {
+    public ExternalMovie fetchMovieDetails(ExternalMovieId externalMovieId) {
 
         ExternalMovie movie = tmdbClient.movieDetails(externalMovieId.getId())
                 .get()
@@ -44,7 +44,7 @@ public class TmdbService implements ExternalService {
         System.out.println(movie);
 
         // getDetails should be also called here
-        return null;
+        return movie;
     }
 
     @Override

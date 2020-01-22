@@ -32,6 +32,8 @@ public class MovieAggregate {
     private Date lastRefreshDate;
     private SearchPhrase searchPhrase;
 
+    private MovieAggregate() {}
+
     @CommandHandler
     public MovieAggregate(FindMovieCommand command) {
         apply(new SearchDelegatedEvent(command.getMovieId(), command.getPhrase()));
@@ -44,15 +46,15 @@ public class MovieAggregate {
         this.searchPhrase = event.getSearchPhrase();
     }
 
-//    @CommandHandler
-//    private void handle(SetExternalMovieIdCommand command) {
-//        apply(new MovieIdFoundEvent(command.getMovieId(), command.getExternalMovieId()));
-//    }
-//
-//    @EventSourcingHandler
-//    private void on(MovieIdFoundEvent event) {
-//        System.out.println(">>>>>>> Handling MovieIdFoundEvent");
-//        this.externalMovieId = event.getExternalMovieId();
-//    }
+    @CommandHandler
+    public void handle(SetExternalMovieIdCommand command) {
+        apply(new MovieIdFoundEvent(command.getMovieId(), command.getExternalMovieId()));
+    }
+
+    @EventSourcingHandler
+    private void on(MovieIdFoundEvent event) {
+        System.out.println(">>>>>>> Handling MovieIdFoundEvent");
+        this.externalMovieId = event.getExternalMovieId();
+    }
 
 }
