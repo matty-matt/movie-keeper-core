@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.infrastructure.access.model;
+package com.kociszewski.moviekeepercore.shared.model;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -12,5 +12,5 @@ public class SearchMovieResult {
     private int page;
     private int totalResults;
     private int totalPages;
-    private List<FoundMovieId> results;
+    private List<ExternalMovieId> results;
 }

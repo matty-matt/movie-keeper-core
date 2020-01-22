@@ -1,11 +1,13 @@
-package com.kociszewski.moviekeepercore.domain.movie.events;
+package com.kociszewski.moviekeepercore.domain.movie.commands;
 
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.Title;
 import lombok.Value;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Value
-public class MovieQueriedForSearchEvent {
+public class FindMovieCommand {
+    @TargetAggregateIdentifier
     private MovieId movieId;
     private Title title;
 }

@@ -1,6 +1,6 @@
 package com.kociszewski.moviekeepercore.infrastructure.access;
 
-import com.kociszewski.moviekeepercore.domain.movie.commands.SearchMovieCommand;
+import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.Title;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
@@ -27,7 +27,7 @@ public class MovieController {
     @PostMapping
     public Mono<Void> addMovieByTitle(@RequestBody TitleBody titleBody) {
         MovieId movieId = commandGateway.sendAndWait(
-                new SearchMovieCommand(
+                new FindMovieCommand(
                         new MovieId(UUID.randomUUID().toString()),
                         new Title(titleBody.getTitle())));
         System.out.println("I FOUND IT: " + movieId);
