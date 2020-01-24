@@ -5,7 +5,7 @@ import com.kociszewski.moviekeepercore.domain.movie.info.SearchPhrase;
 import lombok.Value;
 
 @Value
-public class SearchDelegatedEvent {
+public class MovieSearchDelegatedEvent {
     private MovieId movieId;
     private SearchPhrase searchPhrase;
 }

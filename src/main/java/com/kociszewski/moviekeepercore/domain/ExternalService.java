@@ -2,14 +2,12 @@ package com.kociszewski.moviekeepercore.domain;
 
 import com.kociszewski.moviekeepercore.domain.cast.Cast;
 import com.kociszewski.moviekeepercore.domain.movie.info.*;
-import com.kociszewski.moviekeepercore.domain.movie.info.releases.Releases;
 import com.kociszewski.moviekeepercore.domain.trailers.TrailerSection;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
 
 public interface ExternalService {
-    void searchMovie(SearchPhrase searchPhrase, MovieId movieId);
-    ExternalMovie fetchMovieDetails(ExternalMovieId externalMovieId);
+    ExternalMovie searchMovie(SearchPhrase searchPhrase, MovieId movieId);
     String getDigitalRelease(ExternalMovieId externalMovieId);
     Vote getVote(MovieId movieId);
     TrailerSection getTrailers(MovieId movieId);

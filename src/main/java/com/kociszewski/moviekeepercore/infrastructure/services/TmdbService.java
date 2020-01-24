@@ -3,10 +3,10 @@ package com.kociszewski.moviekeepercore.infrastructure.services;
 import com.kociszewski.moviekeepercore.domain.ExternalService;
 import com.kociszewski.moviekeepercore.domain.cast.Cast;
 import com.kociszewski.moviekeepercore.domain.movie.info.*;
-import com.kociszewski.moviekeepercore.domain.movie.info.releases.Releases;
 import com.kociszewski.moviekeepercore.domain.trailers.TrailerSection;
 import com.kociszewski.moviekeepercore.infrastructure.model.movierelease.ReleasesResult;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
+import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
 import com.kociszewski.moviekeepercore.infrastructure.exception.MovieNotFoundException;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
 import com.kociszewski.moviekeepercore.shared.model.SearchMovieResult;
@@ -23,7 +23,7 @@ public class TmdbService implements ExternalService {
     private final MovieReleaseService movieReleaseService;
 
     @Override
-    public void searchMovie(SearchPhrase searchPhrase, MovieId movieId) {
+    public ExternalMovie searchMovie(SearchPhrase searchPhrase, MovieId movieId) {
         ExternalMovieId externalMovieId = tmdbClient.search(searchPhrase.getPhrase())
                 .get()
                 .retrieve()
@@ -34,17 +34,20 @@ public class TmdbService implements ExternalService {
                 .findFirst()
                 .orElseThrow(() -> new MovieNotFoundException(String.format("Movie with title '%s' not found.", searchPhrase.getPhrase())));
 
-        ExternalMovie externalMovie = fetchMovieDetails(externalMovieId);
+        ExternalMovieInfo externalMovieInfo = fetchMovieDetails(externalMovieId);
         String digitalRelease = getDigitalRelease(externalMovieId);
-        log.info("movieId={}, digitalRelease={}, payload={}", externalMovieId, digitalRelease, externalMovie);
+        return ExternalMovie.builder()
+                .externalMovieId(externalMovieId)
+                .externalMovieInfo(externalMovieInfo)
+                .digitalRelease(digitalRelease)
+                .build();
     }
 
-    @Override
-    public ExternalMovie fetchMovieDetails(ExternalMovieId externalMovieId) {
+    private ExternalMovieInfo fetchMovieDetails(ExternalMovieId externalMovieId) {
         return tmdbClient.movieDetails(externalMovieId.getId())
                 .get()
                 .retrieve()
-                .bodyToMono(ExternalMovie.class)
+                .bodyToMono(ExternalMovieInfo.class)
                 .block();
     }
 

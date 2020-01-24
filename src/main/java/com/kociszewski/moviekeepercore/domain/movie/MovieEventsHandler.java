@@ -1,9 +1,9 @@
 package com.kociszewski.moviekeepercore.domain.movie;
 
 import com.kociszewski.moviekeepercore.domain.ExternalService;
-import com.kociszewski.moviekeepercore.domain.movie.commands.SetExternalMovieIdCommand;
-import com.kociszewski.moviekeepercore.domain.movie.events.SearchDelegatedEvent;
-import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
+import com.kociszewski.moviekeepercore.domain.movie.commands.SaveMovieCommand;
+import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
+import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.EventHandler;
@@ -16,8 +16,8 @@ public class MovieEventsHandler {
     private final CommandGateway commandGateway;
 
     @EventHandler
-    public void on(SearchDelegatedEvent event) {
-        externalService.searchMovie(event.getSearchPhrase(), event.getMovieId());
-        commandGateway.sendAndWait(new SetExternalMovieIdCommand(event.getMovieId(), new ExternalMovieId("72389")));
+    public void on(MovieSearchDelegatedEvent event) {
+        ExternalMovie externalMovie = externalService.searchMovie(event.getSearchPhrase(), event.getMovieId());
+        commandGateway.sendAndWait(new SaveMovieCommand(event.getMovieId(), externalMovie));
     }
 }
