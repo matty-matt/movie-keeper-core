@@ -18,15 +18,14 @@ public class MovieReleaseService {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     public String getDigitalRelease(ReleasesResult releasesResult) {
-         return releasesResult.getResults()
+        return releasesResult.getResults()
                 .stream()
                 .filter(release -> isEnglishRelease(release) && hasDigitalRelease(release))
                 .map(CountryRelease::getReleaseDates)
                 .map(this::onlyDigitalReleases)
-                 .map(date -> LocalDateTime.parse(date, FORMATTER))
-                 .min(LocalDateTime::compareTo)
-                 .get()
-                 .toString();
+                .map(date -> LocalDateTime.parse(date, FORMATTER))
+                .min(LocalDateTime::compareTo)
+                .map(LocalDateTime::toString).orElse(null);
     }
 
     private boolean isEnglishRelease(CountryRelease release) {
