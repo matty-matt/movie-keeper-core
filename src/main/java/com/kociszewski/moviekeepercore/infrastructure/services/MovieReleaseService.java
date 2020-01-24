@@ -46,6 +46,6 @@ public class MovieReleaseService {
                 .filter(this::isReleaseDigital)
                 .map(TmdbRelease::getReleaseDate)
                 .findAny()
-                .get();
+                .orElse(null);
     }
 }
