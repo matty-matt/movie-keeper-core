@@ -38,6 +38,13 @@ public class TmdbClient {
                 .build();
     }
 
+    public WebClient releases(String movieId) {
+        return WebClient
+                .builder()
+                .baseUrl(buildDefaultUri(String.format(MOVIE_RELEASES_ENDPOINT, movieId)))
+                .build();
+    }
+
     private String buildSearchUri(String query) {
         return buildBaseUri(SEARCH_MOVIE_ENDPOINT)
                 .queryParam(QUERY, query)
@@ -49,6 +56,10 @@ public class TmdbClient {
         return buildBaseUri(endpoint)
                 .queryParam(LANGUAGE, PL_PL)
                 .build(false).toUriString();
+    }
+
+    private String buildDefaultUri(String endpoint) {
+        return buildBaseUri(endpoint).build(false).toUriString();
     }
 
     private UriComponentsBuilder buildBaseUri(String endpoint) {

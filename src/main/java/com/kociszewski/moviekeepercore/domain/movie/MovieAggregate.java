@@ -41,7 +41,7 @@ public class MovieAggregate {
 
     @EventSourcingHandler
     private void on(SearchDelegatedEvent event) {
-        System.out.println(">>>>>> Handling SearchDelegatedEvent");
+        System.out.println(">>>>>> Handling SearchDelegatedEvent" + this.hashCode());
         this.movieId = event.getMovieId();
         this.searchPhrase = event.getSearchPhrase();
     }
@@ -53,7 +53,7 @@ public class MovieAggregate {
 
     @EventSourcingHandler
     private void on(MovieIdFoundEvent event) {
-        System.out.println(">>>>>>> Handling MovieIdFoundEvent");
+        System.out.println(">>>>>>> Handling MovieIdFoundEvent" + this.hashCode());
         this.externalMovieId = event.getExternalMovieId();
     }
 

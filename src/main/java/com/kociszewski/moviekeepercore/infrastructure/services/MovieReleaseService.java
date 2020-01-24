@@ -1,0 +1,52 @@
+package com.kociszewski.moviekeepercore.infrastructure.services;
+
+import com.kociszewski.moviekeepercore.infrastructure.model.movierelease.CountryRelease;
+import com.kociszewski.moviekeepercore.infrastructure.model.movierelease.ReleaseType;
+import com.kociszewski.moviekeepercore.infrastructure.model.movierelease.ReleasesResult;
+import com.kociszewski.moviekeepercore.infrastructure.model.movierelease.TmdbRelease;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+@Service
+public class MovieReleaseService {
+
+    private static final String US = "US";
+    private static final String GB = "GB";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+    public String getDigitalRelease(ReleasesResult releasesResult) {
+         return releasesResult.getResults()
+                .stream()
+                .filter(release -> isEnglishRelease(release) && hasDigitalRelease(release))
+                .map(CountryRelease::getReleaseDates)
+                .map(this::onlyDigitalReleases)
+                 .map(date -> LocalDateTime.parse(date, FORMATTER))
+                 .min(LocalDateTime::compareTo)
+                 .get()
+                 .toString();
+    }
+
+    private boolean isEnglishRelease(CountryRelease release) {
+        return US.equals(release.getCountry()) || GB.equals(release.getCountry());
+    }
+
+    private boolean hasDigitalRelease(CountryRelease release) {
+        return release.getReleaseDates().stream().anyMatch(this::isReleaseDigital);
+    }
+
+    private boolean isReleaseDigital(TmdbRelease tmdbRelease) {
+        return ReleaseType.DIGITAL.getTypeId() == tmdbRelease.getType();
+    }
+
+    private String onlyDigitalReleases(List<TmdbRelease> tmdbReleases) {
+        return tmdbReleases
+                .stream()
+                .filter(this::isReleaseDigital)
+                .map(TmdbRelease::getReleaseDate)
+                .findAny()
+                .get();
+    }
+}

@@ -8,9 +8,9 @@ import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
 
 public interface ExternalService {
-    ExternalMovieId searchMovie(SearchPhrase searchPhrase, MovieId movieId);
+    void searchMovie(SearchPhrase searchPhrase, MovieId movieId);
     ExternalMovie fetchMovieDetails(ExternalMovieId externalMovieId);
-    Releases getReleases(MovieId movieId);
+    String getDigitalRelease(ExternalMovieId externalMovieId);
     Vote getVote(MovieId movieId);
     TrailerSection getTrailers(MovieId movieId);
     Cast getCast(MovieId movieId);

@@ -3,7 +3,7 @@ package com.kociszewski.moviekeepercore.infrastructure.access;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.SearchPhrase;
-import com.kociszewski.moviekeepercore.infrastructure.access.model.TitleBody;
+import com.kociszewski.moviekeepercore.infrastructure.model.TitleBody;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.queryhandling.QueryGateway;
@@ -29,6 +29,7 @@ public class MovieController {
                 new FindMovieCommand(
                         movieId,
                         new SearchPhrase(titleBody.getTitle())));
+
         return movieId;
         // TODO now another commands should be dispatched asynchronously
         //  [send instead of sendAndWait] (as they're just requests) based on fetched id
