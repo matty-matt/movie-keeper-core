@@ -1,8 +1,11 @@
 package com.kociszewski.moviekeepercore.infrastructure.persistence;
 
+import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
 import com.kociszewski.moviekeepercore.infrastructure.exception.MovieNotFoundException;
+import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
 import lombok.RequiredArgsConstructor;
+import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +14,27 @@ import org.springframework.stereotype.Component;
 public class MovieProjection {
 
     private final MovieRepository movieRepository;
+
+    @EventHandler
+    public void handle(MovieSavedEvent event) {
+        ExternalMovieInfo externalMovieInfo = event.getExternalMovie().getExternalMovieInfo();
+        movieRepository.insert(MovieDTO.builder()
+                .id(event.getExternalMovie().getExternalMovieId().getId())
+                .aggregateId(event.getMovieId().getId())
+                .posterPath(externalMovieInfo.getPosterPath())
+                .title(externalMovieInfo.getTitle())
+                .originalTitle(externalMovieInfo.getOriginalTitle())
+                .overview(externalMovieInfo.getOverview())
+                .releaseDateDigital(event.getExternalMovie().getDigitalRelease())
+                .releaseDate(externalMovieInfo.getReleaseDate())
+                .originalLanguage(externalMovieInfo.getOriginalLanguage())
+                .voteAverageMdb(externalMovieInfo.getVoteAverage())
+                .voteCount(externalMovieInfo.getVoteCount())
+                .runtime(externalMovieInfo.getRuntime())
+                .genres(externalMovieInfo.getGenres())
+                // TODO watched, creationDate, lastRefreshDate <- should be taken from aggregate
+                .build());
+    }
 
     @QueryHandler
     public MovieDTO handle(FindMovieQuery findMovieQuery) {

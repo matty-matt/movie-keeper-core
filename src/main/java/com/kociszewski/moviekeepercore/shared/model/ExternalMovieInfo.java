@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Optional;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Data
 public class ExternalMovieInfo {
+    private static final String IMAGE_HOST = "https://image.tmdb.org/t/p/w500";
     private String id;
     private String posterPath;
     private String title;
@@ -20,4 +22,8 @@ public class ExternalMovieInfo {
     private long voteCount;
     private int runtime;
     private List<ExternalGenre> genres;
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = IMAGE_HOST.concat(Optional.ofNullable(posterPath).orElse("NULL"));
+    }
 }
