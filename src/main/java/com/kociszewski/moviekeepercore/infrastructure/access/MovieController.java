@@ -3,16 +3,21 @@ package com.kociszewski.moviekeepercore.infrastructure.access;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.SearchPhrase;
+import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
 import com.kociszewski.moviekeepercore.infrastructure.model.TitleBody;
+import com.kociszewski.moviekeepercore.infrastructure.persistence.MovieDTO;
+import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.queryhandling.QueryGateway;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,18 +28,19 @@ public class MovieController {
     private final QueryGateway queryGateway;
 
     @PostMapping
-    public MovieId addMovieByTitle(@RequestBody TitleBody titleBody) {
+    public ResponseEntity<Void> addMovieByTitle(@RequestBody TitleBody titleBody) {
         MovieId movieId = new MovieId(UUID.randomUUID().toString());
-        commandGateway.sendAndWait(
+        commandGateway.send(
                 new FindMovieCommand(
                         movieId,
                         new SearchPhrase(titleBody.getTitle())));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 
-        return movieId;
-        // TODO now another commands should be dispatched asynchronously
-        //  [send instead of sendAndWait] (as they're just requests) based on fetched id
-        // TODO examine if this request will not return empty json
-//        return Mono.fromFuture(queryGateway.query(new FindMovieQuery(movieId), TemporaryMovieId.class));
+    @GetMapping("/{id}")
+    public CompletableFuture<MovieDTO> getMovieById(@PathVariable String id) {
+        return queryGateway
+                .query(new FindMovieQuery(new ExternalMovieId(id)), MovieDTO.class);
     }
 
     @GetMapping

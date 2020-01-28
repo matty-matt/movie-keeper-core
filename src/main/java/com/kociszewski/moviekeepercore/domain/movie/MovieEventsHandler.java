@@ -7,9 +7,9 @@ import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.EventHandler;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class MovieEventsHandler {
     private final ExternalService externalService;
