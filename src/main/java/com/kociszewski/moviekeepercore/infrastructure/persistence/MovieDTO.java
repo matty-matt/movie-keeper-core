@@ -22,7 +22,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class MovieDTO {
     private String id;
-    private String aggregateId;
+    private String externalMovieId;
     private String posterPath;
     private String title;
     private String originalTitle;

@@ -28,19 +28,19 @@ public class MovieController {
     private final QueryGateway queryGateway;
 
     @PostMapping
-    public ResponseEntity<Void> addMovieByTitle(@RequestBody TitleBody titleBody) {
+    public ResponseEntity<MovieId> addMovieByTitle(@RequestBody TitleBody titleBody) {
         MovieId movieId = new MovieId(UUID.randomUUID().toString());
         commandGateway.send(
                 new FindMovieCommand(
                         movieId,
                         new SearchPhrase(titleBody.getTitle())));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(movieId, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public CompletableFuture<MovieDTO> getMovieById(@PathVariable String id) {
         return queryGateway
-                .query(new FindMovieQuery(new ExternalMovieId(id)), MovieDTO.class);
+                .query(new FindMovieQuery(new MovieId(id)), MovieDTO.class);
     }
 
     @GetMapping

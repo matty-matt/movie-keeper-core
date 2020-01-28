@@ -19,8 +19,8 @@ public class MovieProjection {
     public void handle(MovieSavedEvent event) {
         ExternalMovieInfo externalMovieInfo = event.getExternalMovie().getExternalMovieInfo();
         movieRepository.insert(MovieDTO.builder()
-                .id(event.getExternalMovie().getExternalMovieId().getId())
-                .aggregateId(event.getMovieId().getId())
+                .id(event.getMovieId().getId())
+                .externalMovieId(event.getExternalMovie().getExternalMovieId().getId())
                 .posterPath(externalMovieInfo.getPosterPath())
                 .title(externalMovieInfo.getTitle())
                 .originalTitle(externalMovieInfo.getOriginalTitle())
@@ -39,8 +39,8 @@ public class MovieProjection {
     @QueryHandler
     public MovieDTO handle(FindMovieQuery findMovieQuery) {
         return movieRepository.
-                findById(findMovieQuery.getExternalMovieId().getId())
+                findById(findMovieQuery.getMovieId().getId())
                 .orElseThrow(() -> new MovieNotFoundException(
-                        String.format("Movie with id=%s not found.", findMovieQuery.getExternalMovieId().getId())));
+                        String.format("Movie with id=%s not found.", findMovieQuery.getMovieId().getId())));
     }
 }
