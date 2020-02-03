@@ -8,6 +8,7 @@ import com.kociszewski.moviekeepercore.infrastructure.model.TitleBody;
 import com.kociszewski.moviekeepercore.infrastructure.persistence.MovieDTO;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
 import lombok.RequiredArgsConstructor;
+import org.axonframework.axonserver.connector.query.AxonServerRemoteQueryHandlingException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,11 @@ public class MovieController {
     public CompletableFuture<MovieDTO> getMovieById(@PathVariable String id) {
         return queryGateway
                 .query(new FindMovieQuery(new MovieId(id)), MovieDTO.class);
+    }
+
+    @ExceptionHandler(AxonServerRemoteQueryHandlingException.class)
+    public ResponseEntity<String> movieNotFound(AxonServerRemoteQueryHandlingException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @GetMapping
