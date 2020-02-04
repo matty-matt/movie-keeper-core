@@ -6,11 +6,12 @@ import com.kociszewski.moviekeepercore.domain.movie.info.SearchPhrase;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
 import com.kociszewski.moviekeepercore.infrastructure.model.TitleBody;
 import com.kociszewski.moviekeepercore.infrastructure.persistence.MovieDTO;
-import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.axonserver.connector.query.AxonServerRemoteQueryHandlingException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
+import org.axonframework.queryhandling.SubscriptionQueryResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,9 +39,17 @@ public class MovieController {
     }
 
     @GetMapping("/{id}")
-    public CompletableFuture<MovieDTO> getMovieById(@PathVariable String id) {
-        return queryGateway
-                .query(new FindMovieQuery(new MovieId(id)), MovieDTO.class);
+    public MovieDTO getMovieById(@PathVariable String id) {
+        SubscriptionQueryResult<MovieDTO, MovieDTO> subscriptionQueryResult =
+                queryGateway.subscriptionQuery(
+                        new FindMovieQuery(new MovieId(id)),
+                        ResponseTypes.instanceOf(MovieDTO.class),
+                        ResponseTypes.instanceOf(MovieDTO.class)
+                );
+
+        return subscriptionQueryResult.updates().blockFirst();
+//        return queryGateway
+//                .query(new FindMovieQuery(new MovieId(id)), MovieDTO.class);
     }
 
     @ExceptionHandler(AxonServerRemoteQueryHandlingException.class)

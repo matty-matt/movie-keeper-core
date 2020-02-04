@@ -7,6 +7,7 @@ import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
+import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
@@ -14,11 +15,12 @@ import org.springframework.stereotype.Component;
 public class MovieProjection {
 
     private final MovieRepository movieRepository;
+    private final QueryUpdateEmitter queryUpdateEmitter;
 
     @EventHandler
     public void handle(MovieSavedEvent event) {
         ExternalMovieInfo externalMovieInfo = event.getExternalMovie().getExternalMovieInfo();
-        movieRepository.insert(MovieDTO.builder()
+        MovieDTO movie = MovieDTO.builder()
                 .id(event.getMovieId().getId())
                 .externalMovieId(event.getExternalMovie().getExternalMovieId().getId())
                 .posterPath(externalMovieInfo.getPosterPath())
@@ -33,7 +35,9 @@ public class MovieProjection {
                 .runtime(externalMovieInfo.getRuntime())
                 .genres(externalMovieInfo.getGenres())
                 // TODO watched, creationDate, lastRefreshDate <- should be taken from aggregate
-                .build());
+                .build();
+        movieRepository.insert(movie);
+        queryUpdateEmitter.emit(FindMovieQuery.class, query -> true, movie);
     }
 
     @QueryHandler
