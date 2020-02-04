@@ -4,6 +4,7 @@ import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.info.SearchPhrase;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
+import com.kociszewski.moviekeepercore.infrastructure.exception.MovieNotFoundException;
 import com.kociszewski.moviekeepercore.infrastructure.model.TitleBody;
 import com.kociszewski.moviekeepercore.infrastructure.persistence.MovieDTO;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,12 @@ public class MovieController {
                         ResponseTypes.instanceOf(MovieDTO.class)
                 );
         return subscriptionQueryResult.updates().blockFirst();
+        // Below is unreachable cuz AxonServerRemoteQueryHandlingException raises exception because of null emitted in MovieEventsHandler
+//        if (movieDTO == null) {
+//            throw new MovieNotFoundException("Takze tego");
+//        } else {
+//            return movieDTO;
+//        }
     }
 
     @GetMapping("/{id}")
