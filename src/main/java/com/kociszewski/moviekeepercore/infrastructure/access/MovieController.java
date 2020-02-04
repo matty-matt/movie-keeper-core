@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,27 +30,26 @@ public class MovieController {
     private final QueryGateway queryGateway;
 
     @PostMapping
-    public ResponseEntity<MovieId> addMovieByTitle(@RequestBody TitleBody titleBody) {
+    public MovieDTO addMovieByTitle(@RequestBody TitleBody titleBody) {
         MovieId movieId = new MovieId(UUID.randomUUID().toString());
         commandGateway.send(
                 new FindMovieCommand(
                         movieId,
                         new SearchPhrase(titleBody.getTitle())));
-        return new ResponseEntity<>(movieId, HttpStatus.CREATED);
-    }
 
-    @GetMapping("/{id}")
-    public MovieDTO getMovieById(@PathVariable String id) {
         SubscriptionQueryResult<MovieDTO, MovieDTO> subscriptionQueryResult =
                 queryGateway.subscriptionQuery(
-                        new FindMovieQuery(new MovieId(id)),
+                        new FindMovieQuery(movieId),
                         ResponseTypes.instanceOf(MovieDTO.class),
                         ResponseTypes.instanceOf(MovieDTO.class)
                 );
-
         return subscriptionQueryResult.updates().blockFirst();
-//        return queryGateway
-//                .query(new FindMovieQuery(new MovieId(id)), MovieDTO.class);
+    }
+
+    @GetMapping("/{id}")
+    public CompletableFuture<MovieDTO> getMovieById(@PathVariable String id) {
+        return queryGateway
+                .query(new FindMovieQuery(new MovieId(id)), MovieDTO.class);
     }
 
     @ExceptionHandler(AxonServerRemoteQueryHandlingException.class)
