@@ -16,11 +16,13 @@ import org.axonframework.queryhandling.SubscriptionQueryResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collector;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class MovieController {
     private final QueryGateway queryGateway;
 
     @PostMapping
-    public MovieDTO addMovieByTitle(@RequestBody TitleBody titleBody) {
+    public Mono<ResponseEntity<MovieDTO>> addMovieByTitle(@RequestBody TitleBody titleBody) {
         MovieId movieId = new MovieId(UUID.randomUUID().toString());
         commandGateway.send(
                 new FindMovieCommand(
@@ -44,13 +46,9 @@ public class MovieController {
                         ResponseTypes.instanceOf(MovieDTO.class),
                         ResponseTypes.instanceOf(MovieDTO.class)
                 );
-        return subscriptionQueryResult.updates().blockFirst();
-        // Below is unreachable cuz AxonServerRemoteQueryHandlingException raises exception because of null emitted in MovieEventsHandler
-//        if (movieDTO == null) {
-//            throw new MovieNotFoundException("Takze tego");
-//        } else {
-//            return movieDTO;
-//        }
+        return subscriptionQueryResult.updates()
+                .next()
+                .map(movie -> new ResponseEntity<>(movie, HttpStatus.CREATED));
     }
 
     @GetMapping("/{id}")
