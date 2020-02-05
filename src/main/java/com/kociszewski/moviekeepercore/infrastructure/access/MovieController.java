@@ -39,13 +39,14 @@ public class MovieController {
                         movieId,
                         new SearchPhrase(titleBody.getTitle())));
 
-        SubscriptionQueryResult<MovieDTO, MovieDTO> subscriptionQueryResult =
+        SubscriptionQueryResult<MovieDTO, MovieDTO> findMovieSubscription =
                 queryGateway.subscriptionQuery(
                         new FindMovieQuery(movieId),
                         ResponseTypes.instanceOf(MovieDTO.class),
                         ResponseTypes.instanceOf(MovieDTO.class)
                 );
-        return subscriptionQueryResult.updates()
+
+        return findMovieSubscription.updates()
                 .next()
                 .map(movie -> {
                     if (movie.getExternalMovieId() == null) {
@@ -53,7 +54,8 @@ public class MovieController {
                     } else {
                         return new ResponseEntity<>(movie, HttpStatus.CREATED);
                     }
-                });
+                })
+                .doFinally(it -> findMovieSubscription.close());
     }
 
     @GetMapping("/{id}")

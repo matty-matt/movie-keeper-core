@@ -22,7 +22,6 @@ public class MovieEventsHandler {
     private final CommandGateway commandGateway;
     private final QueryUpdateEmitter queryUpdateEmitter;
 
-
     @EventHandler
     public void on(MovieSearchDelegatedEvent event) {
         try {
