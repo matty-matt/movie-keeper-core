@@ -47,14 +47,25 @@ public class MovieController {
 
         return findMovieSubscription.updates()
                 .next()
-                .map(movie -> mapResponse(titleBody, movie))
+                .map(movie -> mapResponse(
+                        movie,
+                        HttpStatus.CREATED,
+                        String.format("Movie with title '%s' not found.", titleBody.getTitle()))
+                )
                 .doFinally(it -> findMovieSubscription.close());
     }
 
     @GetMapping("/{id}")
-    public CompletableFuture<MovieDTO> getMovieById(@PathVariable String id) {
-        return queryGateway
+    public Mono<ResponseEntity<MovieDTO>> getMovieById(@PathVariable String id) {
+        CompletableFuture<MovieDTO> future = queryGateway
                 .query(new FindMovieQuery(new MovieId(id)), MovieDTO.class);
+
+        return Mono.fromFuture(future)
+                .map(movie -> mapResponse(
+                        movie,
+                        HttpStatus.OK,
+                        String.format("Movie with id=%s not found.", id)
+                ));
     }
 
     @GetMapping
@@ -66,11 +77,11 @@ public class MovieController {
         return ResponseEntity.ok(Collections.emptyList());
     }
 
-    private ResponseEntity<MovieDTO> mapResponse(TitleBody titleBody, MovieDTO movie) {
+    private ResponseEntity<MovieDTO> mapResponse(MovieDTO movie, HttpStatus onSuccessStatus, String onErrorMessage) {
         if (movie.getExternalMovieId() == null) {
-            throw new MovieNotFoundException(String.format("Movie with title '%s' not found.", titleBody.getTitle()));
+            throw new MovieNotFoundException(onErrorMessage);
         } else {
-            return new ResponseEntity<>(movie, HttpStatus.CREATED);
+            return new ResponseEntity<>(movie, onSuccessStatus);
         }
     }
 }

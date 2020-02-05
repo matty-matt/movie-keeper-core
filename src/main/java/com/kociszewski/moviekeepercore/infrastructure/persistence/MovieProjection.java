@@ -44,7 +44,6 @@ public class MovieProjection {
     public MovieDTO handle(FindMovieQuery findMovieQuery) {
         return movieRepository.
                 findById(findMovieQuery.getMovieId().getId())
-                .orElseThrow(() -> new MovieNotFoundException(
-                        String.format("Movie with id=%s not found.", findMovieQuery.getMovieId().getId())));
+                .orElseGet(MovieDTO::new);
     }
 }
