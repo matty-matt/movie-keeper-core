@@ -36,7 +36,7 @@ public class MovieProjection {
                 .genres(externalMovieInfo.getGenres())
                 // TODO watched, creationDate, lastRefreshDate <- should be taken from aggregate
                 .build();
-        movieRepository.insert(movie);
+        movieRepository.save(movie);
         queryUpdateEmitter.emit(FindMovieQuery.class, query -> true, movie);
     }
 

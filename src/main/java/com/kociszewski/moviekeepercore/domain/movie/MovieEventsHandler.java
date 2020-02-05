@@ -9,14 +9,12 @@ import com.kociszewski.moviekeepercore.infrastructure.persistence.MovieDTO;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@ProcessingGroup("processingGroup")
 public class MovieEventsHandler {
     private final ExternalService externalService;
     private final CommandGateway commandGateway;

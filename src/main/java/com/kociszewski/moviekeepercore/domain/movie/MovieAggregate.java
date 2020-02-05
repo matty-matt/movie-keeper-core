@@ -58,6 +58,7 @@ public class MovieAggregate {
 
     @CommandHandler
     public void handle(SaveMovieCommand command) {
+        // TODO in every CommandHandler -> check condition to apply new event
         apply(new MovieSavedEvent(command.getMovieId(), command.getExternalMovie()));
     }
 
