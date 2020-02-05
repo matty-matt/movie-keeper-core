@@ -4,7 +4,7 @@ import com.kociszewski.moviekeepercore.domain.ExternalService;
 import com.kociszewski.moviekeepercore.domain.movie.commands.SaveMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
-import com.kociszewski.moviekeepercore.infrastructure.exception.MovieNotFoundException;
+import com.kociszewski.moviekeepercore.infrastructure.exception.NotFoundInExternalServiceException;
 import com.kociszewski.moviekeepercore.infrastructure.persistence.MovieDTO;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class MovieEventsHandler {
         try {
             ExternalMovie externalMovie = externalService.searchMovie(event.getSearchPhrase(), event.getMovieId());
             commandGateway.sendAndWait(new SaveMovieCommand(event.getMovieId(), externalMovie));
-        } catch (MovieNotFoundException e) {
+        } catch (NotFoundInExternalServiceException e) {
             queryUpdateEmitter.emit(FindMovieQuery.class, query -> true, new MovieDTO());
         }
     }

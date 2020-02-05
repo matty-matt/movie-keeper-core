@@ -8,7 +8,6 @@ import com.kociszewski.moviekeepercore.infrastructure.exception.MovieNotFoundExc
 import com.kociszewski.moviekeepercore.infrastructure.model.TitleBody;
 import com.kociszewski.moviekeepercore.infrastructure.persistence.MovieDTO;
 import lombok.RequiredArgsConstructor;
-import org.axonframework.axonserver.connector.query.AxonServerRemoteQueryHandlingException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
@@ -48,13 +47,7 @@ public class MovieController {
 
         return findMovieSubscription.updates()
                 .next()
-                .map(movie -> {
-                    if (movie.getExternalMovieId() == null) {
-                        throw new MovieNotFoundException(String.format("Movie with title '%s' not found.", titleBody.getTitle()));
-                    } else {
-                        return new ResponseEntity<>(movie, HttpStatus.CREATED);
-                    }
-                })
+                .map(movie -> mapResponse(titleBody, movie))
                 .doFinally(it -> findMovieSubscription.close());
     }
 
@@ -71,5 +64,13 @@ public class MovieController {
         // Upper link shows subscriptions.
         // Or maybe ServerSentEvents by Spring WebFlux (preferably)
         return ResponseEntity.ok(Collections.emptyList());
+    }
+
+    private ResponseEntity<MovieDTO> mapResponse(TitleBody titleBody, MovieDTO movie) {
+        if (movie.getExternalMovieId() == null) {
+            throw new MovieNotFoundException(String.format("Movie with title '%s' not found.", titleBody.getTitle()));
+        } else {
+            return new ResponseEntity<>(movie, HttpStatus.CREATED);
+        }
     }
 }
