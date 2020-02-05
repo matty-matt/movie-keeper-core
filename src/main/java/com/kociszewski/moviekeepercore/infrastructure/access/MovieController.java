@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collector;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,18 +47,19 @@ public class MovieController {
                 );
         return subscriptionQueryResult.updates()
                 .next()
-                .map(movie -> new ResponseEntity<>(movie, HttpStatus.CREATED));
+                .map(movie -> {
+                    if (movie.getExternalMovieId() == null) {
+                        throw new MovieNotFoundException(String.format("Movie with title '%s' not found.", titleBody.getTitle()));
+                    } else {
+                        return new ResponseEntity<>(movie, HttpStatus.CREATED);
+                    }
+                });
     }
 
     @GetMapping("/{id}")
     public CompletableFuture<MovieDTO> getMovieById(@PathVariable String id) {
         return queryGateway
                 .query(new FindMovieQuery(new MovieId(id)), MovieDTO.class);
-    }
-
-    @ExceptionHandler(AxonServerRemoteQueryHandlingException.class)
-    public ResponseEntity<String> movieNotFound(AxonServerRemoteQueryHandlingException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @GetMapping
