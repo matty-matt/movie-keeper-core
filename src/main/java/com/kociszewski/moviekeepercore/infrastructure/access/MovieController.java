@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -78,7 +77,7 @@ public class MovieController {
     }
 
     private ResponseEntity<MovieDTO> mapResponse(MovieDTO movie, HttpStatus onSuccessStatus, String onErrorMessage) {
-        if (movie.getExternalMovieId() == null) {
+        if (movie.getId() == null) {
             throw new MovieNotFoundException(onErrorMessage);
         } else {
             return new ResponseEntity<>(movie, onSuccessStatus);

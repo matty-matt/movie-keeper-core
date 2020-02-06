@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
@@ -22,7 +21,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class MovieDTO {
     private String id;
-    private String externalMovieId;
     private String posterPath;
     private String title;
     private String originalTitle;

@@ -3,7 +3,6 @@ package com.kociszewski.moviekeepercore.infrastructure.persistence;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
-import com.kociszewski.moviekeepercore.infrastructure.exception.MovieNotFoundException;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.eventhandling.EventHandler;
@@ -24,8 +23,7 @@ public class MovieProjection {
     public void handle(MovieSavedEvent event) {
         ExternalMovieInfo externalMovieInfo = event.getExternalMovie().getExternalMovieInfo();
         MovieDTO movie = MovieDTO.builder()
-                .id(event.getMovieId().getId())
-                .externalMovieId(event.getExternalMovie().getExternalMovieId().getId())
+                .id(event.getExternalMovie().getExternalMovieId().getId())
                 .posterPath(externalMovieInfo.getPosterPath())
                 .title(externalMovieInfo.getTitle())
                 .originalTitle(externalMovieInfo.getOriginalTitle())
