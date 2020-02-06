@@ -2,6 +2,7 @@ package com.kociszewski.moviekeepercore.infrastructure.persistence;
 
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
+import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeepercore.infrastructure.exception.MovieNotFoundException;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -45,5 +48,10 @@ public class MovieProjection {
         return movieRepository.
                 findById(findMovieQuery.getMovieId().getId())
                 .orElseGet(MovieDTO::new);
+    }
+
+    @QueryHandler
+    public List<MovieDTO> handle(GetAllMoviesQuery getAllMoviesQuery) {
+        return movieRepository.findAll();
     }
 }

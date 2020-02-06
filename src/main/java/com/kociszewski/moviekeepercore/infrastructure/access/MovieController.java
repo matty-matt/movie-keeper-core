@@ -2,6 +2,7 @@ package com.kociszewski.moviekeepercore.infrastructure.access;
 
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
+import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
 import com.kociszewski.moviekeepercore.infrastructure.exception.MovieNotFoundException;
@@ -69,12 +70,11 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Object>> getAllMovies() {
-        //TODO some kind of axon streaming to keep movies list always up to date?
-        // https://docs.axoniq.io/reference-guide/implementing-domain-logic/query-handling/dispatching-queries#subscription-queries
-        // Upper link shows subscriptions.
+    public List<MovieDTO> getAllMovies() {
         // Or maybe ServerSentEvents by Spring WebFlux (preferably)
-        return ResponseEntity.ok(Collections.emptyList());
+        return queryGateway.query(
+                new GetAllMoviesQuery(),
+                ResponseTypes.multipleInstancesOf(MovieDTO.class)).join();
     }
 
     private ResponseEntity<MovieDTO> mapResponse(MovieDTO movie, HttpStatus onSuccessStatus, String onErrorMessage) {
