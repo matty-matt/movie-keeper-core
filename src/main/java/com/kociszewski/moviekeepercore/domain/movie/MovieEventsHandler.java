@@ -23,7 +23,7 @@ public class MovieEventsHandler {
     @EventHandler
     public void on(MovieSearchDelegatedEvent event) {
         try {
-            ExternalMovie externalMovie = externalService.searchMovie(event.getSearchPhrase(), event.getMovieId());
+            ExternalMovie externalMovie = externalService.searchMovie(event.getSearchPhrase());
             commandGateway.sendAndWait(new SaveMovieCommand(event.getMovieId(), externalMovie));
         } catch (NotFoundInExternalServiceException e) {
             queryUpdateEmitter.emit(FindMovieQuery.class, query -> true, new MovieDTO());

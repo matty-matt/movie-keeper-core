@@ -45,6 +45,20 @@ public class TmdbClient {
                 .build();
     }
 
+    public WebClient trailers(String movieId) {
+        return WebClient
+                .builder()
+                .baseUrl(buildDefaultUri(String.format(MOVIE_TRAILERS_ENDPOINT, movieId)))
+                .build();
+    }
+
+    public WebClient cast(String movieId) {
+        return WebClient
+                .builder()
+                .baseUrl(buildDefaultUri(String.format(MOVIE_CAST_ENDPOINT, movieId)))
+                .build();
+    }
+
     private String buildSearchUri(String query) {
         return buildBaseUri(SEARCH_MOVIE_ENDPOINT)
                 .queryParam(QUERY, query)

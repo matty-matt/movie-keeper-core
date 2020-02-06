@@ -8,6 +8,7 @@ import com.kociszewski.moviekeepercore.domain.movie.info.*;
 import com.kociszewski.moviekeepercore.domain.movie.info.Runtime;
 import com.kociszewski.moviekeepercore.domain.trailers.TrailerSection;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
+import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
 import lombok.Data;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;

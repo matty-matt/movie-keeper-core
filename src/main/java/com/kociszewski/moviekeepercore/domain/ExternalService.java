@@ -1,16 +1,12 @@
 package com.kociszewski.moviekeepercore.domain;
 
-import com.kociszewski.moviekeepercore.domain.cast.Cast;
-import com.kociszewski.moviekeepercore.domain.movie.info.*;
-import com.kociszewski.moviekeepercore.domain.trailers.TrailerSection;
 import com.kociszewski.moviekeepercore.infrastructure.exception.NotFoundInExternalServiceException;
-import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
-import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
+import com.kociszewski.moviekeepercore.shared.model.*;
 
 public interface ExternalService {
-    ExternalMovie searchMovie(SearchPhrase searchPhrase, MovieId movieId) throws NotFoundInExternalServiceException;
+    ExternalMovie searchMovie(SearchPhrase searchPhrase) throws NotFoundInExternalServiceException;
     String getDigitalRelease(ExternalMovieId externalMovieId);
-    Vote getVote(MovieId movieId);
-    TrailerSection getTrailers(MovieId movieId);
-    Cast getCast(MovieId movieId);
+    ExternalVote getVote(ExternalMovieId externalMovieId);
+    ExternalTrailerSection getTrailers(ExternalMovieId externalMovieId);
+    ExternalCast getCast(ExternalMovieId externalMovieId);
 }
