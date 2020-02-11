@@ -11,6 +11,7 @@ import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -57,7 +58,10 @@ public class MovieProjection {
                 .voteAverageMdb(externalMovieInfo.getVoteAverage())
                 .voteCount(externalMovieInfo.getVoteCount())
                 .runtime(externalMovieInfo.getRuntime())
-                .genres(externalMovieInfo.getGenres())
+                .genres(externalMovieInfo.getGenres()
+                        .stream()
+                        .map(genre -> GenreDTO.builder().id(genre.getId()).name(genre.getName()).build())
+                        .collect(Collectors.toList()))
                 // TODO watched, creationDate, lastRefreshDate <- should be taken from aggregate
                 .build();
         movieRepository.insert(movieDTO);

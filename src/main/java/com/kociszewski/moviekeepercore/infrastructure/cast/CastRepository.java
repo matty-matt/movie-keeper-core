@@ -1,4 +1,6 @@
 package com.kociszewski.moviekeepercore.infrastructure.cast;
 
-public interface CastRepository {
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface CastRepository extends MongoRepository<CastDTO, String> {
 }
