@@ -1,6 +1,6 @@
 package com.kociszewski.moviekeepercore.domain;
 
-import com.kociszewski.moviekeepercore.infrastructure.exception.NotFoundInExternalServiceException;
+import com.kociszewski.moviekeepercore.infrastructure.movie.NotFoundInExternalServiceException;
 import com.kociszewski.moviekeepercore.shared.model.*;
 
 public interface ExternalService {

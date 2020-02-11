@@ -1,8 +1,10 @@
-package com.kociszewski.moviekeepercore.infrastructure.services;
+package com.kociszewski.moviekeepercore.infrastructure.tmdb;
 
 import com.kociszewski.moviekeepercore.domain.ExternalService;
-import com.kociszewski.moviekeepercore.infrastructure.exception.NotFoundInExternalServiceException;
-import com.kociszewski.moviekeepercore.infrastructure.model.movierelease.ReleasesResult;
+import com.kociszewski.moviekeepercore.infrastructure.cast.CastService;
+import com.kociszewski.moviekeepercore.infrastructure.movie.NotFoundInExternalServiceException;
+import com.kociszewski.moviekeepercore.infrastructure.movierelease.ReleasesResult;
+import com.kociszewski.moviekeepercore.infrastructure.movierelease.MovieReleaseService;
 import com.kociszewski.moviekeepercore.shared.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,8 @@ public class TmdbService implements ExternalService {
 
     private final TmdbClient tmdbClient;
     private final MovieReleaseService movieReleaseService;
+    private final CastService castService;
+
 
     @Override
     public ExternalMovie searchMovie(SearchPhrase searchPhrase) throws NotFoundInExternalServiceException {
@@ -30,6 +34,7 @@ public class TmdbService implements ExternalService {
 
         ExternalMovieInfo externalMovieInfo = fetchMovieDetails(externalMovieId);
         String digitalRelease = getDigitalRelease(externalMovieId);
+
         return ExternalMovie.builder()
                 .externalMovieId(externalMovieId)
                 .externalMovieInfo(externalMovieInfo)
@@ -78,7 +83,6 @@ public class TmdbService implements ExternalService {
 
     @Override
     public ExternalCast getCast(ExternalMovieId externalMovieId) {
-        // TODO check cast model and if it should be done using commands/queries to entity
         return tmdbClient.cast(externalMovieId.getId())
                 .get()
                 .retrieve()

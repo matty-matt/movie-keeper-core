@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.infrastructure.model.movierelease;
+package com.kociszewski.moviekeepercore.infrastructure.movierelease;
 
 public enum ReleaseType {
     DIGITAL(4), PHYSICAL(5);

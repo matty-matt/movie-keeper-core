@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.infrastructure.persistence;
+package com.kociszewski.moviekeepercore.infrastructure.movie;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

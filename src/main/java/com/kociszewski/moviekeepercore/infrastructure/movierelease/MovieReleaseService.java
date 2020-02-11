@@ -1,9 +1,6 @@
-package com.kociszewski.moviekeepercore.infrastructure.services;
+package com.kociszewski.moviekeepercore.infrastructure.movierelease;
 
-import com.kociszewski.moviekeepercore.infrastructure.model.movierelease.CountryRelease;
-import com.kociszewski.moviekeepercore.infrastructure.model.movierelease.ReleaseType;
-import com.kociszewski.moviekeepercore.infrastructure.model.movierelease.ReleasesResult;
-import com.kociszewski.moviekeepercore.infrastructure.model.movierelease.TmdbRelease;
+import com.kociszewski.moviekeepercore.infrastructure.tmdb.TmdbRelease;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

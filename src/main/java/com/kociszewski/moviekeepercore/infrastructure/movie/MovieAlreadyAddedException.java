@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.infrastructure.access.mappedexceptions;
+package com.kociszewski.moviekeepercore.infrastructure.movie;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

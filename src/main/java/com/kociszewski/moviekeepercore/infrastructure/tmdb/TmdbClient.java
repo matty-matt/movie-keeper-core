@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.infrastructure.services;
+package com.kociszewski.moviekeepercore.infrastructure.tmdb;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

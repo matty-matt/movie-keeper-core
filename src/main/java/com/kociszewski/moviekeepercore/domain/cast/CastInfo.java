@@ -4,7 +4,6 @@ import lombok.Value;
 
 @Value
 public class CastInfo {
-    //TODO fields
     private String castId;
     private String character;
     private String creditId;

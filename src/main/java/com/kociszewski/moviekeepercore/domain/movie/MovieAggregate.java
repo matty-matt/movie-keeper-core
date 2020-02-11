@@ -1,5 +1,6 @@
 package com.kociszewski.moviekeepercore.domain.movie;
 
+import com.kociszewski.moviekeepercore.domain.cast.Cast;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.SaveMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
@@ -28,6 +29,7 @@ public class MovieAggregate {
     @AggregateIdentifier
     private MovieId movieId;
     private ExternalMovieId externalMovieId;
+    private Cast cast;
     private List<TrailerSection> trailers;
     private Poster poster;
     private Title title;

@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.infrastructure.persistence;
+package com.kociszewski.moviekeepercore.infrastructure.movie;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

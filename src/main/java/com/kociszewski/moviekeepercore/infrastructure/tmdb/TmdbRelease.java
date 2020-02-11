@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.infrastructure.model.movierelease;
+package com.kociszewski.moviekeepercore.infrastructure.tmdb;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

@@ -1,8 +1,9 @@
-package com.kociszewski.moviekeepercore.infrastructure.model.movierelease;
+package com.kociszewski.moviekeepercore.infrastructure.movierelease;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.kociszewski.moviekeepercore.infrastructure.tmdb.TmdbRelease;
 import lombok.Data;
 
 import java.util.List;

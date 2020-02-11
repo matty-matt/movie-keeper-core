@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.infrastructure.persistence;
+package com.kociszewski.moviekeepercore.infrastructure.movie;
 
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;

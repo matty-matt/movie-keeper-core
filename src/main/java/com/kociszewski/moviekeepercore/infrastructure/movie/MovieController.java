@@ -1,14 +1,10 @@
-package com.kociszewski.moviekeepercore.infrastructure.access;
+package com.kociszewski.moviekeepercore.infrastructure.movie;
 
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
-import com.kociszewski.moviekeepercore.infrastructure.access.mappedexceptions.MovieAlreadyAddedException;
 import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
-import com.kociszewski.moviekeepercore.infrastructure.access.mappedexceptions.MovieNotFoundException;
-import com.kociszewski.moviekeepercore.infrastructure.model.TitleBody;
-import com.kociszewski.moviekeepercore.infrastructure.persistence.MovieDTO;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
