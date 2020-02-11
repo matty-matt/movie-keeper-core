@@ -1,8 +1,8 @@
-package com.kociszewski.moviekeepercore.domain.cast;
+package com.kociszewski.moviekeepercore.shared.model;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class CastInfo {
     private String castId;
     private String character;

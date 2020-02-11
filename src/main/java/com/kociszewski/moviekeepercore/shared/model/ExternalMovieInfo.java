@@ -1,13 +1,10 @@
 package com.kociszewski.moviekeepercore.shared.model;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 
 import java.util.List;
 import java.util.Optional;
 
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Data
 public class ExternalMovieInfo {
     private static final String IMAGE_HOST = "https://image.tmdb.org/t/p/w500";
@@ -21,7 +18,7 @@ public class ExternalMovieInfo {
     private double voteAverage;
     private long voteCount;
     private int runtime;
-    private List<ExternalGenre> genres;
+    private List<Genre> genres;
 
     public void setPosterPath(String posterPath) {
         this.posterPath = IMAGE_HOST.concat(Optional.ofNullable(posterPath).orElse("NULL"));

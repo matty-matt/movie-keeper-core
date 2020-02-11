@@ -1,15 +1,13 @@
 package com.kociszewski.moviekeepercore.domain.movie;
 
-import com.kociszewski.moviekeepercore.domain.cast.Cast;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.SaveMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.info.*;
+import com.kociszewski.moviekeepercore.shared.model.Genre;
 import com.kociszewski.moviekeepercore.domain.movie.info.Runtime;
-import com.kociszewski.moviekeepercore.domain.trailers.TrailerSection;
-import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
-import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
+import com.kociszewski.moviekeepercore.shared.model.*;
 import lombok.Data;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;

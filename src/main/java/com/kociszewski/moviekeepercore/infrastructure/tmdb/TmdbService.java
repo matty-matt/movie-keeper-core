@@ -5,6 +5,8 @@ import com.kociszewski.moviekeepercore.infrastructure.cast.CastService;
 import com.kociszewski.moviekeepercore.infrastructure.movie.NotFoundInExternalServiceException;
 import com.kociszewski.moviekeepercore.infrastructure.movierelease.ReleasesResult;
 import com.kociszewski.moviekeepercore.infrastructure.movierelease.MovieReleaseService;
+import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
+import com.kociszewski.moviekeepercore.infrastructure.vote.VoteDTO;
 import com.kociszewski.moviekeepercore.shared.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,31 +64,31 @@ public class TmdbService implements ExternalService {
     }
 
     @Override
-    public ExternalVote getVote(ExternalMovieId externalMovieId) {
+    public VoteDTO getVote(ExternalMovieId externalMovieId) {
         // TODO check vote model and if it should be done using commands/queries/sagas(as it is refresh)
         return tmdbClient.movieDetails(externalMovieId.getId())
                 .get()
                 .retrieve()
-                .bodyToMono(ExternalVote.class)
+                .bodyToMono(VoteDTO.class)
                 .block();
     }
 
     @Override
-    public ExternalTrailerSection getTrailers(ExternalMovieId externalMovieId) {
+    public TrailerSectionDTO getTrailers(ExternalMovieId externalMovieId) {
         // TODO check trailers model and if it should be done using commands/queries to entity
         return tmdbClient.trailers(externalMovieId.getId())
                 .get()
                 .retrieve()
-                .bodyToMono(ExternalTrailerSection.class)
+                .bodyToMono(TrailerSectionDTO.class)
                 .block();
     }
 
     @Override
-    public ExternalCast getCast(ExternalMovieId externalMovieId) {
+    public Cast getCast(ExternalMovieId externalMovieId) {
         return tmdbClient.cast(externalMovieId.getId())
                 .get()
                 .retrieve()
-                .bodyToMono(ExternalCast.class)
+                .bodyToMono(Cast.class)
                 .block();
     }
 }

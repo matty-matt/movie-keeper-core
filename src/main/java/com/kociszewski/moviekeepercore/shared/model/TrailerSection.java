@@ -1,9 +1,11 @@
-package com.kociszewski.moviekeepercore.domain.trailers;
+package com.kociszewski.moviekeepercore.shared.model;
+
+import lombok.Data;
 
 import java.util.List;
 
+@Data
 public class TrailerSection {
-    // TODO probably aggregate? and fields
     private String movieId;
     private List<Trailer> trailers;
 }

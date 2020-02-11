@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeepercore.shared.model;
+package com.kociszewski.moviekeepercore.infrastructure.trailer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @Document(collection = "trailers")
-public class ExternalTrailer {
+public class TrailerDTO {
     @Field("_id")
     @JsonProperty("id")
     private String id;

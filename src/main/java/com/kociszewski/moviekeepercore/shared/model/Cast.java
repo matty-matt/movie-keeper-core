@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ExternalTrailerSection {
+public class Cast {
     private String id;
-    private List<ExternalTrailer> results;
+    private List<CastInfo> cast;
 }

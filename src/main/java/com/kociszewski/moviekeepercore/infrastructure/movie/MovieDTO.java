@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.kociszewski.moviekeepercore.shared.model.ExternalGenre;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,7 +31,7 @@ public class MovieDTO {
     private double voteAverageMdb;
     private long voteCount;
     private int runtime;
-    private List<ExternalGenre> genres;
+    private List<GenreDTO> genres;
     private boolean watched;
     private Date creationDate;
     private Date lastRefreshDate;

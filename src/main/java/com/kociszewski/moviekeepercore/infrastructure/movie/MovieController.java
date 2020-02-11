@@ -1,7 +1,7 @@
 package com.kociszewski.moviekeepercore.infrastructure.movie;
 
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
-import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
+import com.kociszewski.moviekeepercore.shared.model.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
