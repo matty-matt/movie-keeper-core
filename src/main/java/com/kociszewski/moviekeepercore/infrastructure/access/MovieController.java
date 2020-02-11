@@ -3,9 +3,10 @@ package com.kociszewski.moviekeepercore.infrastructure.access;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.info.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
+import com.kociszewski.moviekeepercore.infrastructure.access.mappedexceptions.MovieAlreadyAddedException;
 import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
-import com.kociszewski.moviekeepercore.infrastructure.exception.MovieNotFoundException;
+import com.kociszewski.moviekeepercore.infrastructure.access.mappedexceptions.MovieNotFoundException;
 import com.kociszewski.moviekeepercore.infrastructure.model.TitleBody;
 import com.kociszewski.moviekeepercore.infrastructure.persistence.MovieDTO;
 import lombok.RequiredArgsConstructor;
@@ -49,9 +50,8 @@ public class MovieController {
                 .next()
                 .map(movie -> mapResponse(
                         movie,
-                        HttpStatus.CREATED,
-                        String.format("Movie with title '%s' not found.", titleBody.getTitle()))
-                )
+                        HttpStatus.CREATED
+                ))
                 .doFinally(it -> findMovieSubscription.close());
     }
 
@@ -63,8 +63,7 @@ public class MovieController {
         return Mono.fromFuture(future)
                 .map(movie -> mapResponse(
                         movie,
-                        HttpStatus.OK,
-                        String.format("Movie with id=%s not found.", id)
+                        HttpStatus.OK
                 ));
     }
 
@@ -76,11 +75,17 @@ public class MovieController {
                 ResponseTypes.multipleInstancesOf(MovieDTO.class)).join();
     }
 
-    private ResponseEntity<MovieDTO> mapResponse(MovieDTO movie, HttpStatus onSuccessStatus, String onErrorMessage) {
-        if (movie.getId() == null) {
-            throw new MovieNotFoundException(onErrorMessage);
-        } else {
-            return new ResponseEntity<>(movie, onSuccessStatus);
+    private ResponseEntity<MovieDTO> mapResponse(MovieDTO movie, HttpStatus onSuccessStatus) {
+        if (movie.getMovieState() != null) {
+            switch (movie.getMovieState()) {
+                case ALREADY_ADDED:
+                    throw new MovieAlreadyAddedException("Movie with this title is already on your list.");
+                case NOT_FOUND:
+                    throw new MovieNotFoundException("Movie with this id not found.");
+                case EXTERNAL_SERVICE_NOT_FOUND:
+                    throw new MovieNotFoundException("Movie with this title not found.");
+            }
         }
+        return new ResponseEntity<>(movie, onSuccessStatus);
     }
 }

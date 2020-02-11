@@ -1,5 +1,6 @@
 package com.kociszewski.moviekeepercore.infrastructure.persistence;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -17,8 +18,8 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Document(collection = "movies")
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class MovieDTO {
     private String id;
     private String posterPath;
@@ -35,6 +36,13 @@ public class MovieDTO {
     private boolean watched;
     private Date creationDate;
     private Date lastRefreshDate;
+
+    @JsonIgnore
+    private MovieState movieState;
+
+    public MovieDTO(MovieState movieState) {
+        this.movieState = movieState;
+    }
 
     @JsonProperty("vote_average_mdb")
     public double getVoteAverageMdb() {

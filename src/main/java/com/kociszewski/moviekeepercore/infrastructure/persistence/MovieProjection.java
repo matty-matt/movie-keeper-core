@@ -21,8 +21,31 @@ public class MovieProjection {
 
     @EventHandler
     public void handle(MovieSavedEvent event) {
+        String externalMovieId = event.getExternalMovie().getExternalMovieId().getId();
+        movieRepository.findById(externalMovieId).ifPresentOrElse(
+                movie -> handleMovieDuplicate(),
+                () -> persistMovie(event));
+    }
+
+    @QueryHandler
+    public MovieDTO handle(FindMovieQuery findMovieQuery) {
+        return movieRepository.
+                findById(findMovieQuery.getMovieId().getId())
+                .orElseGet(() -> new MovieDTO(MovieState.NOT_FOUND));
+    }
+
+    @QueryHandler
+    public List<MovieDTO> handle(GetAllMoviesQuery getAllMoviesQuery) {
+        return movieRepository.findAll();
+    }
+
+    private void handleMovieDuplicate() {
+        notifySubscribers(new MovieDTO(MovieState.ALREADY_ADDED));
+    }
+
+    private void persistMovie(MovieSavedEvent event) {
         ExternalMovieInfo externalMovieInfo = event.getExternalMovie().getExternalMovieInfo();
-        MovieDTO movie = MovieDTO.builder()
+        MovieDTO movieDTO = MovieDTO.builder()
                 .id(event.getExternalMovie().getExternalMovieId().getId())
                 .posterPath(externalMovieInfo.getPosterPath())
                 .title(externalMovieInfo.getTitle())
@@ -37,19 +60,11 @@ public class MovieProjection {
                 .genres(externalMovieInfo.getGenres())
                 // TODO watched, creationDate, lastRefreshDate <- should be taken from aggregate
                 .build();
-        movieRepository.save(movie);
-        queryUpdateEmitter.emit(FindMovieQuery.class, query -> true, movie);
+        movieRepository.insert(movieDTO);
+        notifySubscribers(movieDTO);
     }
 
-    @QueryHandler
-    public MovieDTO handle(FindMovieQuery findMovieQuery) {
-        return movieRepository.
-                findById(findMovieQuery.getMovieId().getId())
-                .orElseGet(MovieDTO::new);
-    }
-
-    @QueryHandler
-    public List<MovieDTO> handle(GetAllMoviesQuery getAllMoviesQuery) {
-        return movieRepository.findAll();
+    private void notifySubscribers(MovieDTO movieDTO) {
+        queryUpdateEmitter.emit(FindMovieQuery.class, query -> true, movieDTO);
     }
 }
