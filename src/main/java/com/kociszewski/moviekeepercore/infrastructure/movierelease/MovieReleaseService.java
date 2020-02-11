@@ -14,7 +14,7 @@ public class MovieReleaseService {
     private static final String GB = "GB";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-    public String getDigitalRelease(ReleasesResult releasesResult) {
+    public String digitalRelease(ReleasesResult releasesResult) {
         return releasesResult.getResults()
                 .stream()
                 .filter(release -> isEnglishRelease(release) && hasDigitalRelease(release))

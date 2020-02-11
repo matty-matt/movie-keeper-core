@@ -7,8 +7,7 @@ import com.kociszewski.moviekeepercore.shared.model.*;
 
 public interface ExternalService {
     ExternalMovie searchMovie(SearchPhrase searchPhrase) throws NotFoundInExternalServiceException;
-    String getDigitalRelease(ExternalMovieId externalMovieId);
-    VoteDTO getVote(ExternalMovieId externalMovieId);
-    TrailerSectionDTO getTrailers(ExternalMovieId externalMovieId);
-    Cast getCast(ExternalMovieId externalMovieId);
+    String retrieveDigitalRelease(ExternalMovieId externalMovieId);
+    VoteDTO retrieveVote(ExternalMovieId externalMovieId);
+    TrailerSectionDTO retrieveTrailers(ExternalMovieId externalMovieId);
 }

@@ -1,6 +1,7 @@
 package com.kociszewski.moviekeepercore.infrastructure.tmdb;
 
 import com.kociszewski.moviekeepercore.domain.ExternalService;
+import com.kociszewski.moviekeepercore.infrastructure.cast.CastDTO;
 import com.kociszewski.moviekeepercore.infrastructure.cast.CastService;
 import com.kociszewski.moviekeepercore.infrastructure.movie.NotFoundInExternalServiceException;
 import com.kociszewski.moviekeepercore.infrastructure.movierelease.ReleasesResult;
@@ -21,7 +22,6 @@ public class TmdbService implements ExternalService {
     private final MovieReleaseService movieReleaseService;
     private final CastService castService;
 
-
     @Override
     public ExternalMovie searchMovie(SearchPhrase searchPhrase) throws NotFoundInExternalServiceException {
         ExternalMovieId externalMovieId = tmdbClient.search(searchPhrase.getPhrase())
@@ -35,7 +35,9 @@ public class TmdbService implements ExternalService {
                 .orElseThrow(NotFoundInExternalServiceException::new);
 
         ExternalMovieInfo externalMovieInfo = fetchMovieDetails(externalMovieId);
-        String digitalRelease = getDigitalRelease(externalMovieId);
+        String digitalRelease = retrieveDigitalRelease(externalMovieId);
+
+        castService.storeCast(retrieveCast(externalMovieId));
 
         return ExternalMovie.builder()
                 .externalMovieId(externalMovieId)
@@ -53,18 +55,18 @@ public class TmdbService implements ExternalService {
     }
 
     @Override
-    public String getDigitalRelease(ExternalMovieId externalMovieId) {
+    public String retrieveDigitalRelease(ExternalMovieId externalMovieId) {
         ReleasesResult releasesResult = tmdbClient.releases(externalMovieId.getId())
                 .get()
                 .retrieve()
                 .bodyToMono(ReleasesResult.class)
                 .block();
 
-        return movieReleaseService.getDigitalRelease(releasesResult);
+        return movieReleaseService.digitalRelease(releasesResult);
     }
 
     @Override
-    public VoteDTO getVote(ExternalMovieId externalMovieId) {
+    public VoteDTO retrieveVote(ExternalMovieId externalMovieId) {
         // TODO check vote model and if it should be done using commands/queries/sagas(as it is refresh)
         return tmdbClient.movieDetails(externalMovieId.getId())
                 .get()
@@ -74,7 +76,7 @@ public class TmdbService implements ExternalService {
     }
 
     @Override
-    public TrailerSectionDTO getTrailers(ExternalMovieId externalMovieId) {
+    public TrailerSectionDTO retrieveTrailers(ExternalMovieId externalMovieId) {
         // TODO check trailers model and if it should be done using commands/queries to entity
         return tmdbClient.trailers(externalMovieId.getId())
                 .get()
@@ -83,12 +85,11 @@ public class TmdbService implements ExternalService {
                 .block();
     }
 
-    @Override
-    public Cast getCast(ExternalMovieId externalMovieId) {
+    private CastDTO retrieveCast(ExternalMovieId externalMovieId) {
         return tmdbClient.cast(externalMovieId.getId())
                 .get()
                 .retrieve()
-                .bodyToMono(Cast.class)
+                .bodyToMono(CastDTO.class)
                 .block();
     }
 }
