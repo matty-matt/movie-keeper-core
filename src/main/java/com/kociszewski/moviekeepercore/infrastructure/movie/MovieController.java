@@ -31,15 +31,15 @@ public class MovieController {
 
     @PostMapping
     public Mono<ResponseEntity<MovieDTO>> addMovieByTitle(@RequestBody TitleBody titleBody) {
-        MovieId movieId = new MovieId(UUID.randomUUID().toString());
+        MovieId aggregateId = new MovieId(UUID.randomUUID().toString());
         commandGateway.send(
                 new FindMovieCommand(
-                        movieId,
+                        aggregateId,
                         new SearchPhrase(titleBody.getTitle())));
 
         SubscriptionQueryResult<MovieDTO, MovieDTO> findMovieSubscription =
                 queryGateway.subscriptionQuery(
-                        new FindMovieQuery(movieId),
+                        new FindMovieQuery(aggregateId),
                         ResponseTypes.instanceOf(MovieDTO.class),
                         ResponseTypes.instanceOf(MovieDTO.class)
                 );

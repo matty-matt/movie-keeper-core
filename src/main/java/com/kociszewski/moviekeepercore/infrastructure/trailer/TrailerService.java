@@ -12,8 +12,8 @@ public class TrailerService {
     private final TrailerRepository trailerRepository;
 
     public void storeTrailers(TrailerSectionDTO trailers) {
-        trailerRepository.findById(trailers.getMovieId()).ifPresentOrElse(
-                foundTrailers -> skip(foundTrailers.getMovieId()),
+        trailerRepository.findById(trailers.getAggregateId()).ifPresentOrElse(
+                foundTrailers -> skip(foundTrailers.getAggregateId()),
                 () -> persistTrailers(trailers)
         );
     }

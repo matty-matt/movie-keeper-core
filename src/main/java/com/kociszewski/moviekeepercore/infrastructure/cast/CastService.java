@@ -12,8 +12,8 @@ public class CastService {
     private final CastRepository castRepository;
 
     public void storeCast(CastDTO cast) {
-        castRepository.findById(cast.getId()).ifPresentOrElse(
-                foundCast -> skip(foundCast.getId()),
+        castRepository.findById(cast.getMovieAggregateId()).ifPresentOrElse(
+                foundCast -> skip(foundCast.getMovieAggregateId()),
                 () -> persistCast(cast)
         );
     }

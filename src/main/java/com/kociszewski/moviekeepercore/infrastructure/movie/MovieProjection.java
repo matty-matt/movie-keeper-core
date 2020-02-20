@@ -64,7 +64,8 @@ public class MovieProjection {
     private void persistMovie(MovieSavedEvent event) {
         ExternalMovieInfo externalMovieInfo = event.getExternalMovie().getExternalMovieInfo();
         MovieDTO movieDTO = MovieDTO.builder()
-                .id(event.getExternalMovie().getExternalMovieId().getId())
+                .aggregateId(event.getMovieId().getId())
+//                .movieId(event.getExternalMovie().getExternalMovieId().getId())
                 .posterPath(externalMovieInfo.getPosterPath())
                 .title(externalMovieInfo.getTitle())
                 .originalTitle(externalMovieInfo.getOriginalTitle())
