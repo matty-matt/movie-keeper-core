@@ -74,9 +74,9 @@ public class MovieController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<MovieDTO>> updateMovieWatched(@PathVariable String id, @RequestBody Watched watched) {
+    public Mono<ResponseEntity<MovieDTO>> updateMovieWatched(@PathVariable String id, @RequestBody WatchedBody watched) {
         MovieId movieId = new MovieId(id);
-        commandGateway.send(new UpdateMovieWatchedCommand(movieId, watched));
+        commandGateway.send(new UpdateMovieWatchedCommand(movieId, new Watched(watched.isWatched())));
 
         SubscriptionQueryResult<MovieDTO, MovieDTO> updateMovieSubscription =
                 queryGateway.subscriptionQuery(
