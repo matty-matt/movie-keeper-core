@@ -16,7 +16,7 @@ public class CastController {
     private final CastService castService;
 
     @GetMapping
-    public List<CastInfoDTO> getMovieCast(@PathVariable("movieId") String movieId) {
+    public List<CastInfoDTO> cast(@PathVariable("movieId") String movieId) {
         return castService.movieCast(movieId).getCast();
     }
 }

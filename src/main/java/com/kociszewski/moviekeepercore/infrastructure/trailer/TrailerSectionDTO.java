@@ -1,11 +1,20 @@
 package com.kociszewski.moviekeepercore.infrastructure.trailer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
 @Data
+@Document(collection = "trailers")
 public class TrailerSectionDTO {
-    private String id;
-    private List<TrailerDTO> results;
+    @Field("_id")
+    @JsonProperty("id")
+    private String movieId;
+
+    @Field("trailers")
+    @JsonProperty("results")
+    private List<TrailerDTO> trailers;
 }

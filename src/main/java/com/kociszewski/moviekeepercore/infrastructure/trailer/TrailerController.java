@@ -16,7 +16,7 @@ public class TrailerController {
     private final TrailerService trailerService;
 
     @GetMapping
-    public List<TrailerDTO> getMovieCast(@PathVariable("movieId") String movieId) {
-        return trailerService.trailers(movieId);
+    public List<TrailerDTO> trailers(@PathVariable("movieId") String movieId) {
+        return trailerService.trailers(movieId).getTrailers();
     }
 }

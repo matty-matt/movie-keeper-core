@@ -40,7 +40,7 @@ public class TmdbService implements ExternalService {
         String digitalRelease = retrieveDigitalRelease(externalMovieId);
 
         castService.storeCast(retrieveCast(externalMovieId));
-        trailerService.storeTrailers(externalMovieId.getId(), retrieveTrailers(externalMovieId));
+        trailerService.storeTrailers(retrieveTrailers(externalMovieId));
 
         return ExternalMovie.builder()
                 .externalMovieId(externalMovieId)
