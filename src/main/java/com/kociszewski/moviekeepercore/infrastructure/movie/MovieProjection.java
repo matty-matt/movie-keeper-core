@@ -1,6 +1,7 @@
 package com.kociszewski.moviekeepercore.infrastructure.movie;
 
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
+import com.kociszewski.moviekeepercore.domain.movie.events.MovieWatchedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
@@ -8,6 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,8 +22,11 @@ import java.util.stream.Collectors;
 @Component
 public class MovieProjection {
 
+    private static final String ID = "_id";
+    private static final String WATCHED = "watched";
     private final MovieRepository movieRepository;
     private final QueryUpdateEmitter queryUpdateEmitter;
+    private final MongoTemplate mongoTemplate;
 
     @EventHandler
     public void handle(MovieSavedEvent event) {
@@ -38,6 +46,15 @@ public class MovieProjection {
     @QueryHandler
     public List<MovieDTO> handle(GetAllMoviesQuery getAllMoviesQuery) {
         return movieRepository.findAll();
+    }
+
+    @EventHandler
+    public void handle(MovieWatchedEvent event) {
+        MovieDTO updatedMovie = mongoTemplate.findAndModify(
+                Query.query(Criteria.where(ID).is(event.getMovieId().getId())),
+                Update.update(WATCHED, event.getWatched().isWatched()),
+                MovieDTO.class);
+        notifySubscribers(updatedMovie);
     }
 
     private void handleMovieDuplicate() {

@@ -2,8 +2,10 @@ package com.kociszewski.moviekeepercore.domain.movie;
 
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.SaveMovieCommand;
+import com.kociszewski.moviekeepercore.domain.movie.commands.UpdateMovieWatchedCommand;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
+import com.kociszewski.moviekeepercore.domain.movie.events.MovieWatchedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.info.*;
 import com.kociszewski.moviekeepercore.shared.model.Genre;
 import com.kociszewski.moviekeepercore.domain.movie.info.Runtime;
@@ -82,6 +84,18 @@ public class MovieAggregate {
                 .map(genre -> new Genre(genre.getId(), genre.getName()))
                 .collect(Collectors.toList());
         // TODO trailers
+        // TODO cast
     }
 
+    @CommandHandler
+    public void handle(UpdateMovieWatchedCommand command) {
+        if (this.watched.isWatched() != command.getWatched().isWatched()) {
+            apply(new MovieWatchedEvent(command.getMovieId(), command.getWatched()));
+        }
+    }
+
+    @EventSourcingHandler
+    private void on(MovieWatchedEvent event) {
+        this.watched = event.getWatched();
+    }
 }
