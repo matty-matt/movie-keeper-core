@@ -6,7 +6,7 @@ import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Value
-public class UpdateMovieWatchedCommand {
+public class ToggleWatchedCommand {
     @TargetAggregateIdentifier
     private MovieId movieId;
     private Watched watched;

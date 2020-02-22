@@ -1,9 +1,11 @@
 package com.kociszewski.moviekeepercore.infrastructure.cast;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
@@ -11,6 +13,9 @@ import java.util.List;
 @Document(collection = "cast")
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CastDTO {
-    private String id;
+    @Field("_id")
+    @JsonProperty("id")
+    private String movieAggregateId;
+    private String externalMovieId;
     private List<CastInfoDTO> cast;
 }

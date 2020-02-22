@@ -6,7 +6,7 @@ import com.kociszewski.moviekeepercore.infrastructure.vote.VoteDTO;
 import com.kociszewski.moviekeepercore.shared.model.*;
 
 public interface ExternalService {
-    ExternalMovie searchMovie(SearchPhrase searchPhrase) throws NotFoundInExternalServiceException;
+    ExternalMovie searchMovie(MovieId movieId, SearchPhrase searchPhrase) throws NotFoundInExternalServiceException;
     String retrieveDigitalRelease(ExternalMovieId externalMovieId);
     VoteDTO retrieveVote(ExternalMovieId externalMovieId);
     TrailerSectionDTO retrieveTrailers(ExternalMovieId externalMovieId);

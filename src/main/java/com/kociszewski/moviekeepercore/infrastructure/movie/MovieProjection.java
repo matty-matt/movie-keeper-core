@@ -1,7 +1,7 @@
 package com.kociszewski.moviekeepercore.infrastructure.movie;
 
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
-import com.kociszewski.moviekeepercore.domain.movie.events.MovieWatchedEvent;
+import com.kociszewski.moviekeepercore.domain.movie.events.ToggleWatchedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
@@ -30,8 +30,7 @@ public class MovieProjection {
 
     @EventHandler
     public void handle(MovieSavedEvent event) {
-        String externalMovieId = event.getExternalMovie().getExternalMovieId().getId();
-        movieRepository.findById(externalMovieId).ifPresentOrElse(
+        movieRepository.findById(event.getMovieId().getId()).ifPresentOrElse(
                 movie -> handleMovieDuplicate(),
                 () -> persistMovie(event));
     }
@@ -49,7 +48,7 @@ public class MovieProjection {
     }
 
     @EventHandler
-    public void handle(MovieWatchedEvent event) {
+    public void handle(ToggleWatchedEvent event) {
         MovieDTO updatedMovie = mongoTemplate.findAndModify(
                 Query.query(Criteria.where(ID).is(event.getMovieId().getId())),
                 Update.update(WATCHED, event.getWatched().isWatched()),
@@ -64,7 +63,8 @@ public class MovieProjection {
     private void persistMovie(MovieSavedEvent event) {
         ExternalMovieInfo externalMovieInfo = event.getExternalMovie().getExternalMovieInfo();
         MovieDTO movieDTO = MovieDTO.builder()
-                .id(event.getExternalMovie().getExternalMovieId().getId())
+                .aggregateId(event.getMovieId().getId())
+                .movieId(event.getExternalMovie().getExternalMovieId().getId())
                 .posterPath(externalMovieInfo.getPosterPath())
                 .title(externalMovieInfo.getTitle())
                 .originalTitle(externalMovieInfo.getOriginalTitle())

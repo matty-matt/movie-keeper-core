@@ -10,8 +10,10 @@ import java.util.List;
 @Data
 @Document(collection = "trailers")
 public class TrailerSectionDTO {
+
     @Field("_id")
     @JsonProperty("id")
+    private String aggregateId;
     private String movieId;
 
     @Field("trailers")

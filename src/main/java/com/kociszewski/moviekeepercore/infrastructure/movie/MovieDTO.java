@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +21,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MovieDTO {
-    private String id;
+    @Field("_id")
+    @JsonProperty("id")
+    private String aggregateId;
+    private String movieId;
     private String posterPath;
     private String title;
     private String originalTitle;
