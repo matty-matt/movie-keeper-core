@@ -1,7 +1,7 @@
 package com.kociszewski.moviekeepercore.infrastructure.movie;
 
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
-import com.kociszewski.moviekeepercore.domain.movie.commands.UpdateMovieWatchedCommand;
+import com.kociszewski.moviekeepercore.domain.movie.commands.ToggleWatchedCommand;
 import com.kociszewski.moviekeepercore.shared.model.Watched;
 import com.kociszewski.moviekeepercore.shared.model.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
@@ -76,7 +76,7 @@ public class MovieController {
     @PutMapping("/{id}")
     public Mono<ResponseEntity<MovieDTO>> updateMovieWatched(@PathVariable String id, @RequestBody WatchedBody watched) {
         MovieId movieId = new MovieId(id);
-        commandGateway.send(new UpdateMovieWatchedCommand(movieId, new Watched(watched.isWatched())));
+        commandGateway.send(new ToggleWatchedCommand(movieId, new Watched(watched.isWatched())));
 
         SubscriptionQueryResult<MovieDTO, MovieDTO> updateMovieSubscription =
                 queryGateway.subscriptionQuery(

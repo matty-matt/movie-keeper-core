@@ -5,7 +5,7 @@ import com.kociszewski.moviekeepercore.shared.model.Watched;
 import lombok.Value;
 
 @Value
-public class MovieWatchedEvent {
+public class ToggleWatchedEvent {
     private MovieId movieId;
     private Watched watched;
 }

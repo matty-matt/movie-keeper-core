@@ -24,7 +24,7 @@ public class MovieDTO {
     @Field("_id")
     @JsonProperty("id")
     private String aggregateId;
-//    private String movieId;
+    private String movieId;
     private String posterPath;
     private String title;
     private String originalTitle;

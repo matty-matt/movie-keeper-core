@@ -1,7 +1,7 @@
 package com.kociszewski.moviekeepercore.infrastructure.movie;
 
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
-import com.kociszewski.moviekeepercore.domain.movie.events.MovieWatchedEvent;
+import com.kociszewski.moviekeepercore.domain.movie.events.ToggleWatchedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
@@ -48,7 +48,7 @@ public class MovieProjection {
     }
 
     @EventHandler
-    public void handle(MovieWatchedEvent event) {
+    public void handle(ToggleWatchedEvent event) {
         MovieDTO updatedMovie = mongoTemplate.findAndModify(
                 Query.query(Criteria.where(ID).is(event.getMovieId().getId())),
                 Update.update(WATCHED, event.getWatched().isWatched()),
@@ -64,7 +64,7 @@ public class MovieProjection {
         ExternalMovieInfo externalMovieInfo = event.getExternalMovie().getExternalMovieInfo();
         MovieDTO movieDTO = MovieDTO.builder()
                 .aggregateId(event.getMovieId().getId())
-//                .movieId(event.getExternalMovie().getExternalMovieId().getId())
+                .movieId(event.getExternalMovie().getExternalMovieId().getId())
                 .posterPath(externalMovieInfo.getPosterPath())
                 .title(externalMovieInfo.getTitle())
                 .originalTitle(externalMovieInfo.getOriginalTitle())
