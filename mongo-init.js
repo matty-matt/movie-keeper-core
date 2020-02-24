@@ -1,0 +1,1 @@
+db.movies.createIndex({movieId: 1}, {unique: true});

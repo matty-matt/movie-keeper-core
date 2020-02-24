@@ -30,7 +30,7 @@ public class MovieProjection {
 
     @EventHandler
     public void handle(MovieSavedEvent event) {
-        movieRepository.findById(event.getMovieId().getId()).ifPresentOrElse(
+        movieRepository.findByMovieId(event.getExternalMovie().getExternalMovieId().getId()).ifPresentOrElse(
                 movie -> handleMovieDuplicate(),
                 () -> persistMovie(event));
     }

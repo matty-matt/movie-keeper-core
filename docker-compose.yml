@@ -7,6 +7,10 @@ services:
     command: mongod --port 38550
     ports:
       - '38550:38550'
+    environment:
+      MONGO_INITDB_DATABASE: moviekeeper
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
   axon:
     container_name: movie-keeper-event-store
     image: 'axoniq/axonserver:4.2.4-jdk11'
