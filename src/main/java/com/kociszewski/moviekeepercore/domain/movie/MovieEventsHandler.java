@@ -3,10 +3,12 @@ package com.kociszewski.moviekeepercore.domain.movie;
 import com.kociszewski.moviekeepercore.domain.ExternalService;
 import com.kociszewski.moviekeepercore.domain.movie.commands.SaveMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
-import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
+import com.kociszewski.moviekeepercore.domain.movie.queries.GetMovieQuery;
+import com.kociszewski.moviekeepercore.domain.trailer.commands.SaveTrailersCommand;
 import com.kociszewski.moviekeepercore.infrastructure.movie.NotFoundInExternalServiceException;
 import com.kociszewski.moviekeepercore.infrastructure.movie.MovieDTO;
 import com.kociszewski.moviekeepercore.infrastructure.movie.MovieState;
+import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -26,8 +28,14 @@ public class MovieEventsHandler {
         try {
             ExternalMovie externalMovie = externalService.searchMovie(event.getMovieId(), event.getSearchPhrase());
             commandGateway.sendAndWait(new SaveMovieCommand(event.getMovieId(), externalMovie));
+
+            TrailerSectionDTO trailers = externalService.retrieveTrailers(externalMovie.getExternalMovieId());
+            trailers.setExternalMovieId(externalMovie.getExternalMovieId().getId());
+            trailers.setAggregateId(event.getMovieId().getId());
+            commandGateway.sendAndWait(new SaveTrailersCommand(event.getMovieId(), trailers));
+
         } catch (NotFoundInExternalServiceException e) {
-            queryUpdateEmitter.emit(FindMovieQuery.class, query -> true, new MovieDTO(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE));
+            queryUpdateEmitter.emit(GetMovieQuery.class, query -> true, new MovieDTO(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE));
         }
     }
 }

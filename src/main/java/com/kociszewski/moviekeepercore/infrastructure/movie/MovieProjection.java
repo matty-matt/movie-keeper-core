@@ -3,10 +3,9 @@ package com.kociszewski.moviekeepercore.infrastructure.movie;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieDeletedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.ToggleWatchedEvent;
-import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
+import com.kociszewski.moviekeepercore.domain.movie.queries.GetMovieQuery;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeepercore.infrastructure.cast.CastService;
-import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerService;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.eventhandling.EventHandler;
@@ -31,7 +30,6 @@ public class MovieProjection {
     private final QueryUpdateEmitter queryUpdateEmitter;
     private final MongoTemplate mongoTemplate;
     private final CastService castService;
-    private final TrailerService trailerService;
 
     @EventHandler
     public void handle(MovieSavedEvent event) {
@@ -41,9 +39,9 @@ public class MovieProjection {
     }
 
     @QueryHandler
-    public MovieDTO handle(FindMovieQuery findMovieQuery) {
+    public MovieDTO handle(GetMovieQuery getMovieQuery) {
         return movieRepository.
-                findById(findMovieQuery.getMovieId().getId())
+                findById(getMovieQuery.getMovieId().getId())
                 .orElseGet(() -> new MovieDTO(MovieState.NOT_FOUND));
     }
 
@@ -64,7 +62,6 @@ public class MovieProjection {
     @EventHandler
     public void handle(MovieDeletedEvent event) {
         movieRepository.deleteById(event.getMovieId().getId());
-        trailerService.deleteTrailers(event.getMovieId().getId());
         castService.deleteMovieCast(event.getMovieId().getId());
     }
 
@@ -98,6 +95,6 @@ public class MovieProjection {
     }
 
     private void notifySubscribers(MovieDTO movieDTO) {
-        queryUpdateEmitter.emit(FindMovieQuery.class, query -> true, movieDTO);
+        queryUpdateEmitter.emit(GetMovieQuery.class, query -> true, movieDTO);
     }
 }

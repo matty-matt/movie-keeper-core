@@ -9,6 +9,10 @@ import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.ToggleWatchedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.info.*;
+import com.kociszewski.moviekeepercore.domain.trailer.commands.DeleteTrailersCommand;
+import com.kociszewski.moviekeepercore.domain.trailer.commands.SaveTrailersCommand;
+import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersDeletedEvent;
+import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersSavedEvent;
 import com.kociszewski.moviekeepercore.shared.model.Genre;
 import com.kociszewski.moviekeepercore.domain.movie.info.Runtime;
 import com.kociszewski.moviekeepercore.shared.model.*;
@@ -113,5 +117,29 @@ public class MovieAggregate {
     @EventSourcingHandler
     public void on(MovieDeletedEvent event) {
         markDeleted();
+    }
+
+    ////////////////////////////////////TRAILERS SECTION TO MOVE
+
+    @CommandHandler
+    public void handle(SaveTrailersCommand command) {
+        if (trailers == null || trailers.isEmpty()) {
+            apply(new TrailersSavedEvent(command.getMovieId(), command.getTrailerSectionDTO()));
+        }
+    }
+
+    @EventSourcingHandler
+    public void on(TrailersSavedEvent event) {
+        System.out.println(event.getTrailerSectionDTO());
+    }
+
+    @CommandHandler
+    public void handle(DeleteTrailersCommand command) {
+        apply(new TrailersDeletedEvent(command.getMovieId()));
+    }
+
+    @EventSourcingHandler
+    public void on(TrailersDeletedEvent event) {
+        System.out.println("Deleting trailers");
     }
 }
