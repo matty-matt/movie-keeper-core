@@ -12,14 +12,14 @@ public class CastService {
     private final CastRepository castRepository;
 
     public void storeCast(CastDTO cast) {
-        castRepository.findById(cast.getMovieAggregateId()).ifPresentOrElse(
-                foundCast -> skip(foundCast.getMovieAggregateId()),
+        castRepository.findByExternalMovieId(cast.getExternalMovieId()).ifPresentOrElse(
+                foundCast -> skip(foundCast.getExternalMovieId()),
                 () -> persistCast(cast)
         );
     }
 
     private void skip(String movieId) {
-        log.debug("Skipping persisting cast for movieId={}", movieId);
+        log.info("Skipping persisting cast for movieId={}", movieId);
     }
 
     private void persistCast(CastDTO cast) {

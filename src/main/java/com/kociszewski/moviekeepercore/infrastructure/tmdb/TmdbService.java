@@ -38,6 +38,7 @@ public class TmdbService implements ExternalService {
         String digitalRelease = retrieveDigitalRelease(externalMovieId);
 
         CastDTO cast = retrieveCast(externalMovieId);
+        cast.setExternalMovieId(externalMovieId.getId());
         cast.setMovieAggregateId(movieId.getId());
         castService.storeCast(cast);
 

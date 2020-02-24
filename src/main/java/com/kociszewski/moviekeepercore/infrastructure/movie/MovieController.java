@@ -99,8 +99,8 @@ public class MovieController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMovie(@PathVariable String id) {
         MovieId movieId = new MovieId(id);
-        commandGateway.sendAndWait(new DeleteMovieCommand(movieId));
         commandGateway.sendAndWait(new DeleteTrailersCommand(movieId));
+        commandGateway.sendAndWait(new DeleteMovieCommand(movieId));
         return ResponseEntity.noContent().build();
     }
 

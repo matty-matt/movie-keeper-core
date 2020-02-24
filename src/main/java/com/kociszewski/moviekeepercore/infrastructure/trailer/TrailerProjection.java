@@ -19,8 +19,8 @@ public class TrailerProjection {
 
     @EventHandler
     public void handle(TrailersSavedEvent event) {
-        trailerRepository.findById(event.getMovieId().getId()).ifPresentOrElse(
-                foundTrailers -> skip(foundTrailers.getAggregateId()),
+        trailerRepository.findByExternalMovieId(event.getTrailerSectionDTO().getExternalMovieId()).ifPresentOrElse(
+                foundTrailers -> skip(foundTrailers.getExternalMovieId()),
                 () -> persistTrailers(event.getTrailerSectionDTO())
         );
     }
@@ -38,7 +38,7 @@ public class TrailerProjection {
     }
 
     private void skip(String movieId) {
-        log.debug("Skipping persisting trailers for movieId={}", movieId);
+        log.info("Skipping persisting trailers for movieId={}", movieId);
     }
 
     private void persistTrailers(TrailerSectionDTO trailers) {

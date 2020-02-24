@@ -8,15 +8,15 @@ import com.kociszewski.moviekeepercore.domain.movie.events.MovieDeletedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.ToggleWatchedEvent;
+import com.kociszewski.moviekeepercore.domain.movie.info.Runtime;
 import com.kociszewski.moviekeepercore.domain.movie.info.*;
 import com.kociszewski.moviekeepercore.domain.trailer.commands.DeleteTrailersCommand;
 import com.kociszewski.moviekeepercore.domain.trailer.commands.SaveTrailersCommand;
 import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersDeletedEvent;
 import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersSavedEvent;
-import com.kociszewski.moviekeepercore.shared.model.Genre;
-import com.kociszewski.moviekeepercore.domain.movie.info.Runtime;
 import com.kociszewski.moviekeepercore.shared.model.*;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -31,13 +31,14 @@ import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted
 
 @Aggregate
 @Data
+@Slf4j
 public class MovieAggregate {
 
     @AggregateIdentifier
     private MovieId movieId;
     private ExternalMovieId externalMovieId;
     private Cast cast;
-    private List<TrailerSection> trailers;
+    private List<Trailer> trailers;
     private Poster poster;
     private Title title;
     private Title originalTitle;
@@ -69,7 +70,7 @@ public class MovieAggregate {
     @CommandHandler
     public void handle(SaveMovieCommand command) {
         if (this.externalMovieId != null) {
-            throw new IllegalStateException("Movie already saved");
+            log.info("Movie already saved, skipping..");
         }
         apply(new MovieSavedEvent(command.getMovieId(), command.getExternalMovie()));
     }
@@ -92,14 +93,13 @@ public class MovieAggregate {
         this.genres = movieInfo.getGenres().stream()
                 .map(genre -> new Genre(genre.getId(), genre.getName()))
                 .collect(Collectors.toList());
-        // TODO trailers
         // TODO cast
     }
 
     @CommandHandler
     public void handle(ToggleWatchedCommand command) {
         if (this.watched.isWatched() == command.getWatched().isWatched()) {
-            throw new IllegalStateException("Cannot toggle to the same state.");
+            log.info("Cannot toggle to the same state, skipping..");
         }
         apply(new ToggleWatchedEvent(command.getMovieId(), command.getWatched()));
     }
@@ -130,7 +130,15 @@ public class MovieAggregate {
 
     @EventSourcingHandler
     public void on(TrailersSavedEvent event) {
-        System.out.println(event.getTrailerSectionDTO());
+        this.trailers = event.getTrailerSectionDTO().getTrailers()
+                .stream()
+                .map(dto -> Trailer.builder()
+                        .language(dto.getLanguage())
+                        .country(dto.getCountry())
+                        .key(dto.getKey())
+                        .name(dto.getName())
+                        .site(dto.getSite())
+                        .size(dto.getSize()).build()).collect(Collectors.toList());
     }
 
     @CommandHandler
