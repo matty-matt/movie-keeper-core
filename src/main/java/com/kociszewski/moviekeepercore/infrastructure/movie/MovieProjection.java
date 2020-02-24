@@ -5,6 +5,8 @@ import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.ToggleWatchedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
+import com.kociszewski.moviekeepercore.infrastructure.cast.CastService;
+import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerService;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.eventhandling.EventHandler;
@@ -28,6 +30,8 @@ public class MovieProjection {
     private final MovieRepository movieRepository;
     private final QueryUpdateEmitter queryUpdateEmitter;
     private final MongoTemplate mongoTemplate;
+    private final CastService castService;
+    private final TrailerService trailerService;
 
     @EventHandler
     public void handle(MovieSavedEvent event) {
@@ -60,6 +64,8 @@ public class MovieProjection {
     @EventHandler
     public void handle(MovieDeletedEvent event) {
         movieRepository.deleteById(event.getMovieId().getId());
+        trailerService.deleteTrailers(event.getMovieId().getId());
+        castService.deleteMovieCast(event.getMovieId().getId());
     }
 
     private void handleMovieDuplicate() {

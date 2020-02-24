@@ -29,4 +29,8 @@ public class TrailerService {
     public TrailerSectionDTO trailers(String movieId) {
         return trailerRepository.findById(movieId).orElseThrow(TrailersNotFoundException::new);
     }
+
+    public void deleteTrailers(String movieId) {
+        trailerRepository.deleteById(movieId);
+    }
 }

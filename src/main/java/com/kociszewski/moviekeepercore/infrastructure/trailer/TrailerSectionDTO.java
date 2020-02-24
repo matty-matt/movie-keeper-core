@@ -2,6 +2,7 @@ package com.kociszewski.moviekeepercore.infrastructure.trailer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -13,6 +14,7 @@ public class TrailerSectionDTO {
 
     @Field("_id")
     @JsonProperty("id")
+    @Id
     private String aggregateId;
     private String movieId;
 
