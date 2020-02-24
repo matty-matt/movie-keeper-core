@@ -27,7 +27,7 @@ public class MovieEventsHandler {
             ExternalMovie externalMovie = externalService.searchMovie(event.getMovieId(), event.getSearchPhrase());
             commandGateway.sendAndWait(new SaveMovieCommand(event.getMovieId(), externalMovie));
         } catch (NotFoundInExternalServiceException e) {
-            queryUpdateEmitter.emit(FindMovieQuery.class, query -> true, new MovieDTO(MovieState.EXTERNAL_SERVICE_NOT_FOUND));
+            queryUpdateEmitter.emit(FindMovieQuery.class, query -> true, new MovieDTO(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE));
         }
     }
 }

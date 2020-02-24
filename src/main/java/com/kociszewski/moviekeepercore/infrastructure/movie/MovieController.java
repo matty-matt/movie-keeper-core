@@ -1,5 +1,6 @@
 package com.kociszewski.moviekeepercore.infrastructure.movie;
 
+import com.kociszewski.moviekeepercore.domain.movie.commands.DeleteMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.ToggleWatchedCommand;
 import com.kociszewski.moviekeepercore.shared.model.Watched;
@@ -94,6 +95,12 @@ public class MovieController {
                 .doFinally(it -> updateMovieSubscription.close());
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMovie(@PathVariable String id) {
+        commandGateway.sendAndWait(new DeleteMovieCommand(new MovieId(id)));
+        return ResponseEntity.noContent().build();
+    }
+
     private ResponseEntity<MovieDTO> mapResponse(MovieDTO movie, HttpStatus onSuccessStatus) {
         if (movie.getMovieState() != null) {
             switch (movie.getMovieState()) {
@@ -101,7 +108,7 @@ public class MovieController {
                     throw new MovieAlreadyAddedException("Movie with this title is already on your list.");
                 case NOT_FOUND:
                     throw new MovieNotFoundException("Movie with this id not found.");
-                case EXTERNAL_SERVICE_NOT_FOUND:
+                case NOT_FOUND_IN_EXTERNAL_SERVICE:
                     throw new MovieNotFoundException("Movie with this title not found.");
             }
         }

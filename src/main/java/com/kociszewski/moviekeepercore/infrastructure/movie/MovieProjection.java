@@ -1,5 +1,6 @@
 package com.kociszewski.moviekeepercore.infrastructure.movie;
 
+import com.kociszewski.moviekeepercore.domain.movie.events.MovieDeletedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.ToggleWatchedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
@@ -54,6 +55,11 @@ public class MovieProjection {
                 Update.update(WATCHED, event.getWatched().isWatched()),
                 MovieDTO.class);
         notifySubscribers(updatedMovie);
+    }
+
+    @EventHandler
+    public void handle(MovieDeletedEvent event) {
+        movieRepository.deleteById(event.getMovieId().getId());
     }
 
     private void handleMovieDuplicate() {

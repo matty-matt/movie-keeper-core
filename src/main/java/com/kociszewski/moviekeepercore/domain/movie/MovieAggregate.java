@@ -1,8 +1,10 @@
 package com.kociszewski.moviekeepercore.domain.movie;
 
+import com.kociszewski.moviekeepercore.domain.movie.commands.DeleteMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.SaveMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.ToggleWatchedCommand;
+import com.kociszewski.moviekeepercore.domain.movie.events.MovieDeletedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.ToggleWatchedEvent;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
+import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted;
 
 @Aggregate
 @Data
@@ -97,5 +100,15 @@ public class MovieAggregate {
     @EventSourcingHandler
     private void on(ToggleWatchedEvent event) {
         this.watched = event.getWatched();
+    }
+
+    @CommandHandler
+    public void handle(DeleteMovieCommand command) {
+        apply(new MovieDeletedEvent(command.getMovieId()));
+    }
+
+    @EventSourcingHandler
+    public void on(MovieDeletedEvent event) {
+        markDeleted();
     }
 }
