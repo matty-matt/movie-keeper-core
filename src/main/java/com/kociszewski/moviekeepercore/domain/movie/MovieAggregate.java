@@ -8,8 +8,6 @@ import com.kociszewski.moviekeepercore.domain.movie.events.MovieDeletedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.ToggleWatchedEvent;
-import com.kociszewski.moviekeepercore.domain.movie.exceptions.CannotToggleTheSameStateException;
-import com.kociszewski.moviekeepercore.domain.movie.exceptions.MovieAlreadySavedException;
 import com.kociszewski.moviekeepercore.domain.movie.info.*;
 import com.kociszewski.moviekeepercore.shared.model.Genre;
 import com.kociszewski.moviekeepercore.domain.movie.info.Runtime;
@@ -67,7 +65,7 @@ public class MovieAggregate {
     @CommandHandler
     public void handle(SaveMovieCommand command) {
         if (this.externalMovieId != null) {
-            throw new MovieAlreadySavedException(this.externalMovieId);
+            throw new IllegalStateException("Movie already saved");
         }
         apply(new MovieSavedEvent(command.getMovieId(), command.getExternalMovie()));
     }
@@ -97,7 +95,7 @@ public class MovieAggregate {
     @CommandHandler
     public void handle(ToggleWatchedCommand command) {
         if (this.watched.isWatched() == command.getWatched().isWatched()) {
-            throw new CannotToggleTheSameStateException();
+            throw new IllegalStateException("Cannot toggle to the same state.");
         }
         apply(new ToggleWatchedEvent(command.getMovieId(), command.getWatched()));
     }
