@@ -4,6 +4,6 @@ import com.kociszewski.moviekeepercore.shared.model.MovieId;
 import lombok.Value;
 
 @Value
-public class FindMovieQuery {
-    private final MovieId movieId;
+public class GetMovieQuery {
+    private MovieId movieId;
 }

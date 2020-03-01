@@ -3,11 +3,12 @@ package com.kociszewski.moviekeepercore.infrastructure.movie;
 import com.kociszewski.moviekeepercore.domain.movie.commands.DeleteMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.ToggleWatchedCommand;
+import com.kociszewski.moviekeepercore.shared.model.TrailerEntityId;
 import com.kociszewski.moviekeepercore.shared.model.Watched;
 import com.kociszewski.moviekeepercore.shared.model.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
-import com.kociszewski.moviekeepercore.domain.movie.queries.FindMovieQuery;
+import com.kociszewski.moviekeepercore.domain.movie.queries.GetMovieQuery;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
@@ -33,14 +34,16 @@ public class MovieController {
     @PostMapping
     public Mono<ResponseEntity<MovieDTO>> addMovieByTitle(@RequestBody TitleBody titleBody) {
         MovieId aggregateId = new MovieId(UUID.randomUUID().toString());
+        TrailerEntityId trailerEntityId = new TrailerEntityId(UUID.randomUUID().toString());
         commandGateway.send(
                 new FindMovieCommand(
                         aggregateId,
+                        trailerEntityId,
                         new SearchPhrase(titleBody.getTitle())));
 
         SubscriptionQueryResult<MovieDTO, MovieDTO> findMovieSubscription =
                 queryGateway.subscriptionQuery(
-                        new FindMovieQuery(aggregateId),
+                        new GetMovieQuery(aggregateId),
                         ResponseTypes.instanceOf(MovieDTO.class),
                         ResponseTypes.instanceOf(MovieDTO.class)
                 );
@@ -57,7 +60,7 @@ public class MovieController {
     @GetMapping("/{id}")
     public Mono<ResponseEntity<MovieDTO>> getMovieById(@PathVariable String id) {
         CompletableFuture<MovieDTO> future = queryGateway
-                .query(new FindMovieQuery(new MovieId(id)), MovieDTO.class);
+                .query(new GetMovieQuery(new MovieId(id)), MovieDTO.class);
 
         return Mono.fromFuture(future)
                 .map(movie -> mapResponse(
@@ -81,7 +84,7 @@ public class MovieController {
 
         SubscriptionQueryResult<MovieDTO, MovieDTO> updateMovieSubscription =
                 queryGateway.subscriptionQuery(
-                        new FindMovieQuery(movieId),
+                        new GetMovieQuery(movieId),
                         ResponseTypes.instanceOf(MovieDTO.class),
                         ResponseTypes.instanceOf(MovieDTO.class)
                 );
@@ -97,7 +100,8 @@ public class MovieController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMovie(@PathVariable String id) {
-        commandGateway.sendAndWait(new DeleteMovieCommand(new MovieId(id)));
+        MovieId movieId = new MovieId(id);
+        commandGateway.sendAndWait(new DeleteMovieCommand(movieId));
         return ResponseEntity.noContent().build();
     }
 

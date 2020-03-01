@@ -1,11 +1,11 @@
 package com.kociszewski.moviekeepercore.shared.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class Trailer {
-    private String id;
-    private String movieId;
     private String language;
     private String country;
     private String key;

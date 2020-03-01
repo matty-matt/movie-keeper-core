@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface MovieRepository extends MongoRepository<MovieDTO, String> {
-    Optional<MovieDTO> findByMovieId(String movieId);
+    Optional<MovieDTO> findByExternalMovieId(String externalMovieId);
 }

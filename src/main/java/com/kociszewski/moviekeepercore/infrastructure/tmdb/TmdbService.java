@@ -7,7 +7,6 @@ import com.kociszewski.moviekeepercore.infrastructure.movie.NotFoundInExternalSe
 import com.kociszewski.moviekeepercore.infrastructure.movierelease.ReleasesResult;
 import com.kociszewski.moviekeepercore.infrastructure.movierelease.MovieReleaseService;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
-import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerService;
 import com.kociszewski.moviekeepercore.infrastructure.vote.VoteDTO;
 import com.kociszewski.moviekeepercore.shared.model.*;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ public class TmdbService implements ExternalService {
     private final TmdbClient tmdbClient;
     private final MovieReleaseService movieReleaseService;
     private final CastService castService;
-    private final TrailerService trailerService;
 
     @Override
     public ExternalMovie searchMovie(MovieId movieId, SearchPhrase searchPhrase) throws NotFoundInExternalServiceException {
@@ -40,11 +38,9 @@ public class TmdbService implements ExternalService {
         String digitalRelease = retrieveDigitalRelease(externalMovieId);
 
         CastDTO cast = retrieveCast(externalMovieId);
+        cast.setExternalMovieId(externalMovieId.getId());
         cast.setMovieAggregateId(movieId.getId());
         castService.storeCast(cast);
-        TrailerSectionDTO trailers = retrieveTrailers(externalMovieId);
-        trailers.setAggregateId(movieId.getId());
-        trailerService.storeTrailers(trailers);
 
         return ExternalMovie.builder()
                 .externalMovieId(externalMovieId)
