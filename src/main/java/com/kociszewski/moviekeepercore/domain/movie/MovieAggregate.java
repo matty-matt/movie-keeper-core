@@ -10,18 +10,18 @@ import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedE
 import com.kociszewski.moviekeepercore.domain.movie.events.ToggleWatchedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.info.Runtime;
 import com.kociszewski.moviekeepercore.domain.movie.info.*;
-import com.kociszewski.moviekeepercore.domain.trailer.commands.DeleteTrailersCommand;
-import com.kociszewski.moviekeepercore.domain.trailer.commands.SaveTrailersCommand;
+import com.kociszewski.moviekeepercore.domain.trailer.TrailerEntity;
 import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersDeletedEvent;
-import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersSavedEvent;
 import com.kociszewski.moviekeepercore.shared.model.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
+import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,9 +36,11 @@ public class MovieAggregate {
 
     @AggregateIdentifier
     private MovieId movieId;
+    @AggregateMember
+    private TrailerEntity trailerEntity;
+
     private ExternalMovieId externalMovieId;
     private Cast cast;
-    private List<Trailer> trailers;
     private Poster poster;
     private Title title;
     private Title originalTitle;
@@ -58,12 +60,13 @@ public class MovieAggregate {
 
     @CommandHandler
     public MovieAggregate(FindMovieCommand command) {
-        apply(new MovieSearchDelegatedEvent(command.getMovieId(), command.getPhrase()));
+        apply(new MovieSearchDelegatedEvent(command.getMovieId(), command.getTrailerEntityId(), command.getPhrase()));
     }
 
     @EventSourcingHandler
     private void on(MovieSearchDelegatedEvent event) {
         this.movieId = event.getMovieId();
+        this.trailerEntity = new TrailerEntity(event.getTrailerEntityId(), Collections.emptyList());
         this.searchPhrase = event.getSearchPhrase();
     }
 
@@ -112,42 +115,11 @@ public class MovieAggregate {
     @CommandHandler
     public void handle(DeleteMovieCommand command) {
         apply(new MovieDeletedEvent(command.getMovieId()));
+        apply(new TrailersDeletedEvent(trailerEntity.getTrailerEntityId()));
     }
 
     @EventSourcingHandler
     public void on(MovieDeletedEvent event) {
         markDeleted();
-    }
-
-    ////////////////////////////////////TRAILERS SECTION TO MOVE
-
-    @CommandHandler
-    public void handle(SaveTrailersCommand command) {
-        if (trailers == null || trailers.isEmpty()) {
-            apply(new TrailersSavedEvent(command.getMovieId(), command.getTrailerSectionDTO()));
-        }
-    }
-
-    @EventSourcingHandler
-    public void on(TrailersSavedEvent event) {
-        this.trailers = event.getTrailerSectionDTO().getTrailers()
-                .stream()
-                .map(dto -> Trailer.builder()
-                        .language(dto.getLanguage())
-                        .country(dto.getCountry())
-                        .key(dto.getKey())
-                        .name(dto.getName())
-                        .site(dto.getSite())
-                        .size(dto.getSize()).build()).collect(Collectors.toList());
-    }
-
-    @CommandHandler
-    public void handle(DeleteTrailersCommand command) {
-        apply(new TrailersDeletedEvent(command.getMovieId()));
-    }
-
-    @EventSourcingHandler
-    public void on(TrailersDeletedEvent event) {
-        System.out.println("Deleting trailers");
     }
 }

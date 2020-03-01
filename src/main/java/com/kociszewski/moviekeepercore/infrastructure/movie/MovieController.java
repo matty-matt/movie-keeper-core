@@ -3,7 +3,7 @@ package com.kociszewski.moviekeepercore.infrastructure.movie;
 import com.kociszewski.moviekeepercore.domain.movie.commands.DeleteMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.ToggleWatchedCommand;
-import com.kociszewski.moviekeepercore.domain.trailer.commands.DeleteTrailersCommand;
+import com.kociszewski.moviekeepercore.shared.model.TrailerEntityId;
 import com.kociszewski.moviekeepercore.shared.model.Watched;
 import com.kociszewski.moviekeepercore.shared.model.MovieId;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
@@ -34,9 +34,11 @@ public class MovieController {
     @PostMapping
     public Mono<ResponseEntity<MovieDTO>> addMovieByTitle(@RequestBody TitleBody titleBody) {
         MovieId aggregateId = new MovieId(UUID.randomUUID().toString());
+        TrailerEntityId trailerEntityId = new TrailerEntityId(UUID.randomUUID().toString());
         commandGateway.send(
                 new FindMovieCommand(
                         aggregateId,
+                        trailerEntityId,
                         new SearchPhrase(titleBody.getTitle())));
 
         SubscriptionQueryResult<MovieDTO, MovieDTO> findMovieSubscription =
@@ -99,7 +101,6 @@ public class MovieController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMovie(@PathVariable String id) {
         MovieId movieId = new MovieId(id);
-        commandGateway.sendAndWait(new DeleteTrailersCommand(movieId));
         commandGateway.sendAndWait(new DeleteMovieCommand(movieId));
         return ResponseEntity.noContent().build();
     }

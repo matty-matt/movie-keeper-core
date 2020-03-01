@@ -16,6 +16,7 @@ public class TrailerSectionDTO {
     @JsonProperty("id")
     @Id
     private String aggregateId;
+    private String movieId;
     private String externalMovieId;
 
     @Field("trailers")

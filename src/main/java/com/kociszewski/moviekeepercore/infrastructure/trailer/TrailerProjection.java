@@ -28,13 +28,13 @@ public class TrailerProjection {
     @QueryHandler
     public List<TrailerDTO> handle(GetTrailersQuery query) {
         return trailerRepository.
-                findById(query.getMovieId().getId())
+                findByMovieId(query.getMovieId().getId())
                 .orElseThrow(TrailersNotFoundException::new).getTrailers();
     }
 
     @EventHandler
     public void handle(TrailersDeletedEvent event) {
-        trailerRepository.deleteById(event.getMovieId().getId());
+        trailerRepository.deleteById(event.getTrailerEntityId().getId());
     }
 
     private void skip(String movieId) {

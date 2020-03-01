@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface TrailerRepository extends MongoRepository<TrailerSectionDTO, String> {
     Optional<TrailerSectionDTO> findByExternalMovieId(String externalMovieId);
+    Optional<TrailerSectionDTO> findByMovieId(String movieId);
 }
