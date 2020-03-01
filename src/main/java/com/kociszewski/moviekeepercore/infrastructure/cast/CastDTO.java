@@ -17,7 +17,8 @@ public class CastDTO {
     @Field("_id")
     @JsonProperty("id")
     @Id
-    private String movieAggregateId;
+    private String aggregateId;
+    private String movieId;
     private String externalMovieId;
     private List<CastInfoDTO> cast;
 }

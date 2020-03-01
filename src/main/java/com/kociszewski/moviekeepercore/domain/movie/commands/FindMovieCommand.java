@@ -1,5 +1,6 @@
 package com.kociszewski.moviekeepercore.domain.movie.commands;
 
+import com.kociszewski.moviekeepercore.shared.model.CastEntityId;
 import com.kociszewski.moviekeepercore.shared.model.TrailerEntityId;
 import com.kociszewski.moviekeepercore.shared.model.MovieId;
 import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
@@ -11,5 +12,6 @@ public class FindMovieCommand {
     @TargetAggregateIdentifier
     private MovieId movieId;
     private TrailerEntityId trailerEntityId;
+    private CastEntityId castEntityId;
     private SearchPhrase phrase;
 }

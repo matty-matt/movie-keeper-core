@@ -1,5 +1,7 @@
 package com.kociszewski.moviekeepercore.domain.movie;
 
+import com.kociszewski.moviekeepercore.domain.cast.CastEntity;
+import com.kociszewski.moviekeepercore.domain.cast.events.CastDeletedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.commands.DeleteMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.SaveMovieCommand;
@@ -38,9 +40,10 @@ public class MovieAggregate {
     private MovieId movieId;
     @AggregateMember
     private TrailerEntity trailerEntity;
+    @AggregateMember
+    private CastEntity castEntity;
 
     private ExternalMovieId externalMovieId;
-    private Cast cast;
     private Poster poster;
     private Title title;
     private Title originalTitle;
@@ -60,13 +63,24 @@ public class MovieAggregate {
 
     @CommandHandler
     public MovieAggregate(FindMovieCommand command) {
-        apply(new MovieSearchDelegatedEvent(command.getMovieId(), command.getTrailerEntityId(), command.getPhrase()));
+        apply(new MovieSearchDelegatedEvent(
+                command.getMovieId(),
+                command.getTrailerEntityId(),
+                command.getCastEntityId(),
+                command.getPhrase()));
     }
 
     @EventSourcingHandler
     private void on(MovieSearchDelegatedEvent event) {
         this.movieId = event.getMovieId();
-        this.trailerEntity = new TrailerEntity(event.getTrailerEntityId(), Collections.emptyList());
+        this.trailerEntity = TrailerEntity.builder()
+                .trailerEntityId(event.getTrailerEntityId())
+                .trailers(Collections.emptyList())
+                .build();
+        this.castEntity = CastEntity.builder()
+                .castEntityId(event.getCastEntityId())
+                .cast(Collections.emptyList())
+                .build();
         this.searchPhrase = event.getSearchPhrase();
     }
 
@@ -96,7 +110,6 @@ public class MovieAggregate {
         this.genres = movieInfo.getGenres().stream()
                 .map(genre -> new Genre(genre.getId(), genre.getName()))
                 .collect(Collectors.toList());
-        // TODO cast
     }
 
     @CommandHandler
@@ -116,6 +129,7 @@ public class MovieAggregate {
     public void handle(DeleteMovieCommand command) {
         apply(new MovieDeletedEvent(command.getMovieId()));
         apply(new TrailersDeletedEvent(trailerEntity.getTrailerEntityId()));
+        apply(new CastDeletedEvent(castEntity.getCastEntityId()));
     }
 
     @EventSourcingHandler

@@ -1,8 +1,10 @@
 package com.kociszewski.moviekeepercore.shared.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class CastInfo {
     private String castId;
     private String character;

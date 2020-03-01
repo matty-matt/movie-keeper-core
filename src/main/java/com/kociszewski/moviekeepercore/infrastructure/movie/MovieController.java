@@ -3,11 +3,8 @@ package com.kociszewski.moviekeepercore.infrastructure.movie;
 import com.kociszewski.moviekeepercore.domain.movie.commands.DeleteMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.ToggleWatchedCommand;
-import com.kociszewski.moviekeepercore.shared.model.TrailerEntityId;
-import com.kociszewski.moviekeepercore.shared.model.Watched;
-import com.kociszewski.moviekeepercore.shared.model.MovieId;
+import com.kociszewski.moviekeepercore.shared.model.*;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
-import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetMovieQuery;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -35,10 +32,12 @@ public class MovieController {
     public Mono<ResponseEntity<MovieDTO>> addMovieByTitle(@RequestBody TitleBody titleBody) {
         MovieId aggregateId = new MovieId(UUID.randomUUID().toString());
         TrailerEntityId trailerEntityId = new TrailerEntityId(UUID.randomUUID().toString());
+        CastEntityId castEntityId = new CastEntityId(UUID.randomUUID().toString());
         commandGateway.send(
                 new FindMovieCommand(
                         aggregateId,
                         trailerEntityId,
+                        castEntityId,
                         new SearchPhrase(titleBody.getTitle())));
 
         SubscriptionQueryResult<MovieDTO, MovieDTO> findMovieSubscription =
