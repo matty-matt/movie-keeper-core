@@ -1,5 +1,6 @@
 package com.kociszewski.moviekeepercore.domain;
 
+import com.kociszewski.moviekeepercore.infrastructure.cast.CastDTO;
 import com.kociszewski.moviekeepercore.infrastructure.movie.NotFoundInExternalServiceException;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
 import com.kociszewski.moviekeepercore.infrastructure.vote.VoteDTO;
@@ -10,4 +11,5 @@ public interface ExternalService {
     String retrieveDigitalRelease(ExternalMovieId externalMovieId);
     VoteDTO retrieveVote(ExternalMovieId externalMovieId);
     TrailerSectionDTO retrieveTrailers(ExternalMovieId externalMovieId);
+    CastDTO retrieveCast(ExternalMovieId externalMovieId);
 }

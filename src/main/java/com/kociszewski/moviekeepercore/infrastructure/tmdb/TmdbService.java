@@ -2,7 +2,6 @@ package com.kociszewski.moviekeepercore.infrastructure.tmdb;
 
 import com.kociszewski.moviekeepercore.domain.ExternalService;
 import com.kociszewski.moviekeepercore.infrastructure.cast.CastDTO;
-import com.kociszewski.moviekeepercore.infrastructure.cast.CastService;
 import com.kociszewski.moviekeepercore.infrastructure.movie.NotFoundInExternalServiceException;
 import com.kociszewski.moviekeepercore.infrastructure.movierelease.ReleasesResult;
 import com.kociszewski.moviekeepercore.infrastructure.movierelease.MovieReleaseService;
@@ -20,7 +19,6 @@ public class TmdbService implements ExternalService {
 
     private final TmdbClient tmdbClient;
     private final MovieReleaseService movieReleaseService;
-    private final CastService castService;
 
     @Override
     public ExternalMovie searchMovie(MovieId movieId, SearchPhrase searchPhrase) throws NotFoundInExternalServiceException {
@@ -36,11 +34,6 @@ public class TmdbService implements ExternalService {
 
         ExternalMovieInfo externalMovieInfo = fetchMovieDetails(externalMovieId);
         String digitalRelease = retrieveDigitalRelease(externalMovieId);
-
-        CastDTO cast = retrieveCast(externalMovieId);
-        cast.setExternalMovieId(externalMovieId.getId());
-        cast.setMovieAggregateId(movieId.getId());
-        castService.storeCast(cast);
 
         return ExternalMovie.builder()
                 .externalMovieId(externalMovieId)
@@ -87,7 +80,8 @@ public class TmdbService implements ExternalService {
                 .block();
     }
 
-    private CastDTO retrieveCast(ExternalMovieId externalMovieId) {
+    @Override
+    public CastDTO retrieveCast(ExternalMovieId externalMovieId) {
         return tmdbClient.cast(externalMovieId.getId())
                 .get()
                 .retrieve()

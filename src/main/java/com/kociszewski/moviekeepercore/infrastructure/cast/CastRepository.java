@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface CastRepository extends MongoRepository<CastDTO, String> {
     Optional<CastDTO> findByExternalMovieId(String externalMovieId);
-
+    Optional<CastDTO> findByMovieId(String movieId);
 }

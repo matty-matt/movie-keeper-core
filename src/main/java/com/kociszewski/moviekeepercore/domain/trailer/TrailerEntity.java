@@ -24,11 +24,6 @@ public class TrailerEntity {
     private TrailerEntityId trailerEntityId;
     private List<Trailer> trailers;
 
-    public TrailerEntity(TrailerEntityId trailerEntityId, List<Trailer> trailers) {
-        this.trailerEntityId = trailerEntityId;
-        this.trailers = trailers;
-    }
-
     @CommandHandler
     public void handle(SaveTrailersCommand command) {
         apply(new TrailersSavedEvent(command.getTrailerSectionDTO()));
