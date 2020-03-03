@@ -1,12 +1,16 @@
 package com.kociszewski.moviekeepercore.domain.movie;
 
 
+import com.kociszewski.moviekeepercore.domain.cast.events.CastDeletedEvent;
+import com.kociszewski.moviekeepercore.domain.movie.commands.DeleteMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.SaveMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.ToggleWatchedCommand;
+import com.kociszewski.moviekeepercore.domain.movie.events.MovieDeletedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSavedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.events.ToggleWatchedEvent;
+import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersDeletedEvent;
 import com.kociszewski.moviekeepercore.shared.model.*;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
@@ -56,37 +60,48 @@ public class MovieAggregateTest {
     @Test
     public void shouldEmitMovieSearchDelegatedEvent() {
         fixture.givenNoPriorActivity()
-                .when(new FindMovieCommand(
-                        movieId,
-                        trailerEntityId,
-                        castEntityId,
-                        searchPhrase))
-                .expectEvents(new MovieSearchDelegatedEvent(movieId,
-                        trailerEntityId,
-                        castEntityId,
-                        searchPhrase));
+                .when(new FindMovieCommand(movieId, trailerEntityId, castEntityId, searchPhrase))
+                .expectEvents(new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase));
     }
 
     @Test
     public void shouldEmitMovieSavedEvent() {
-        fixture.given(new MovieSearchDelegatedEvent(movieId,
-                trailerEntityId,
-                castEntityId,
-                searchPhrase))
+        fixture.given(
+                    new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase))
                 .when(new SaveMovieCommand(movieId, externalMovie))
                 .expectEvents(new MovieSavedEvent(movieId, externalMovie));
     }
 
     @Test
     public void shouldEmitToggleWatchedEvent() {
-        fixture.given(new MovieSearchDelegatedEvent(movieId,
-                        trailerEntityId,
-                        castEntityId,
-                        searchPhrase),
-                new MovieSavedEvent(movieId,
-                        externalMovie))
+        fixture.given(
+                    new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase),
+                    new MovieSavedEvent(movieId, externalMovie))
                 .when(new ToggleWatchedCommand(movieId, new Watched(true)))
                 .expectEvents(new ToggleWatchedEvent(movieId, new Watched(true)));
+    }
+
+    @Test
+    public void shouldNotEmitToggleWatchedEvent() {
+        fixture.given(
+                    new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase),
+                    new MovieSavedEvent(movieId, externalMovie),
+                    new ToggleWatchedEvent(movieId, new Watched(true)))
+                .when(new ToggleWatchedCommand(movieId, new Watched(true)))
+                .expectNoEvents();
+    }
+
+    @Test
+    public void shouldEmitMovieDeletedEvent() {
+        fixture.given(
+                    new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase),
+                    new MovieSavedEvent(movieId, externalMovie))
+                .when(new DeleteMovieCommand(movieId))
+                .expectEvents(
+                        new MovieDeletedEvent(movieId),
+                        new TrailersDeletedEvent(trailerEntityId),
+                        new CastDeletedEvent(castEntityId))
+                .expectMarkedDeleted();
     }
 }
 
