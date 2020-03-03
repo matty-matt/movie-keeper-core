@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,6 +35,8 @@ public class TmdbService implements ExternalService {
                 .orElseThrow(NotFoundInExternalServiceException::new);
 
         ExternalMovieInfo externalMovieInfo = fetchMovieDetails(externalMovieId);
+        externalMovieInfo.setInsertionDate(new Date());
+        externalMovieInfo.setLastRefreshDate(new Date());
         String digitalRelease = retrieveDigitalRelease(externalMovieId);
 
         return ExternalMovie.builder()
