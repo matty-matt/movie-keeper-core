@@ -86,9 +86,6 @@ public class MovieAggregate {
 
     @CommandHandler
     public void handle(SaveMovieCommand command) {
-        if (this.externalMovieId != null) {
-            log.info("Movie already saved, skipping..");
-        }
         apply(new MovieSavedEvent(command.getMovieId(), command.getExternalMovie()));
     }
 
@@ -117,6 +114,7 @@ public class MovieAggregate {
     public void handle(ToggleWatchedCommand command) {
         if (this.watched.isWatched() == command.getWatched().isWatched()) {
             log.info("Cannot toggle to the same state, skipping..");
+            return;
         }
         apply(new ToggleWatchedEvent(command.getMovieId(), command.getWatched()));
     }
