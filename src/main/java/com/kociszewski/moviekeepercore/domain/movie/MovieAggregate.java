@@ -107,6 +107,7 @@ public class MovieAggregate {
         this.insertionDate = new Date();
         this.lastRefreshDate = new Date();
         this.watched = new Watched(false);
+        this.originalLanguage = new Language(movieInfo.getOriginalLanguage());
         this.genres = movieInfo.getGenres().stream()
                 .map(genre -> new Genre(genre.getId(), genre.getName()))
                 .collect(Collectors.toList());
