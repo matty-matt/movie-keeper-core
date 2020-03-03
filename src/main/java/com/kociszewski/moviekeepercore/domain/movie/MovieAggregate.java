@@ -55,8 +55,8 @@ public class MovieAggregate {
     private Release digitalRelease;
     private Release premiereRelease;
     private Watched watched;
-    private Date insertionDate;
-    private Date lastRefreshDate;
+    private DateWrapper insertionDate;
+    private DateWrapper lastRefreshDate;
     private SearchPhrase searchPhrase;
 
     private MovieAggregate() {}
@@ -101,8 +101,8 @@ public class MovieAggregate {
         this.premiereRelease = new Release(movieInfo.getReleaseDate());
         this.vote = new Vote(movieInfo.getVoteAverage(), movieInfo.getVoteCount());
         this.runtime = new Runtime(movieInfo.getRuntime());
-        this.insertionDate = new Date();
-        this.lastRefreshDate = new Date();
+        this.insertionDate = new DateWrapper(movieInfo.getInsertionDate());
+        this.lastRefreshDate = new DateWrapper(movieInfo.getLastRefreshDate());
         this.watched = new Watched(false);
         this.originalLanguage = new Language(movieInfo.getOriginalLanguage());
         this.genres = movieInfo.getGenres().stream()
