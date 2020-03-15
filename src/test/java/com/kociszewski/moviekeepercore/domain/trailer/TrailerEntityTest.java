@@ -1,11 +1,15 @@
 package com.kociszewski.moviekeepercore.domain.trailer;
 
 import com.kociszewski.moviekeepercore.domain.movie.MovieAggregate;
+import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
 import com.kociszewski.moviekeepercore.domain.trailer.commands.SaveTrailersCommand;
 import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersSavedEvent;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerDTO;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
+import com.kociszewski.moviekeepercore.shared.model.CastEntityId;
 import com.kociszewski.moviekeepercore.shared.model.MovieId;
+import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
+import com.kociszewski.moviekeepercore.shared.model.TrailerEntityId;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +25,9 @@ public class TrailerEntityTest {
     private FixtureConfiguration<MovieAggregate> fixture;
     private MovieId movieId;
     private TrailerSectionDTO trailerSectionDTO;
+    private TrailerEntityId trailerEntityId;
+    private CastEntityId castEntityId;
+    private SearchPhrase searchPhrase;
 
     @BeforeEach
     public void setup() {
@@ -40,11 +47,16 @@ public class TrailerEntityTest {
                         .type("Teaser")
                         .build()))
                 .build();
+
+        this.trailerEntityId = new TrailerEntityId(UUID.randomUUID().toString());
+        this.castEntityId = new CastEntityId(UUID.randomUUID().toString());
+        this.searchPhrase = new SearchPhrase("some title");
     }
 
     @Test
     public void shouldTrailersSavedEvent() {
-        fixture.givenNoPriorActivity()
+        fixture.given(
+                new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase))
                 .when(new SaveTrailersCommand(movieId, trailerSectionDTO))
                 .expectEvents(new TrailersSavedEvent(trailerSectionDTO))
                 .expectState(state -> {
