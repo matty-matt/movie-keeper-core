@@ -62,7 +62,7 @@ public class MovieAggregateTest {
     }
 
     @Test
-    public void shouldMovieSearchDelegatedEvent() {
+    public void shouldMovieSearchDelegatedEventAppear() {
         fixture.givenNoPriorActivity()
                 .when(new FindMovieCommand(movieId, trailerEntityId, castEntityId, searchPhrase))
                 .expectEvents(new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase))
@@ -75,7 +75,7 @@ public class MovieAggregateTest {
     }
 
     @Test
-    public void shouldMovieSavedEvent() {
+    public void shouldMovieSavedEventAppear() {
         fixture.given(
                 new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase))
                 .when(new SaveMovieCommand(movieId, externalMovie))
@@ -100,7 +100,7 @@ public class MovieAggregateTest {
     }
 
     @Test
-    public void shouldToggleWatchedEvent() {
+    public void shouldToggleWatchedEventAppear() {
         fixture.given(
                 new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase),
                 new MovieSavedEvent(movieId, externalMovie))
@@ -110,7 +110,7 @@ public class MovieAggregateTest {
     }
 
     @Test
-    public void shouldNotToggleWatchedEvent() {
+    public void shouldNotToggleWatchedEventAppear() {
         fixture.given(
                 new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase),
                 new MovieSavedEvent(movieId, externalMovie),
@@ -120,7 +120,7 @@ public class MovieAggregateTest {
     }
 
     @Test
-    public void shouldMovieDeletedEvent() {
+    public void shouldMovieDeletedEventAppear() {
         fixture.given(
                 new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase),
                 new MovieSavedEvent(movieId, externalMovie))
