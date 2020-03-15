@@ -2,8 +2,10 @@ package com.kociszewski.moviekeepercore.shared.model;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.Optional;
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExternalMovieInfo {
     private static final String IMAGE_HOST = "https://image.tmdb.org/t/p/w500";
     private String id;
