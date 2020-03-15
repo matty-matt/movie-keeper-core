@@ -54,7 +54,7 @@ public class TrailerEntityTest {
     }
 
     @Test
-    public void shouldTrailersSavedEvent() {
+    public void shouldTrailersSavedEventAppear() {
         fixture.given(
                 new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase))
                 .when(new SaveTrailersCommand(movieId, trailerSectionDTO))
