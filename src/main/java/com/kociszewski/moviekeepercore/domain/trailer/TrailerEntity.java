@@ -39,6 +39,7 @@ public class TrailerEntity {
                         .key(dto.getKey())
                         .name(dto.getName())
                         .site(dto.getSite())
+                        .type(dto.getType())
                         .size(dto.getSize()).build()).collect(Collectors.toList());
     }
 
