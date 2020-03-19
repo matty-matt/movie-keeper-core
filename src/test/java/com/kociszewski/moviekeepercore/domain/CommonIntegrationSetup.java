@@ -2,6 +2,7 @@ package com.kociszewski.moviekeepercore.domain;
 
 import com.kociszewski.moviekeepercore.infrastructure.cast.CastDTO;
 import com.kociszewski.moviekeepercore.infrastructure.cast.CastInfoDTO;
+import com.kociszewski.moviekeepercore.infrastructure.movie.NotFoundInExternalServiceException;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerDTO;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
 import com.kociszewski.moviekeepercore.shared.model.*;
@@ -88,7 +89,6 @@ public class CommonIntegrationSetup {
                 .build()).build();
 
     protected TrailerSectionDTO mockedTrailers = TrailerSectionDTO.builder()
-            .aggregateId(UUID.randomUUID().toString())
             .externalMovieId(EXTERNAL_MOVIE_ID)
             .movieId(MOVIE_ID)
             .trailers(Arrays.asList(
@@ -113,7 +113,6 @@ public class CommonIntegrationSetup {
             .build();
 
     protected CastDTO mockedCast = CastDTO.builder()
-            .aggregateId(UUID.randomUUID().toString())
             .movieId(MOVIE_ID)
             .externalMovieId(EXTERNAL_MOVIE_ID)
             .cast(Arrays.asList(

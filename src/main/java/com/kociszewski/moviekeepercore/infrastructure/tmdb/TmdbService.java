@@ -23,7 +23,7 @@ public class TmdbService implements ExternalService {
     private final MovieReleaseService movieReleaseService;
 
     @Override
-    public ExternalMovie searchMovie(MovieId movieId, SearchPhrase searchPhrase) throws NotFoundInExternalServiceException {
+    public ExternalMovie searchMovie(SearchPhrase searchPhrase) throws NotFoundInExternalServiceException {
         ExternalMovieId externalMovieId = tmdbClient.search(searchPhrase.getPhrase())
                 .get()
                 .retrieve()

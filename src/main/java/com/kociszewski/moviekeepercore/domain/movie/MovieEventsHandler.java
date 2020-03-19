@@ -28,7 +28,7 @@ public class MovieEventsHandler {
     @EventHandler
     public void on(MovieSearchDelegatedEvent event) {
         try {
-            ExternalMovie externalMovie = externalService.searchMovie(event.getMovieId(), event.getSearchPhrase());
+            ExternalMovie externalMovie = externalService.searchMovie(event.getSearchPhrase());
             commandGateway.sendAndWait(new SaveMovieCommand(event.getMovieId(), externalMovie));
 
             TrailerSectionDTO trailers = getTrailerSectionDTO(externalMovie.getExternalMovieId(), event.getTrailerEntityId(), event.getMovieId());

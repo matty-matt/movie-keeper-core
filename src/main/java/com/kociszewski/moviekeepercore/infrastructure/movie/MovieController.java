@@ -93,7 +93,7 @@ public class MovieController {
                 .next()
                 .map(movie -> mapResponse(
                         movie,
-                        HttpStatus.CREATED
+                        HttpStatus.OK
                 ))
                 .doFinally(it -> updateMovieSubscription.close());
     }
