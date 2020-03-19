@@ -2,6 +2,9 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:${ENV_MONGO_PORT}/moviekeeper
+api:
+  url: dummyurl
+  key: dummykey
 axon:
   axonserver:
     servers: localhost:${ENV_AXON_GRPC_PORT}
