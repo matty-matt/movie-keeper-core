@@ -1,9 +1,10 @@
 package com.kociszewski.moviekeepercore.domain;
 
-import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
-import com.kociszewski.moviekeepercore.shared.model.ExternalMovieId;
-import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
-import com.kociszewski.moviekeepercore.shared.model.Genre;
+import com.kociszewski.moviekeepercore.infrastructure.cast.CastDTO;
+import com.kociszewski.moviekeepercore.infrastructure.cast.CastInfoDTO;
+import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerDTO;
+import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
+import com.kociszewski.moviekeepercore.shared.model.*;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -18,6 +19,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -27,6 +29,8 @@ public class CommonIntegrationSetup {
     private static final int MONGO_PORT = 29019;
     private static final int AXON_HTTP_PORT = 8024;
     private static final int AXON_GRPC_PORT = 8124;
+    private static final String EXTERNAL_MOVIE_ID = "123";
+    private static final String MOVIE_ID = UUID.randomUUID().toString();
 
     @LocalServerPort
     protected int randomServerPort;
@@ -57,10 +61,10 @@ public class CommonIntegrationSetup {
     }
 
     protected ExternalMovie mockedMovie = ExternalMovie.builder()
-        .externalMovieId(ExternalMovieId.builder().id("123").build())
+        .externalMovieId(ExternalMovieId.builder().id(EXTERNAL_MOVIE_ID).build())
         .digitalRelease("2020-12-11T00:00")
         .externalMovieInfo(ExternalMovieInfo.builder()
-                .id("123")
+                .id(EXTERNAL_MOVIE_ID)
                 .posterPath("https://image.com/123")
                 .title("SuperMovie")
                 .originalTitle("SuperMovie")
@@ -74,4 +78,55 @@ public class CommonIntegrationSetup {
                 .insertionDate(new Date())
                 .lastRefreshDate(new Date())
                 .build()).build();
+
+    protected TrailerSectionDTO mockedTrailers = TrailerSectionDTO.builder()
+            .aggregateId(UUID.randomUUID().toString())
+            .externalMovieId(EXTERNAL_MOVIE_ID)
+            .movieId(MOVIE_ID)
+            .trailers(Arrays.asList(
+                    TrailerDTO.builder()
+                            .language("en")
+                            .country("US")
+                            .key("asd")
+                            .name("First trailer")
+                            .site("YouTube")
+                            .size(1080)
+                            .type("Teaser")
+                            .build(),
+                    TrailerDTO.builder()
+                            .language("en")
+                            .country("US")
+                            .key("qwe")
+                            .name("Second trailer")
+                            .site("YouTube")
+                            .size(1080)
+                            .type("Teaser").
+                            build()))
+            .build();
+
+    protected CastDTO mockedCast = CastDTO.builder()
+            .aggregateId(UUID.randomUUID().toString())
+            .movieId(MOVIE_ID)
+            .externalMovieId(EXTERNAL_MOVIE_ID)
+            .cast(Arrays.asList(
+                    CastInfoDTO.builder()
+                            .id("789")
+                            .castId("1")
+                            .character("John")
+                            .gender((short) 0)
+                            .name("Mike Smith")
+                            .order(1)
+                            .profilePath("/pic1.jpg")
+                            .build(),
+                    CastInfoDTO.builder()
+                            .id("790")
+                            .castId("2")
+                            .character("Alice")
+                            .gender((short) 1)
+                            .name("Rebecca White")
+                            .order(2)
+                            .profilePath("/pic2.jpg")
+                            .build()
+            ))
+            .build();
 }
