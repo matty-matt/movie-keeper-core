@@ -7,6 +7,7 @@ import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
 import com.kociszewski.moviekeepercore.shared.model.*;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,8 +30,9 @@ public class CommonIntegrationSetup {
     private static final int MONGO_PORT = 29019;
     private static final int AXON_HTTP_PORT = 8024;
     private static final int AXON_GRPC_PORT = 8124;
-    private static final String EXTERNAL_MOVIE_ID = "123";
     private static final String MOVIE_ID = UUID.randomUUID().toString();
+    protected static final String EXTERNAL_MOVIE_ID = "123";
+    protected static Date now;
 
     @LocalServerPort
     protected int randomServerPort;
@@ -60,6 +62,11 @@ public class CommonIntegrationSetup {
         System.setProperty("ENV_AXON_GRPC_PORT", String.valueOf(axonServer.getMappedPort(AXON_GRPC_PORT)));
     }
 
+    @BeforeEach
+    public void beforeEach() {
+        now = new Date();
+    }
+
     protected ExternalMovie mockedMovie = ExternalMovie.builder()
         .externalMovieId(ExternalMovieId.builder().id(EXTERNAL_MOVIE_ID).build())
         .digitalRelease("2020-12-11T00:00")
@@ -71,12 +78,13 @@ public class CommonIntegrationSetup {
                 .overview("This movie is super.")
                 .releaseDate("2020-11-10")
                 .originalLanguage("en")
-                .voteAverage(10)
+                .voteAverage(10.0)
                 .voteCount(2389)
                 .runtime(120)
                 .genres(Arrays.asList(new Genre("1", "Sci-Fi"), new Genre("2", "Action")))
-                .insertionDate(new Date())
-                .lastRefreshDate(new Date())
+                .insertionDate(now)
+                .lastRefreshDate(now)
+                .watched(false)
                 .build()).build();
 
     protected TrailerSectionDTO mockedTrailers = TrailerSectionDTO.builder()

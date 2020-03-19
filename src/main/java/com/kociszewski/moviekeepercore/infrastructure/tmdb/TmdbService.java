@@ -37,6 +37,7 @@ public class TmdbService implements ExternalService {
         ExternalMovieInfo externalMovieInfo = fetchMovieDetails(externalMovieId);
         externalMovieInfo.setInsertionDate(new Date());
         externalMovieInfo.setLastRefreshDate(new Date());
+        externalMovieInfo.setWatched(false);
         String digitalRelease = retrieveDigitalRelease(externalMovieId);
 
         return ExternalMovie.builder()
