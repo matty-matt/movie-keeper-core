@@ -8,6 +8,7 @@ import com.kociszewski.moviekeepercore.infrastructure.movie.TitleBody;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerDTO;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
 import com.kociszewski.moviekeepercore.shared.model.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -24,9 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 import static org.mockito.Mockito.when;
 
@@ -49,6 +48,7 @@ public class CommonIntegrationSetup {
     protected TrailerSectionDTO superMovieTrailers;
     protected CastDTO anotherSuperMovieCast;
     protected TrailerSectionDTO anotherSuperMovieTrailers;
+    protected List<MovieDTO> moviesToCleanAfterTests;
 
     @LocalServerPort
     protected int randomServerPort;
@@ -83,6 +83,7 @@ public class CommonIntegrationSetup {
 
     @Before
     public void before() throws NotFoundInExternalServiceException {
+        moviesToCleanAfterTests = new ArrayList<>();
         now = new Date();
         superMovie = generateExternalMovie(SUPER_MOVIE);
         superMovieCast = generateCast(superMovie.getExternalMovieId().getId());
@@ -103,9 +104,16 @@ public class CommonIntegrationSetup {
                 .thenReturn(anotherSuperMovieTrailers);
     }
 
+    @After
+    public void after() {
+        moviesToCleanAfterTests.forEach(movie -> deleteMovie(movie.getAggregateId()));
+    }
+
     protected ResponseEntity<MovieDTO> storeMovie(String title) {
-        return testRestTemplate
+        ResponseEntity<MovieDTO> responseMovie = testRestTemplate
                 .postForEntity(String.format(GET_OR_POST_MOVIES, randomServerPort), new TitleBody(title), MovieDTO.class);
+        moviesToCleanAfterTests.add(responseMovie.getBody());
+        return responseMovie;
     }
 
     protected ResponseEntity<Void> deleteMovie(String movieId) {
