@@ -2,7 +2,11 @@ package com.kociszewski.moviekeepercore.domain.movie;
 
 import com.kociszewski.moviekeepercore.domain.CommonIntegrationSetup;
 import com.kociszewski.moviekeepercore.domain.ExternalService;
+import com.kociszewski.moviekeepercore.infrastructure.cast.CastDTO;
+import com.kociszewski.moviekeepercore.infrastructure.cast.CastRepository;
 import com.kociszewski.moviekeepercore.infrastructure.movie.*;
+import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerRepository;
+import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
 import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
 import org.junit.Test;
@@ -30,13 +34,21 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
     @Autowired
     private MovieRepository movieRepository;
 
+    @Autowired
+    private TrailerRepository trailerRepository;
+
+    @Autowired
+    private CastRepository castRepository;
+
     @Test
-    public void shouldStoreMovie() throws NotFoundInExternalServiceException {
+    public void shouldStoreMovieTrailersAndCast() throws NotFoundInExternalServiceException {
         // given
         ExternalMovie generatedMovie = generateExternalMovie(SUPER_MOVIE);
         when(externalService.searchMovie(any())).thenReturn(generatedMovie);
-        when(externalService.retrieveCast(any())).thenReturn(generateCast(generatedMovie.getExternalMovieId().getId()));
-        when(externalService.retrieveTrailers(any())).thenReturn(generateTrailers(generatedMovie.getExternalMovieId().getId()));
+        CastDTO castDTO = generateCast(generatedMovie.getExternalMovieId().getId());
+        when(externalService.retrieveCast(any())).thenReturn(castDTO);
+        TrailerSectionDTO trailerSectionDTO = generateTrailers(generatedMovie.getExternalMovieId().getId());
+        when(externalService.retrieveTrailers(any())).thenReturn(trailerSectionDTO);
 
         // when
         ResponseEntity<MovieDTO> storedMovieResponse = storeMovie(SUPER_MOVIE);
@@ -54,6 +66,45 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
             assertThat(movie.getLastRefreshDate()).isEqualTo(now);
             assertThat(movie.isWatched()).isFalse();
         });
+
+        Optional<TrailerSectionDTO> persistedTrailers = trailerRepository.findByExternalMovieId(body.getExternalMovieId());
+        persistedTrailers.ifPresent(trailers -> {
+            assertThat(trailers).isEqualTo(trailerSectionDTO);
+            assertThat(trailers.getMovieId()).isEqualTo(body.getAggregateId());
+        });
+
+        Optional<CastDTO> persistedCast = castRepository.findByExternalMovieId(body.getExternalMovieId());
+        persistedCast.ifPresent(cast -> {
+            assertThat(cast).isEqualTo(castDTO);
+            assertThat(cast.getMovieId()).isEqualTo(body.getAggregateId());
+        });
+    }
+
+    @Test
+    public void shouldDeleteMovieTrailersAndCast() throws NotFoundInExternalServiceException {
+        // given
+        ExternalMovie generatedMovie = generateExternalMovie(SUPER_MOVIE);
+        when(externalService.searchMovie(any())).thenReturn(generatedMovie);
+        when(externalService.retrieveCast(any())).thenReturn(generateCast(generatedMovie.getExternalMovieId().getId()));
+        when(externalService.retrieveTrailers(any())).thenReturn(generateTrailers(generatedMovie.getExternalMovieId().getId()));
+        ResponseEntity<MovieDTO> storedMovieResponse = storeMovie(SUPER_MOVIE);
+        MovieDTO storedMovie = Objects.requireNonNull(storedMovieResponse.getBody());
+
+        // when
+        ResponseEntity<Void> deletedMovie = testRestTemplate.exchange(
+                String.format("http://localhost:%d/movies/%s", randomServerPort, storedMovie.getAggregateId()),
+                HttpMethod.DELETE,
+                null,
+                Void.class);
+
+        // then
+        assertThat(deletedMovie.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        Optional<MovieDTO> movie = movieRepository.findByExternalMovieId(storedMovie.getExternalMovieId());
+        Optional<TrailerSectionDTO> trailers = trailerRepository.findByExternalMovieId(storedMovie.getExternalMovieId());
+        Optional<CastDTO> cast = castRepository.findByExternalMovieId(storedMovie.getExternalMovieId());
+        assertThat(movie).isNotPresent();
+        assertThat(trailers).isNotPresent();
+        assertThat(cast).isNotPresent();
     }
 
     @Test

@@ -34,7 +34,6 @@ public class CommonIntegrationSetup {
     private static final int MONGO_PORT = 29019;
     private static final int AXON_HTTP_PORT = 8024;
     private static final int AXON_GRPC_PORT = 8124;
-    private static final String MOVIE_ID = UUID.randomUUID().toString();
     protected static Date now;
 
     @LocalServerPort
@@ -101,7 +100,6 @@ public class CommonIntegrationSetup {
     protected TrailerSectionDTO generateTrailers(String externalMovieId) {
         return TrailerSectionDTO.builder()
                 .externalMovieId(externalMovieId)
-                .movieId(MOVIE_ID)
                 .trailers(Arrays.asList(
                         TrailerDTO.builder()
                                 .language("en")
@@ -126,7 +124,6 @@ public class CommonIntegrationSetup {
 
     protected CastDTO generateCast(String externalMovieId) {
         return CastDTO.builder()
-                .movieId(MOVIE_ID)
                 .externalMovieId(externalMovieId)
                 .cast(Arrays.asList(
                         CastInfoDTO.builder()
