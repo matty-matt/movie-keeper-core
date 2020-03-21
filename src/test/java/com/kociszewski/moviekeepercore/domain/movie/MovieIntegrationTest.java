@@ -25,12 +25,6 @@ import static org.mockito.Mockito.when;
 
 public class MovieIntegrationTest extends CommonIntegrationSetup {
 
-    private static final String SUPER_MOVIE = "SuperMovie";
-    private static final String ANOTHER_SUPER_MOVIE = "AnotherSuperMovie";
-
-    @MockBean
-    private ExternalService externalService;
-
     @Autowired
     private MovieRepository movieRepository;
 

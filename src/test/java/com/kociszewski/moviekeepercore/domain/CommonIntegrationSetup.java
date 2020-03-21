@@ -13,6 +13,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
@@ -25,7 +26,6 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
-import java.util.UUID;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,6 +35,8 @@ public class CommonIntegrationSetup {
     private static final int MONGO_PORT = 29019;
     private static final int AXON_HTTP_PORT = 8024;
     private static final int AXON_GRPC_PORT = 8124;
+    protected static final String SUPER_MOVIE = "SuperMovie";
+    protected static final String ANOTHER_SUPER_MOVIE = "AnotherSuperMovie";
     protected static Date now;
 
     @LocalServerPort
@@ -42,6 +44,9 @@ public class CommonIntegrationSetup {
 
     @Autowired
     protected TestRestTemplate testRestTemplate;
+
+    @MockBean
+    protected ExternalService externalService;
 
     @ClassRule
     public static GenericContainer mongo = new GenericContainer("mongo:latest")
