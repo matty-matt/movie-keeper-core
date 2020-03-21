@@ -2,6 +2,8 @@ package com.kociszewski.moviekeepercore.domain;
 
 import com.kociszewski.moviekeepercore.infrastructure.cast.CastDTO;
 import com.kociszewski.moviekeepercore.infrastructure.cast.CastInfoDTO;
+import com.kociszewski.moviekeepercore.infrastructure.movie.MovieDTO;
+import com.kociszewski.moviekeepercore.infrastructure.movie.TitleBody;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerDTO;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
 import com.kociszewski.moviekeepercore.shared.model.*;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.GenericContainer;
@@ -33,10 +36,6 @@ public class CommonIntegrationSetup {
     private static final int AXON_GRPC_PORT = 8124;
     private static final String MOVIE_ID = UUID.randomUUID().toString();
     protected static Date now;
-    protected ExternalMovie mockedMovie;
-    protected TrailerSectionDTO mockedTrailers;
-    protected CastDTO mockedCast;
-    protected String externalMovieId;
 
     @LocalServerPort
     protected int randomServerPort;
@@ -69,21 +68,23 @@ public class CommonIntegrationSetup {
     @Before
     public void before() {
         now = new Date();
-        externalMovieId = String.valueOf(new Random().nextInt(1000));
-        mockedMovie = generateExternalMovie();
-        mockedTrailers = generateTrailers();
-        mockedCast = generateCast();
     }
 
-    private ExternalMovie generateExternalMovie() {
+    protected ResponseEntity<MovieDTO> storeMovie(String title) {
+        return testRestTemplate
+                .postForEntity(String.format("http://localhost:%d/movies", randomServerPort), new TitleBody(title), MovieDTO.class);
+    }
+
+    protected ExternalMovie generateExternalMovie(String title) {
+        String externalMovieId = String.valueOf(new Random().nextInt(1000));
         return ExternalMovie.builder()
                 .externalMovieId(ExternalMovieId.builder().id(externalMovieId).build())
                 .digitalRelease("2020-12-11T00:00")
                 .externalMovieInfo(ExternalMovieInfo.builder()
                         .id(externalMovieId)
                         .posterPath("https://image.com/123")
-                        .title("SuperMovie")
-                        .originalTitle("SuperMovie")
+                        .title(title)
+                        .originalTitle(title)
                         .overview("This movie is super.")
                         .releaseDate("2020-11-10")
                         .originalLanguage("en")
@@ -97,7 +98,7 @@ public class CommonIntegrationSetup {
                         .build()).build();
     }
 
-    private TrailerSectionDTO generateTrailers() {
+    protected TrailerSectionDTO generateTrailers(String externalMovieId) {
         return TrailerSectionDTO.builder()
                 .externalMovieId(externalMovieId)
                 .movieId(MOVIE_ID)
@@ -123,9 +124,8 @@ public class CommonIntegrationSetup {
                 .build();
     }
 
-    private CastDTO generateCast() {
+    protected CastDTO generateCast(String externalMovieId) {
         return CastDTO.builder()
-
                 .movieId(MOVIE_ID)
                 .externalMovieId(externalMovieId)
                 .cast(Arrays.asList(

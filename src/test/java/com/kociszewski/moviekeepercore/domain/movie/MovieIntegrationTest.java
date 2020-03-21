@@ -3,6 +3,8 @@ package com.kociszewski.moviekeepercore.domain.movie;
 import com.kociszewski.moviekeepercore.domain.CommonIntegrationSetup;
 import com.kociszewski.moviekeepercore.domain.ExternalService;
 import com.kociszewski.moviekeepercore.infrastructure.movie.*;
+import com.kociszewski.moviekeepercore.shared.model.ExternalMovie;
+import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,6 +21,9 @@ import static org.mockito.Mockito.when;
 
 public class MovieIntegrationTest extends CommonIntegrationSetup {
 
+    private static final String SUPER_MOVIE = "SuperMovie";
+    private static final String ANOTHER_SUPER_MOVIE = "AnotherSuperMovie";
+
     @MockBean
     private ExternalService externalService;
 
@@ -28,21 +33,21 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
     @Test
     public void shouldStoreMovie() throws NotFoundInExternalServiceException {
         // given
-        when(externalService.searchMovie(any())).thenReturn(mockedMovie);
-        when(externalService.retrieveCast(any())).thenReturn(mockedCast);
-        when(externalService.retrieveTrailers(any())).thenReturn(mockedTrailers);
+        ExternalMovie generatedMovie = generateExternalMovie(SUPER_MOVIE);
+        when(externalService.searchMovie(any())).thenReturn(generatedMovie);
+        when(externalService.retrieveCast(any())).thenReturn(generateCast(generatedMovie.getExternalMovieId().getId()));
+        when(externalService.retrieveTrailers(any())).thenReturn(generateTrailers(generatedMovie.getExternalMovieId().getId()));
 
         // when
-        ResponseEntity<MovieDTO> responseEntity = testRestTemplate
-                .postForEntity(String.format("http://localhost:%d/movies", randomServerPort), new TitleBody("SuperMovie"), MovieDTO.class);
+        ResponseEntity<MovieDTO> storedMovieResponse = storeMovie(SUPER_MOVIE);
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        MovieDTO body = responseEntity.getBody();
+        assertThat(storedMovieResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        MovieDTO body = storedMovieResponse.getBody();
         assertThat(body).isNotNull();
         assertThat(body.getAggregateId()).isNotEmpty();
 
-        Optional<MovieDTO> persistedMovie = movieRepository.findByExternalMovieId(externalMovieId);
+        Optional<MovieDTO> persistedMovie = movieRepository.findByExternalMovieId(body.getExternalMovieId());
         persistedMovie.ifPresent(movie -> {
             assertThat(movie).isEqualTo(body);
             assertThat(movie.getCreationDate()).isEqualTo(now);
@@ -54,28 +59,83 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
     @Test
     public void shouldMarkMovieAsWatched() throws NotFoundInExternalServiceException {
         // given
-        when(externalService.searchMovie(any())).thenReturn(mockedMovie);
-        when(externalService.retrieveCast(any())).thenReturn(mockedCast);
-        when(externalService.retrieveTrailers(any())).thenReturn(mockedTrailers);
+        ExternalMovie generatedMovie = generateExternalMovie(SUPER_MOVIE);
+        when(externalService.searchMovie(any())).thenReturn(generatedMovie);
+        when(externalService.retrieveCast(any())).thenReturn(generateCast(generatedMovie.getExternalMovieId().getId()));
+        when(externalService.retrieveTrailers(any())).thenReturn(generateTrailers(generatedMovie.getExternalMovieId().getId()));
 
-        ResponseEntity<MovieDTO> storedMovie = testRestTemplate
-                .postForEntity(String.format("http://localhost:%d/movies", randomServerPort), new TitleBody("SuperMovie2"), MovieDTO.class);
+        ResponseEntity<MovieDTO> storedMovie = storeMovie(SUPER_MOVIE);
         HttpEntity<WatchedBody> httpEntity = new HttpEntity<>(new WatchedBody(true));
 
         // when
-        ResponseEntity<MovieDTO> updateResult = testRestTemplate
+        ResponseEntity<MovieDTO> updatedMovieResponse = testRestTemplate
                 .exchange(
                         String.format("http://localhost:%d/movies/%s", randomServerPort, Objects.requireNonNull(storedMovie.getBody()).getAggregateId()),
                         HttpMethod.PUT,
                         httpEntity,
                         MovieDTO.class);
         // then
-        assertThat(updateResult.getStatusCode()).isEqualTo(HttpStatus.OK);
-        MovieDTO response = updateResult.getBody();
+        assertThat(updatedMovieResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        MovieDTO response = updatedMovieResponse.getBody();
         assertThat(response).isNotNull();
 
-        Optional<MovieDTO> persistedMovie = movieRepository.findByExternalMovieId(externalMovieId);
+        Optional<MovieDTO> persistedMovie = movieRepository.findByExternalMovieId(response.getExternalMovieId());
         persistedMovie.ifPresent(movie -> assertThat(movie.isWatched()).isTrue());
+    }
+
+    @Test
+    public void shouldGetMovieById() throws NotFoundInExternalServiceException {
+        // given
+        ExternalMovie generatedMovie = generateExternalMovie(SUPER_MOVIE);
+        when(externalService.searchMovie(any())).thenReturn(generatedMovie);
+        when(externalService.retrieveCast(any())).thenReturn(generateCast(generatedMovie.getExternalMovieId().getId()));
+        when(externalService.retrieveTrailers(any())).thenReturn(generateTrailers(generatedMovie.getExternalMovieId().getId()));
+
+        ResponseEntity<MovieDTO> storedMovieResponse = storeMovie(SUPER_MOVIE);
+        MovieDTO storedMovie = Objects.requireNonNull(storedMovieResponse.getBody());
+
+        // when
+        ResponseEntity<MovieDTO> getMovieResponse = testRestTemplate
+                .getForEntity(
+                        String.format("http://localhost:%d/movies/%s", randomServerPort, storedMovie.getAggregateId()),
+                        MovieDTO.class);
+
+        // then
+        assertThat(getMovieResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        MovieDTO fetchedMovie = getMovieResponse.getBody();
+        assertThat(fetchedMovie).isNotNull();
+        assertThat(fetchedMovie).isEqualTo(storedMovie);
+    }
+
+    @Test
+    public void shouldGetAllMovies() throws NotFoundInExternalServiceException {
+        // given
+        ExternalMovie superMovie = generateExternalMovie(SUPER_MOVIE);
+        ExternalMovie anotherSuperMovie = generateExternalMovie(ANOTHER_SUPER_MOVIE);
+        when(externalService.searchMovie(new SearchPhrase(SUPER_MOVIE))).thenReturn(superMovie);
+        when(externalService.searchMovie(new SearchPhrase(ANOTHER_SUPER_MOVIE))).thenReturn(anotherSuperMovie);
+        when(externalService.retrieveCast(superMovie.getExternalMovieId()))
+                .thenReturn(generateCast(superMovie.getExternalMovieId().getId()));
+        when(externalService.retrieveTrailers(superMovie.getExternalMovieId()))
+                .thenReturn(generateTrailers(superMovie.getExternalMovieId().getId()));
+        when(externalService.retrieveCast(anotherSuperMovie.getExternalMovieId()))
+                .thenReturn(generateCast(anotherSuperMovie.getExternalMovieId().getId()));
+        when(externalService.retrieveTrailers(anotherSuperMovie.getExternalMovieId()))
+                .thenReturn(generateTrailers(anotherSuperMovie.getExternalMovieId().getId()));
+
+        ResponseEntity<MovieDTO> firstMovieResponse = storeMovie(SUPER_MOVIE);
+        ResponseEntity<MovieDTO> secondMovieResponse = storeMovie(ANOTHER_SUPER_MOVIE);
+
+        // when
+        ResponseEntity<MovieDTO[]> getAllMoviesResponse = testRestTemplate
+                .getForEntity(
+                        String.format("http://localhost:%d/movies", randomServerPort), MovieDTO[].class);
+
+        // then
+        assertThat(getAllMoviesResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        List<MovieDTO> movies = Arrays.asList(Objects.requireNonNull(getAllMoviesResponse.getBody()));
+        assertThat(movies.size()).isEqualTo(2);
+        assertThat(movies).containsExactly(firstMovieResponse.getBody(), secondMovieResponse.getBody());
     }
 }
 
