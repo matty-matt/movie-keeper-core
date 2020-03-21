@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -72,6 +73,14 @@ public class CommonIntegrationSetup {
     protected ResponseEntity<MovieDTO> storeMovie(String title) {
         return testRestTemplate
                 .postForEntity(String.format("http://localhost:%d/movies", randomServerPort), new TitleBody(title), MovieDTO.class);
+    }
+
+    protected ResponseEntity<Void> deleteMovie(String movieId) {
+        return testRestTemplate.exchange(
+                String.format("http://localhost:%d/movies/%s", randomServerPort, movieId),
+                HttpMethod.DELETE,
+                null,
+                Void.class);
     }
 
     protected ExternalMovie generateExternalMovie(String title) {

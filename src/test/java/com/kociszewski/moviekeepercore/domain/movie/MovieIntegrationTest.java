@@ -78,6 +78,9 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
             assertThat(cast).isEqualTo(castDTO);
             assertThat(cast.getMovieId()).isEqualTo(body.getAggregateId());
         });
+
+        // cleanup
+        deleteMovie(body.getAggregateId());
     }
 
     @Test
@@ -91,11 +94,7 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
         MovieDTO storedMovie = Objects.requireNonNull(storedMovieResponse.getBody());
 
         // when
-        ResponseEntity<Void> deletedMovie = testRestTemplate.exchange(
-                String.format("http://localhost:%d/movies/%s", randomServerPort, storedMovie.getAggregateId()),
-                HttpMethod.DELETE,
-                null,
-                Void.class);
+        ResponseEntity<Void> deletedMovie = deleteMovie(storedMovie.getAggregateId());
 
         // then
         assertThat(deletedMovie.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -132,6 +131,9 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
 
         Optional<MovieDTO> persistedMovie = movieRepository.findByExternalMovieId(response.getExternalMovieId());
         persistedMovie.ifPresent(movie -> assertThat(movie.isWatched()).isTrue());
+
+        // cleanup
+        deleteMovie(response.getAggregateId());
     }
 
     @Test
@@ -156,6 +158,9 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
         MovieDTO fetchedMovie = getMovieResponse.getBody();
         assertThat(fetchedMovie).isNotNull();
         assertThat(fetchedMovie).isEqualTo(storedMovie);
+
+        // cleanup
+        deleteMovie(storedMovie.getAggregateId());
     }
 
     @Test
@@ -187,6 +192,10 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
         List<MovieDTO> movies = Arrays.asList(Objects.requireNonNull(getAllMoviesResponse.getBody()));
         assertThat(movies.size()).isEqualTo(2);
         assertThat(movies).containsExactly(firstMovieResponse.getBody(), secondMovieResponse.getBody());
+
+        // cleanup
+        deleteMovie(Objects.requireNonNull(firstMovieResponse.getBody()).getAggregateId());
+        deleteMovie(Objects.requireNonNull(secondMovieResponse.getBody()).getAggregateId());
     }
 }
 
