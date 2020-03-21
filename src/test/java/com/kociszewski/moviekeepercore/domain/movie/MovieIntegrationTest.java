@@ -11,8 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,7 +42,7 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
         assertThat(body).isNotNull();
         assertThat(body.getAggregateId()).isNotEmpty();
 
-        Optional<MovieDTO> persistedMovie = movieRepository.findByExternalMovieId(EXTERNAL_MOVIE_ID);
+        Optional<MovieDTO> persistedMovie = movieRepository.findByExternalMovieId(externalMovieId);
         persistedMovie.ifPresent(movie -> {
             assertThat(movie).isEqualTo(body);
             assertThat(movie.getCreationDate()).isEqualTo(now);
@@ -60,7 +59,7 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
         when(externalService.retrieveTrailers(any())).thenReturn(mockedTrailers);
 
         ResponseEntity<MovieDTO> storedMovie = testRestTemplate
-                .postForEntity(String.format("http://localhost:%d/movies", randomServerPort), new TitleBody("SuperMovie"), MovieDTO.class);
+                .postForEntity(String.format("http://localhost:%d/movies", randomServerPort), new TitleBody("SuperMovie2"), MovieDTO.class);
         HttpEntity<WatchedBody> httpEntity = new HttpEntity<>(new WatchedBody(true));
 
         // when
@@ -75,7 +74,7 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
         MovieDTO response = updateResult.getBody();
         assertThat(response).isNotNull();
 
-        Optional<MovieDTO> persistedMovie = movieRepository.findByExternalMovieId(EXTERNAL_MOVIE_ID);
+        Optional<MovieDTO> persistedMovie = movieRepository.findByExternalMovieId(externalMovieId);
         persistedMovie.ifPresent(movie -> assertThat(movie.isWatched()).isTrue());
     }
 }
