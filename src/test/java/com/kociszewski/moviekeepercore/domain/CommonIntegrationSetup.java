@@ -3,6 +3,7 @@ package com.kociszewski.moviekeepercore.domain;
 import com.kociszewski.moviekeepercore.infrastructure.cast.CastDTO;
 import com.kociszewski.moviekeepercore.infrastructure.cast.CastInfoDTO;
 import com.kociszewski.moviekeepercore.infrastructure.movie.MovieDTO;
+import com.kociszewski.moviekeepercore.infrastructure.movie.NotFoundInExternalServiceException;
 import com.kociszewski.moviekeepercore.infrastructure.movie.TitleBody;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerDTO;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
@@ -27,6 +28,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
+import static org.mockito.Mockito.when;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -35,9 +38,17 @@ public class CommonIntegrationSetup {
     private static final int MONGO_PORT = 29019;
     private static final int AXON_HTTP_PORT = 8024;
     private static final int AXON_GRPC_PORT = 8124;
+    protected static final String GET_OR_POST_MOVIES = "http://localhost:%d/movies";
+    protected static final String ALTER_MOVIE_URL = "http://localhost:%d/movies/%s";
     protected static final String SUPER_MOVIE = "SuperMovie";
     protected static final String ANOTHER_SUPER_MOVIE = "AnotherSuperMovie";
     protected static Date now;
+    protected ExternalMovie superMovie;
+    protected ExternalMovie anotherSuperMovie;
+    protected CastDTO superMovieCast;
+    protected TrailerSectionDTO superMovieTrailers;
+    protected CastDTO anotherSuperMovieCast;
+    protected TrailerSectionDTO anotherSuperMovieTrailers;
 
     @LocalServerPort
     protected int randomServerPort;
@@ -71,18 +82,35 @@ public class CommonIntegrationSetup {
     }
 
     @Before
-    public void before() {
+    public void before() throws NotFoundInExternalServiceException {
         now = new Date();
+        superMovie = generateExternalMovie(SUPER_MOVIE);
+        superMovieCast = generateCast(superMovie.getExternalMovieId().getId());
+        superMovieTrailers = generateTrailers(superMovie.getExternalMovieId().getId());
+        anotherSuperMovie = generateExternalMovie(ANOTHER_SUPER_MOVIE);
+        anotherSuperMovieCast = generateCast(anotherSuperMovie.getExternalMovieId().getId());
+        anotherSuperMovieTrailers = generateTrailers(anotherSuperMovie.getExternalMovieId().getId());
+
+        when(externalService.searchMovie(new SearchPhrase(SUPER_MOVIE))).thenReturn(superMovie);
+        when(externalService.searchMovie(new SearchPhrase(ANOTHER_SUPER_MOVIE))).thenReturn(anotherSuperMovie);
+        when(externalService.retrieveCast(superMovie.getExternalMovieId()))
+                .thenReturn(superMovieCast);
+        when(externalService.retrieveTrailers(superMovie.getExternalMovieId()))
+                .thenReturn(superMovieTrailers);
+        when(externalService.retrieveCast(anotherSuperMovie.getExternalMovieId()))
+                .thenReturn(anotherSuperMovieCast);
+        when(externalService.retrieveTrailers(anotherSuperMovie.getExternalMovieId()))
+                .thenReturn(anotherSuperMovieTrailers);
     }
 
     protected ResponseEntity<MovieDTO> storeMovie(String title) {
         return testRestTemplate
-                .postForEntity(String.format("http://localhost:%d/movies", randomServerPort), new TitleBody(title), MovieDTO.class);
+                .postForEntity(String.format(GET_OR_POST_MOVIES, randomServerPort), new TitleBody(title), MovieDTO.class);
     }
 
     protected ResponseEntity<Void> deleteMovie(String movieId) {
         return testRestTemplate.exchange(
-                String.format("http://localhost:%d/movies/%s", randomServerPort, movieId),
+                String.format(ALTER_MOVIE_URL, randomServerPort, movieId),
                 HttpMethod.DELETE,
                 null,
                 Void.class);
