@@ -41,7 +41,6 @@ public class CastEntityTest {
                         .character("John")
                         .name("Elon Musk")
                         .gender((short)2)
-                        .creditId("5c35c6b8c3a36827291bacc0")
                         .order(1)
                         .profilePath("/elon.jpg")
                         .build()))
@@ -69,7 +68,6 @@ public class CastEntityTest {
                     assertThat(actor.getCharacter()).isEqualTo("John");
                     assertThat(actor.getName()).isEqualTo("Elon Musk");
                     assertThat(actor.getGender()).isEqualTo((short)2);
-                    assertThat(actor.getCreditId()).isEqualTo("5c35c6b8c3a36827291bacc0");
                     assertThat(actor.getOrder()).isEqualTo(1);
                     assertThat(actor.getProfilePath()).isEqualTo("/elon.jpg");
                 });

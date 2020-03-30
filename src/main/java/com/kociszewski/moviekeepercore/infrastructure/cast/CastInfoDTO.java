@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 public class CastInfoDTO {
     private String castId;
     private String character;
-    private String creditId;
     private short gender;
     private String id;
     private String name;

@@ -49,16 +49,6 @@ public class MovieDTO {
         this.movieState = movieState;
     }
 
-    @JsonProperty("vote_average_mdb")
-    public double getVoteAverageMdb() {
-        return voteAverageMdb;
-    }
-
-    @JsonProperty("vote_average")
-    public void setVoteAverageMdb(double voteAverageMdb) {
-        this.voteAverageMdb = voteAverageMdb;
-    }
-
     @JsonProperty("image")
     public String getPosterPath() {
         return posterPath;

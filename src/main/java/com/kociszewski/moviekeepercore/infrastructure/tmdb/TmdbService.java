@@ -23,7 +23,7 @@ public class TmdbService implements ExternalService {
     private final MovieReleaseService movieReleaseService;
 
     @Override
-    public ExternalMovie searchMovie(MovieId movieId, SearchPhrase searchPhrase) throws NotFoundInExternalServiceException {
+    public ExternalMovie searchMovie(SearchPhrase searchPhrase) throws NotFoundInExternalServiceException {
         ExternalMovieId externalMovieId = tmdbClient.search(searchPhrase.getPhrase())
                 .get()
                 .retrieve()
@@ -37,6 +37,7 @@ public class TmdbService implements ExternalService {
         ExternalMovieInfo externalMovieInfo = fetchMovieDetails(externalMovieId);
         externalMovieInfo.setInsertionDate(new Date());
         externalMovieInfo.setLastRefreshDate(new Date());
+        externalMovieInfo.setWatched(false);
         String digitalRelease = retrieveDigitalRelease(externalMovieId);
 
         return ExternalMovie.builder()

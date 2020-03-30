@@ -31,6 +31,7 @@ public class ExternalMovieInfo {
     private List<Genre> genres;
     private Date insertionDate;
     private Date lastRefreshDate;
+    private boolean watched;
 
     public void setPosterPath(String posterPath) {
         this.posterPath = IMAGE_HOST.concat(Optional.ofNullable(posterPath).orElse("NULL"));

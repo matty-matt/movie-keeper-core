@@ -42,7 +42,6 @@ public class CastEntity {
                         .id(dto.getId())
                         .castId(dto.getCastId())
                         .character(dto.getCharacter())
-                        .creditId(dto.getCreditId())
                         .gender(dto.getGender())
                         .name(dto.getName())
                         .order(dto.getOrder())
