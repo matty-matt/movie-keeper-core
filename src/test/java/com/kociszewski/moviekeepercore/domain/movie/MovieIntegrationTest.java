@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MovieIntegrationTestIT extends CommonIntegrationSetup {
+public class MovieIntegrationTest extends CommonIntegrationSetup {
 
     @Autowired
     private MovieRepository movieRepository;

@@ -9,7 +9,6 @@ import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerDTO;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
 import com.kociszewski.moviekeepercore.shared.model.*;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.*;
@@ -61,24 +59,27 @@ public class CommonIntegrationSetup {
     @MockBean
     protected ExternalService externalService;
 
-    @Container
-    public static GenericContainer mongo = new GenericContainer("mongo:latest")
-            .withExposedPorts(MONGO_PORT)
-            .withEnv("MONGO_INITDB_DATABASE", "moviekeeper")
-            .withCommand(String.format("mongod --port %d", MONGO_PORT))
-            .waitingFor(
-                    Wait.forLogMessage(".*waiting for connections.*", 1)
-            );
+    static final GenericContainer mongo;
+    static final GenericContainer axonServer;
 
-    @Container
-    public static GenericContainer axonServer = new GenericContainer("axoniq/axonserver:latest")
-            .withExposedPorts(AXON_HTTP_PORT, AXON_GRPC_PORT)
-            .waitingFor(
-                    Wait.forLogMessage(".*Started AxonServer.*", 1)
-            );
+    static {
+        // These containers should be started only once during whole test suite
+        axonServer = new GenericContainer("axoniq/axonserver:latest")
+                .withExposedPorts(AXON_HTTP_PORT, AXON_GRPC_PORT)
+                .waitingFor(
+                        Wait.forLogMessage(".*Started AxonServer.*", 1)
+                );
+        axonServer.start();
 
-    @BeforeAll
-    public static void beforeClass() {
+        mongo = new GenericContainer("mongo:latest")
+                .withExposedPorts(MONGO_PORT)
+                .withEnv("MONGO_INITDB_DATABASE", "moviekeeper")
+                .withCommand(String.format("mongod --port %d", MONGO_PORT))
+                .waitingFor(
+                        Wait.forLogMessage(".*waiting for connections.*", 1)
+                );
+        mongo.start();
+
         System.setProperty("ENV_MONGO_PORT", String.valueOf(mongo.getMappedPort(MONGO_PORT)));
         System.setProperty("ENV_AXON_GRPC_PORT", String.valueOf(axonServer.getMappedPort(AXON_GRPC_PORT)));
     }

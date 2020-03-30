@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CastIntegrationTestIT extends CommonIntegrationSetup {
+public class CastIntegrationTest extends CommonIntegrationSetup {
 
     private static final String GET_CAST_URL = "http://localhost:%d/movies/%s/cast";
 

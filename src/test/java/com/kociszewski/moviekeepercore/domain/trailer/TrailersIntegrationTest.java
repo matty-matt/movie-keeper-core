@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TrailersIntegrationTestIT extends CommonIntegrationSetup {
+public class TrailersIntegrationTest extends CommonIntegrationSetup {
 
     private static final String GET_TRAILERS_URL = "http://localhost:%d/movies/%s/videos";
 
