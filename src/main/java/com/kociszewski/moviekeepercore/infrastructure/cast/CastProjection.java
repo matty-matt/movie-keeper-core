@@ -38,7 +38,7 @@ public class CastProjection {
     }
 
     private void skip(String movieId) {
-        log.info("Skipping persisting cast for movieId={}", movieId);
+        log.info("Skipping persisting cast for externalMovieId={}", movieId);
     }
 
     private void persistCast(CastDTO cast) {

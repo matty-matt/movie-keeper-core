@@ -38,7 +38,7 @@ public class TrailerProjection {
     }
 
     private void skip(String movieId) {
-        log.info("Skipping persisting trailers for movieId={}", movieId);
+        log.info("Skipping persisting trailers for externalMovieId={}", movieId);
     }
 
     private void persistTrailers(TrailerSectionDTO trailers) {
