@@ -8,11 +8,10 @@ import com.kociszewski.moviekeepercore.infrastructure.movie.TitleBody;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerDTO;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
 import com.kociszewski.moviekeepercore.shared.model.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,17 +20,20 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.*;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Testcontainers
 public class CommonIntegrationSetup {
 
     private static final int MONGO_PORT = 29019;
@@ -59,7 +61,7 @@ public class CommonIntegrationSetup {
     @MockBean
     protected ExternalService externalService;
 
-    @ClassRule
+    @Container
     public static GenericContainer mongo = new GenericContainer("mongo:latest")
             .withExposedPorts(MONGO_PORT)
             .withEnv("MONGO_INITDB_DATABASE", "moviekeeper")
@@ -68,20 +70,20 @@ public class CommonIntegrationSetup {
                     Wait.forLogMessage(".*waiting for connections.*", 1)
             );
 
-    @ClassRule
+    @Container
     public static GenericContainer axonServer = new GenericContainer("axoniq/axonserver:latest")
             .withExposedPorts(AXON_HTTP_PORT, AXON_GRPC_PORT)
             .waitingFor(
                     Wait.forLogMessage(".*Started AxonServer.*", 1)
             );
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty("ENV_MONGO_PORT", String.valueOf(mongo.getMappedPort(MONGO_PORT)));
         System.setProperty("ENV_AXON_GRPC_PORT", String.valueOf(axonServer.getMappedPort(AXON_GRPC_PORT)));
     }
 
-    @Before
+    @BeforeEach
     public void before() throws NotFoundInExternalServiceException {
         moviesToCleanAfterTests = new ArrayList<>();
         now = new Date();
@@ -104,7 +106,7 @@ public class CommonIntegrationSetup {
                 .thenReturn(anotherSuperMovieTrailers);
     }
 
-    @After
+    @AfterEach
     public void after() {
         moviesToCleanAfterTests.forEach(movie -> deleteMovie(movie.getAggregateId()));
     }

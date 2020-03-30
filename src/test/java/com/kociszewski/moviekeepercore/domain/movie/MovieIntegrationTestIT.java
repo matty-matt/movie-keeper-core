@@ -8,7 +8,7 @@ import com.kociszewski.moviekeepercore.infrastructure.movie.MovieRepository;
 import com.kociszewski.moviekeepercore.infrastructure.movie.WatchedBody;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerRepository;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MovieIntegrationTest extends CommonIntegrationSetup {
+public class MovieIntegrationTestIT extends CommonIntegrationSetup {
 
     @Autowired
     private MovieRepository movieRepository;

@@ -3,7 +3,7 @@ package com.kociszewski.moviekeepercore.domain.trailer;
 import com.kociszewski.moviekeepercore.domain.CommonIntegrationSetup;
 import com.kociszewski.moviekeepercore.infrastructure.movie.MovieDTO;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerDTO;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TrailersIntegrationTest extends CommonIntegrationSetup {
+public class TrailersIntegrationTestIT extends CommonIntegrationSetup {
 
     private static final String GET_TRAILERS_URL = "http://localhost:%d/movies/%s/videos";
 
