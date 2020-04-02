@@ -24,6 +24,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.awaitility.Durations.FIVE_SECONDS;
 import static org.awaitility.Durations.ONE_HUNDRED_MILLISECONDS;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class MovieIntegrationTest extends CommonIntegrationSetup {
 
@@ -146,6 +149,27 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
         List<MovieDTO> movies = Arrays.asList(Objects.requireNonNull(getAllMoviesResponse.getBody()));
         assertThat(movies.size()).isEqualTo(2);
         assertThat(movies).containsExactly(firstMovieResponse.getBody(), secondMovieResponse.getBody());
+    }
+
+    @Test
+    public void shouldNotSearchForTrailersAndCastWhenMovieAlreadyOnList() {
+        // given
+        ResponseEntity<MovieDTO> firstMovieResponse = storeMovie(SUPER_MOVIE);
+        String movieId = Objects.requireNonNull(firstMovieResponse.getBody()).getAggregateId();
+
+        await()
+                .atMost(FIVE_SECONDS)
+                .with()
+                .pollInterval(ONE_HUNDRED_MILLISECONDS)
+                .until(() -> movieRepository.findById(movieId).isPresent());
+
+        // when
+        ResponseEntity<MovieDTO> secondMovieResponse = storeMovie(SUPER_MOVIE);
+
+        // then
+        assertThat(secondMovieResponse.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        verify(externalService, times(1)).retrieveCast(any());
+        verify(externalService, times(1)).retrieveTrailers(any());
     }
 }
 

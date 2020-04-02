@@ -1,10 +1,14 @@
 package com.kociszewski.moviekeepercore.domain.cast;
 
+import com.kociszewski.moviekeepercore.domain.cast.commands.FindCastCommand;
 import com.kociszewski.moviekeepercore.domain.cast.commands.SaveCastCommand;
 import com.kociszewski.moviekeepercore.domain.cast.events.CastDeletedEvent;
+import com.kociszewski.moviekeepercore.domain.cast.events.CastFoundEvent;
 import com.kociszewski.moviekeepercore.domain.cast.events.CastSavedEvent;
+import com.kociszewski.moviekeepercore.domain.trailer.commands.FindTrailersCommand;
 import com.kociszewski.moviekeepercore.domain.trailer.commands.SaveTrailersCommand;
 import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersDeletedEvent;
+import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersFoundEvent;
 import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersSavedEvent;
 import com.kociszewski.moviekeepercore.shared.model.CastEntityId;
 import com.kociszewski.moviekeepercore.shared.model.CastInfo;
@@ -28,6 +32,11 @@ public class CastEntity {
     @EntityId
     private CastEntityId castEntityId;
     private List<CastInfo> cast;
+
+    @CommandHandler
+    public void handle(FindCastCommand command) {
+        apply(new CastFoundEvent(command.getMovieId(), castEntityId, command.getExternalMovieId()));
+    }
 
     @CommandHandler
     public void handle(SaveCastCommand command) {

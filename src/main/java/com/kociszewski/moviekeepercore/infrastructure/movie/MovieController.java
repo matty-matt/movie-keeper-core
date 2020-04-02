@@ -1,8 +1,10 @@
 package com.kociszewski.moviekeepercore.infrastructure.movie;
 
+import com.kociszewski.moviekeepercore.domain.cast.commands.FindCastCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.DeleteMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.ToggleWatchedCommand;
+import com.kociszewski.moviekeepercore.domain.trailer.commands.FindTrailersCommand;
 import com.kociszewski.moviekeepercore.shared.model.*;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetMovieQuery;
@@ -19,6 +21,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,7 +54,12 @@ public class MovieController {
                 .next()
                 .map(movie -> mapResponse(
                         movie,
-                        HttpStatus.CREATED
+                        HttpStatus.CREATED,
+                        (movieDTO) -> {
+                            var externalMovieId = new ExternalMovieId(movieDTO.getExternalMovieId());
+                            commandGateway.send(new FindTrailersCommand(aggregateId, externalMovieId));
+                            commandGateway.send(new FindCastCommand(aggregateId, externalMovieId));
+                        }
                 ))
                 .doFinally(it -> findMovieSubscription.close());
     }
@@ -105,6 +113,10 @@ public class MovieController {
     }
 
     private ResponseEntity<MovieDTO> mapResponse(MovieDTO movie, HttpStatus onSuccessStatus) {
+        return mapResponse(movie, onSuccessStatus, as -> {});
+    }
+
+    private ResponseEntity<MovieDTO> mapResponse(MovieDTO movie, HttpStatus onSuccessStatus, Consumer<MovieDTO> successfulCallback) {
         if (movie.getMovieState() != null) {
             switch (movie.getMovieState()) {
                 case ALREADY_ADDED:
@@ -114,6 +126,8 @@ public class MovieController {
                 case NOT_FOUND_IN_EXTERNAL_SERVICE:
                     throw new MovieNotFoundException("Movie with this title not found.");
             }
+        } else {
+            successfulCallback.accept(movie);
         }
         return new ResponseEntity<>(movie, onSuccessStatus);
     }
