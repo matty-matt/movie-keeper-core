@@ -21,6 +21,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.awaitility.Durations.FIVE_SECONDS;
+import static org.awaitility.Durations.ONE_HUNDRED_MILLISECONDS;
 
 public class MovieIntegrationTest extends CommonIntegrationSetup {
 
@@ -76,12 +79,14 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
 
         // then
         assertThat(deletedMovie.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        Optional<MovieDTO> movie = movieRepository.findByExternalMovieId(storedMovie.getExternalMovieId());
-        Optional<TrailerSectionDTO> trailers = trailerRepository.findByExternalMovieId(storedMovie.getExternalMovieId());
-        Optional<CastDTO> cast = castRepository.findByExternalMovieId(storedMovie.getExternalMovieId());
-        assertThat(movie).isNotPresent();
-        assertThat(trailers).isNotPresent();
-        assertThat(cast).isNotPresent();
+        await()
+                .atMost(FIVE_SECONDS)
+                .with()
+                .pollInterval(ONE_HUNDRED_MILLISECONDS)
+                .until(() ->
+                        movieRepository.findByExternalMovieId(storedMovie.getExternalMovieId()).isEmpty() &&
+                        trailerRepository.findByExternalMovieId(storedMovie.getExternalMovieId()).isEmpty() &&
+                        castRepository.findByExternalMovieId(storedMovie.getExternalMovieId()).isEmpty());
     }
 
     @Test
