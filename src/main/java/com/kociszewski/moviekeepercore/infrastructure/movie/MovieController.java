@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -101,7 +100,7 @@ public class MovieController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMovie(@PathVariable String id) {
         MovieId movieId = new MovieId(id);
-        commandGateway.sendAndWait(new DeleteMovieCommand(movieId));
+        commandGateway.send(new DeleteMovieCommand(movieId));
         return ResponseEntity.noContent().build();
     }
 

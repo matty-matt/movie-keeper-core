@@ -31,7 +31,9 @@ public class CastEntity {
 
     @CommandHandler
     public void handle(SaveCastCommand command) {
-        apply(new CastSavedEvent(command.getCastDTO()));
+        if (cast.isEmpty()) {
+            apply(new CastSavedEvent(command.getCastDTO()));
+        }
     }
 
     @EventSourcingHandler

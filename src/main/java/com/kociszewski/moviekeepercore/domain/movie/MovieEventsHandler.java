@@ -13,6 +13,7 @@ import com.kociszewski.moviekeepercore.infrastructure.movie.MovieDTO;
 import com.kociszewski.moviekeepercore.infrastructure.movie.MovieState;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
@@ -20,26 +21,28 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MovieEventsHandler {
     private final ExternalService externalService;
     private final CommandGateway commandGateway;
     private final QueryUpdateEmitter queryUpdateEmitter;
 
     @EventHandler
-    public void on(MovieSearchDelegatedEvent event) {
-        try {
-            ExternalMovie externalMovie = externalService.searchMovie(event.getSearchPhrase());
-            commandGateway.sendAndWait(new SaveMovieCommand(event.getMovieId(), externalMovie));
+    public void handle(MovieSearchDelegatedEvent event) {
+            log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId().getId());
+            try {
+                ExternalMovie externalMovie = externalService.searchMovie(event.getSearchPhrase());
+                commandGateway.send(new SaveMovieCommand(event.getMovieId(), externalMovie));
 
-            TrailerSectionDTO trailers = getTrailerSectionDTO(externalMovie.getExternalMovieId(), event.getTrailerEntityId(), event.getMovieId());
-            commandGateway.sendAndWait(new SaveTrailersCommand(event.getMovieId(), trailers));
+                TrailerSectionDTO trailers = getTrailerSectionDTO(externalMovie.getExternalMovieId(), event.getTrailerEntityId(), event.getMovieId());
+                commandGateway.send(new SaveTrailersCommand(event.getMovieId(), trailers));
 
-            CastDTO cast = getCastDTO(externalMovie.getExternalMovieId(), event.getCastEntityId(), event.getMovieId());
-            commandGateway.sendAndWait(new SaveCastCommand(event.getMovieId(), cast));
+                CastDTO cast = getCastDTO(externalMovie.getExternalMovieId(), event.getCastEntityId(), event.getMovieId());
+                commandGateway.send(new SaveCastCommand(event.getMovieId(), cast));
 
-        } catch (NotFoundInExternalServiceException e) {
-            queryUpdateEmitter.emit(GetMovieQuery.class, query -> true, new MovieDTO(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE));
-        }
+            } catch (NotFoundInExternalServiceException e) {
+                queryUpdateEmitter.emit(GetMovieQuery.class, query -> true, new MovieDTO(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE));
+            }
     }
 
     private TrailerSectionDTO getTrailerSectionDTO(ExternalMovieId externalMovieId, TrailerEntityId trailerEntityId, MovieId movieId) {

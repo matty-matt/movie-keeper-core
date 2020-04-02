@@ -85,7 +85,9 @@ public class MovieAggregate {
 
     @CommandHandler
     public void handle(SaveMovieCommand command) {
-        apply(new MovieSavedEvent(command.getMovieId(), command.getExternalMovie()));
+        if (this.externalMovieId == null) {
+            apply(new MovieSavedEvent(command.getMovieId(), command.getExternalMovie()));
+        }
     }
 
     @EventSourcingHandler

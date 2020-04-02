@@ -19,6 +19,7 @@ public class TrailerProjection {
 
     @EventHandler
     public void handle(TrailersSavedEvent event) {
+        log.info("Handling {}", event.getClass().getSimpleName());
         trailerRepository.findByExternalMovieId(event.getTrailerSectionDTO().getExternalMovieId()).ifPresentOrElse(
                 foundTrailers -> skip(foundTrailers.getExternalMovieId()),
                 () -> persistTrailers(event.getTrailerSectionDTO())
