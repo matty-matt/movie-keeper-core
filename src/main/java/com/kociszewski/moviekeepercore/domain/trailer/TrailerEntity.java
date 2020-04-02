@@ -1,7 +1,9 @@
 package com.kociszewski.moviekeepercore.domain.trailer;
 
+import com.kociszewski.moviekeepercore.domain.trailer.commands.FindTrailersCommand;
 import com.kociszewski.moviekeepercore.domain.trailer.commands.SaveTrailersCommand;
 import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersDeletedEvent;
+import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersFoundEvent;
 import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersSavedEvent;
 import com.kociszewski.moviekeepercore.shared.model.Trailer;
 import com.kociszewski.moviekeepercore.shared.model.TrailerEntityId;
@@ -23,6 +25,11 @@ public class TrailerEntity {
     @EntityId
     private TrailerEntityId trailerEntityId;
     private List<Trailer> trailers;
+
+    @CommandHandler
+    public void handle(FindTrailersCommand command) {
+        apply(new TrailersFoundEvent(command.getMovieId(), trailerEntityId, command.getExternalMovieId()));
+    }
 
     @CommandHandler
     public void handle(SaveTrailersCommand command) {

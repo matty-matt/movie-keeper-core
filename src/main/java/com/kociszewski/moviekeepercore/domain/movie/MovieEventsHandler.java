@@ -2,9 +2,11 @@ package com.kociszewski.moviekeepercore.domain.movie;
 
 import com.kociszewski.moviekeepercore.domain.ExternalService;
 import com.kociszewski.moviekeepercore.domain.cast.commands.SaveCastCommand;
+import com.kociszewski.moviekeepercore.domain.cast.events.CastFoundEvent;
 import com.kociszewski.moviekeepercore.domain.movie.commands.SaveMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetMovieQuery;
+import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersFoundEvent;
 import com.kociszewski.moviekeepercore.infrastructure.cast.CastDTO;
 import com.kociszewski.moviekeepercore.shared.model.*;
 import com.kociszewski.moviekeepercore.domain.trailer.commands.SaveTrailersCommand;
@@ -33,16 +35,23 @@ public class MovieEventsHandler {
             try {
                 ExternalMovie externalMovie = externalService.searchMovie(event.getSearchPhrase());
                 commandGateway.send(new SaveMovieCommand(event.getMovieId(), externalMovie));
-
-                TrailerSectionDTO trailers = getTrailerSectionDTO(externalMovie.getExternalMovieId(), event.getTrailerEntityId(), event.getMovieId());
-                commandGateway.send(new SaveTrailersCommand(event.getMovieId(), trailers));
-
-                CastDTO cast = getCastDTO(externalMovie.getExternalMovieId(), event.getCastEntityId(), event.getMovieId());
-                commandGateway.send(new SaveCastCommand(event.getMovieId(), cast));
-
             } catch (NotFoundInExternalServiceException e) {
                 queryUpdateEmitter.emit(GetMovieQuery.class, query -> true, new MovieDTO(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE));
             }
+    }
+
+    @EventHandler
+    public void handle(TrailersFoundEvent event) {
+        log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId().getId());
+        TrailerSectionDTO trailers = getTrailerSectionDTO(event.getExternalMovieId(), event.getTrailerEntityId(), event.getMovieId());
+        commandGateway.send(new SaveTrailersCommand(event.getMovieId(), trailers));
+    }
+
+    @EventHandler
+    public void handle(CastFoundEvent event) {
+        log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId().getId());
+        CastDTO cast = getCastDTO(event.getExternalMovieId(), event.getCastEntityId(), event.getMovieId());
+        commandGateway.send(new SaveCastCommand(event.getMovieId(), cast));
     }
 
     private TrailerSectionDTO getTrailerSectionDTO(ExternalMovieId externalMovieId, TrailerEntityId trailerEntityId, MovieId movieId) {

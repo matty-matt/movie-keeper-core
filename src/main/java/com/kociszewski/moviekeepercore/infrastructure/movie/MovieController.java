@@ -1,8 +1,10 @@
 package com.kociszewski.moviekeepercore.infrastructure.movie;
 
+import com.kociszewski.moviekeepercore.domain.cast.commands.FindCastCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.DeleteMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.FindMovieCommand;
 import com.kociszewski.moviekeepercore.domain.movie.commands.ToggleWatchedCommand;
+import com.kociszewski.moviekeepercore.domain.trailer.commands.FindTrailersCommand;
 import com.kociszewski.moviekeepercore.shared.model.*;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetMovieQuery;
@@ -49,7 +51,15 @@ public class MovieController {
 
         return findMovieSubscription.updates()
                 .next()
-                .map(movie -> mapResponse(
+                .doOnSuccess(movie -> {
+                    if (movie.getMovieState() == null) {
+                        var externalMovieId = new ExternalMovieId(movie.getExternalMovieId());
+                        commandGateway.send(new FindTrailersCommand(aggregateId, externalMovieId));
+                        commandGateway.send(new FindCastCommand(aggregateId, externalMovieId));
+                    }
+                })
+                .map(movie ->
+                        mapResponse(
                         movie,
                         HttpStatus.CREATED
                 ))
