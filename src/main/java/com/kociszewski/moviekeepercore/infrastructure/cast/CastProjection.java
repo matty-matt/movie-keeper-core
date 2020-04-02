@@ -19,6 +19,7 @@ public class CastProjection {
 
     @EventHandler
     public void handle(CastSavedEvent event) {
+        log.info("Handling {}", event.getClass().getSimpleName());
         castRepository.findByExternalMovieId(event.getCastDTO().getExternalMovieId()).ifPresentOrElse(
                 foundCast -> skip(foundCast.getExternalMovieId()),
                 () -> persistCast(event.getCastDTO())
@@ -38,7 +39,7 @@ public class CastProjection {
     }
 
     private void skip(String movieId) {
-        log.info("Skipping persisting cast for movieId={}", movieId);
+        log.info("Skipping persisting cast for externalMovieId={}", movieId);
     }
 
     private void persistCast(CastDTO cast) {
