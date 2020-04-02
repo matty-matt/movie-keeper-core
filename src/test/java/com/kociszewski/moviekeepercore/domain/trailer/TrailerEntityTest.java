@@ -1,15 +1,16 @@
 package com.kociszewski.moviekeepercore.domain.trailer;
 
+import com.kociszewski.moviekeepercore.domain.cast.commands.FindCastCommand;
+import com.kociszewski.moviekeepercore.domain.cast.events.CastFoundEvent;
 import com.kociszewski.moviekeepercore.domain.movie.MovieAggregate;
 import com.kociszewski.moviekeepercore.domain.movie.events.MovieSearchDelegatedEvent;
+import com.kociszewski.moviekeepercore.domain.trailer.commands.FindTrailersCommand;
 import com.kociszewski.moviekeepercore.domain.trailer.commands.SaveTrailersCommand;
+import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersFoundEvent;
 import com.kociszewski.moviekeepercore.domain.trailer.events.TrailersSavedEvent;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerDTO;
 import com.kociszewski.moviekeepercore.infrastructure.trailer.TrailerSectionDTO;
-import com.kociszewski.moviekeepercore.shared.model.CastEntityId;
-import com.kociszewski.moviekeepercore.shared.model.MovieId;
-import com.kociszewski.moviekeepercore.shared.model.SearchPhrase;
-import com.kociszewski.moviekeepercore.shared.model.TrailerEntityId;
+import com.kociszewski.moviekeepercore.shared.model.*;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,15 +29,18 @@ public class TrailerEntityTest {
     private TrailerEntityId trailerEntityId;
     private CastEntityId castEntityId;
     private SearchPhrase searchPhrase;
+    private ExternalMovieId externalMovieId;
 
     @BeforeEach
     public void setup() {
         this.fixture = new AggregateTestFixture<>(MovieAggregate.class);
         this.movieId = new MovieId(UUID.randomUUID().toString());
+        this.externalMovieId = new ExternalMovieId("123");
+
         this.trailerSectionDTO = TrailerSectionDTO.builder()
                 .aggregateId(UUID.randomUUID().toString())
                 .movieId(movieId.getId())
-                .externalMovieId("123")
+                .externalMovieId(externalMovieId.getId())
                 .trailers(Collections.singletonList(TrailerDTO.builder()
                         .language("en")
                         .country("US")
@@ -51,6 +55,14 @@ public class TrailerEntityTest {
         this.trailerEntityId = new TrailerEntityId(UUID.randomUUID().toString());
         this.castEntityId = new CastEntityId(UUID.randomUUID().toString());
         this.searchPhrase = new SearchPhrase("some title");
+    }
+
+    @Test
+    public void shouldTrailersFoundEventAppear() {
+        fixture.given(
+                new MovieSearchDelegatedEvent(movieId, trailerEntityId, castEntityId, searchPhrase))
+                .when(new FindTrailersCommand(movieId, externalMovieId))
+                .expectEvents(new TrailersFoundEvent(movieId, trailerEntityId, externalMovieId));
     }
 
     @Test
