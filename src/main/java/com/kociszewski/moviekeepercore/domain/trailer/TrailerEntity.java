@@ -26,7 +26,9 @@ public class TrailerEntity {
 
     @CommandHandler
     public void handle(SaveTrailersCommand command) {
-        apply(new TrailersSavedEvent(command.getTrailerSectionDTO()));
+        if (trailers.isEmpty()) {
+            apply(new TrailersSavedEvent(command.getTrailerSectionDTO()));
+        }
     }
 
     @EventSourcingHandler

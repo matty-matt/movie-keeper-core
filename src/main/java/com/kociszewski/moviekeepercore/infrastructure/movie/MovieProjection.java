@@ -7,6 +7,7 @@ import com.kociszewski.moviekeepercore.domain.movie.queries.GetMovieQuery;
 import com.kociszewski.moviekeepercore.domain.movie.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeepercore.shared.model.ExternalMovieInfo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class MovieProjection {
 
     private static final String ID = "_id";
@@ -31,6 +33,7 @@ public class MovieProjection {
 
     @EventHandler
     public void handle(MovieSavedEvent event) {
+        log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId().getId());
         movieRepository.findByExternalMovieId(event.getExternalMovie().getExternalMovieId().getId()).ifPresentOrElse(
                 movie -> handleMovieDuplicate(),
                 () -> persistMovie(event));
@@ -50,6 +53,7 @@ public class MovieProjection {
 
     @EventHandler
     public void handle(ToggleWatchedEvent event) {
+        log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId().getId());
         MovieDTO updatedMovie = mongoTemplate.findAndModify(
                 Query.query(Criteria.where(ID).is(event.getMovieId().getId())),
                 Update.update(WATCHED, event.getWatched().isWatched()),

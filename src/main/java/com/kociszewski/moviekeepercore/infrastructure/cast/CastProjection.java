@@ -19,6 +19,7 @@ public class CastProjection {
 
     @EventHandler
     public void handle(CastSavedEvent event) {
+        log.info("Handling {}", event.getClass().getSimpleName());
         castRepository.findByExternalMovieId(event.getCastDTO().getExternalMovieId()).ifPresentOrElse(
                 foundCast -> skip(foundCast.getExternalMovieId()),
                 () -> persistCast(event.getCastDTO())
