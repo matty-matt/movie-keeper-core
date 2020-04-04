@@ -1,0 +1,14 @@
+package com.kociszewski.movieservice.shared;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ExternalMovieId {
+    private String id;
+}

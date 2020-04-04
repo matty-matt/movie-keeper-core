@@ -1,0 +1,134 @@
+package com.kociszewski.movieservice.infrastructure;
+
+import com.kociszewski.castservice.domain.commands.FindCastCommand;
+import com.kociszewski.movieservice.domain.commands.DeleteMovieCommand;
+import com.kociszewski.movieservice.domain.commands.FindMovieCommand;
+import com.kociszewski.movieservice.domain.commands.ToggleWatchedCommand;
+import com.kociszewski.trailerservice.domain.commands.FindTrailersCommand;
+import com.kociszewski.movieservice.domain.queries.GetAllMoviesQuery;
+import com.kociszewski.movieservice.domain.queries.GetMovieQuery;
+import com.kociszewski.movieservice.shared.*;
+import lombok.RequiredArgsConstructor;
+import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.messaging.responsetypes.ResponseTypes;
+import org.axonframework.queryhandling.QueryGateway;
+import org.axonframework.queryhandling.SubscriptionQueryResult;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/movies")
+public class MovieController {
+
+    private final CommandGateway commandGateway;
+    private final QueryGateway queryGateway;
+
+    @PostMapping
+    public Mono<ResponseEntity<MovieDTO>> addMovieByTitle(@RequestBody TitleBody titleBody) {
+        MovieId aggregateId = new MovieId(UUID.randomUUID().toString());
+        TrailerEntityId trailerEntityId = new TrailerEntityId(UUID.randomUUID().toString());
+        CastEntityId castEntityId = new CastEntityId(UUID.randomUUID().toString());
+        commandGateway.send(
+                new FindMovieCommand(
+                        aggregateId,
+                        trailerEntityId,
+                        castEntityId,
+                        new SearchPhrase(titleBody.getTitle())));
+
+        SubscriptionQueryResult<MovieDTO, MovieDTO> findMovieSubscription =
+                queryGateway.subscriptionQuery(
+                        new GetMovieQuery(aggregateId),
+                        ResponseTypes.instanceOf(MovieDTO.class),
+                        ResponseTypes.instanceOf(MovieDTO.class)
+                );
+
+        return findMovieSubscription.updates()
+                .next()
+                .map(movie -> mapResponse(
+                        movie,
+                        HttpStatus.CREATED,
+                        (movieDTO) -> {
+                            var externalMovieId = new ExternalMovieId(movieDTO.getExternalMovieId());
+                            commandGateway.send(new FindTrailersCommand(aggregateId, externalMovieId));
+                            commandGateway.send(new FindCastCommand(aggregateId, externalMovieId));
+                        }
+                ))
+                .doFinally(it -> findMovieSubscription.close());
+    }
+
+    @GetMapping("/{id}")
+    public Mono<ResponseEntity<MovieDTO>> getMovieById(@PathVariable String id) {
+        CompletableFuture<MovieDTO> future = queryGateway
+                .query(new GetMovieQuery(new MovieId(id)), MovieDTO.class);
+
+        return Mono.fromFuture(future)
+                .map(movie -> mapResponse(
+                        movie,
+                        HttpStatus.OK
+                ));
+    }
+
+    @GetMapping
+    public Flux<MovieDTO> getAllMovies() {
+        // Or maybe ServerSentEvents by Spring WebFlux (preferably)
+        return Flux.fromIterable(queryGateway.query(
+                new GetAllMoviesQuery(),
+                ResponseTypes.multipleInstancesOf(MovieDTO.class)).join());
+    }
+
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<MovieDTO>> updateMovieWatched(@PathVariable String id, @RequestBody WatchedBody watched) {
+        MovieId movieId = new MovieId(id);
+        commandGateway.send(new ToggleWatchedCommand(movieId, new Watched(watched.isWatched())));
+
+        SubscriptionQueryResult<MovieDTO, MovieDTO> updateMovieSubscription =
+                queryGateway.subscriptionQuery(
+                        new GetMovieQuery(movieId),
+                        ResponseTypes.instanceOf(MovieDTO.class),
+                        ResponseTypes.instanceOf(MovieDTO.class)
+                );
+
+        return updateMovieSubscription.updates()
+                .next()
+                .map(movie -> mapResponse(
+                        movie,
+                        HttpStatus.OK
+                ))
+                .doFinally(it -> updateMovieSubscription.close());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMovie(@PathVariable String id) {
+        MovieId movieId = new MovieId(id);
+        commandGateway.send(new DeleteMovieCommand(movieId));
+        return ResponseEntity.noContent().build();
+    }
+
+    private ResponseEntity<MovieDTO> mapResponse(MovieDTO movie, HttpStatus onSuccessStatus) {
+        return mapResponse(movie, onSuccessStatus, as -> {});
+    }
+
+    private ResponseEntity<MovieDTO> mapResponse(MovieDTO movie, HttpStatus onSuccessStatus, Consumer<MovieDTO> successfulCallback) {
+        if (movie.getMovieState() != null) {
+            switch (movie.getMovieState()) {
+                case ALREADY_ADDED:
+                    throw new MovieAlreadyAddedException("Movie with this title is already on your list.");
+                case NOT_FOUND:
+                    throw new MovieNotFoundException("Movie with this id not found.");
+                case NOT_FOUND_IN_EXTERNAL_SERVICE:
+                    throw new MovieNotFoundException("Movie with this title not found.");
+            }
+        } else {
+            successfulCallback.accept(movie);
+        }
+        return new ResponseEntity<>(movie, onSuccessStatus);
+    }
+}
