@@ -4,8 +4,8 @@ import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Value
-public class FindMovieCommand {
+public class FindTrailersCommand {
     @TargetAggregateIdentifier
     private String movieId;
-    private String phrase;
+    private String externalMovieId;
 }

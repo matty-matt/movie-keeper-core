@@ -6,11 +6,11 @@ import com.kociszewski.castservice.domain.events.CastDeletedEvent;
 import com.kociszewski.castservice.domain.events.CastFoundEvent;
 import com.kociszewski.castservice.domain.events.CastSavedEvent;
 import com.kociszewski.castservice.infrastructure.CastInfo;
-import lombok.Builder;
 import lombok.Data;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
-import org.axonframework.modelling.command.EntityId;
+import org.axonframework.modelling.command.AggregateIdentifier;
+import org.axonframework.spring.stereotype.Aggregate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,15 +18,15 @@ import java.util.stream.Collectors;
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted;
 
+@Aggregate
 @Data
-@Builder
-public class CastEntity {
-    @EntityId
+public class CastAggregate {
+    @AggregateIdentifier
     private String castEntityId;
     private List<CastInfo> cast;
 
     @CommandHandler
-    public void handle(FindCastCommand command) {
+    public CastAggregate(FindCastCommand command) {
         apply(new CastFoundEvent(command.getMovieId(), castEntityId, command.getExternalMovieId()));
     }
 

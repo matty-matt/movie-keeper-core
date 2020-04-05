@@ -34,7 +34,7 @@ public class MovieProjection {
     @EventHandler
     public void handle(MovieSavedEvent event) {
         log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId());
-        movieRepository.findByExternalMovieId(event.getExternalMovie().getExternalMovieId().getId()).ifPresentOrElse(
+        movieRepository.findByExternalMovieId(event.getExternalMovie().getExternalMovieId()).ifPresentOrElse(
                 movie -> handleMovieDuplicate(),
                 () -> persistMovie(event));
     }
@@ -74,7 +74,7 @@ public class MovieProjection {
         ExternalMovieInfo externalMovieInfo = event.getExternalMovie().getExternalMovieInfo();
         MovieDTO movieDTO = MovieDTO.builder()
                 .aggregateId(event.getMovieId())
-                .externalMovieId(event.getExternalMovie().getExternalMovieId().getId())
+                .externalMovieId(event.getExternalMovie().getExternalMovieId())
                 .posterPath(externalMovieInfo.getPosterPath())
                 .title(externalMovieInfo.getTitle())
                 .originalTitle(externalMovieInfo.getOriginalTitle())

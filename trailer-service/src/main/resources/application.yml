@@ -1,7 +1,9 @@
 server:
-  port: 35002
+  port: 35003
 
 spring:
+  application:
+    name: trailer-service
   data:
     mongodb:
       uri: mongodb://localhost:38550/moviekeeper

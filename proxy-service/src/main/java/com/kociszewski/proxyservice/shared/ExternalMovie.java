@@ -9,4 +9,5 @@ public class ExternalMovie {
     private String externalMovieId;
     private ExternalMovieInfo externalMovieInfo;
     private String digitalRelease;
+    private MovieState movieState;
 }

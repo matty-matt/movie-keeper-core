@@ -15,8 +15,8 @@ public class TmdbService {
     private final TmdbClient tmdbClient;
     private final MovieReleaseService movieReleaseService;
 
-    public ExternalMovie searchMovie(SearchPhrase searchPhrase) throws NotFoundInExternalServiceException {
-        String externalMovieId = tmdbClient.search(searchPhrase.getPhrase())
+    public ExternalMovie searchMovie(String searchPhrase) throws NotFoundInExternalServiceException {
+        String externalMovieId = tmdbClient.search(searchPhrase)
                 .get()
                 .retrieve()
                 .bodyToMono(SearchMovieResult.class)

@@ -1,17 +1,11 @@
 package com.kociszewski.movieservice.domain;
 
-import com.kociszewski.movieservice.domain.commands.DeleteMovieCommand;
-import com.kociszewski.movieservice.domain.commands.FindMovieCommand;
-import com.kociszewski.movieservice.domain.commands.SaveMovieCommand;
-import com.kociszewski.movieservice.domain.commands.ToggleWatchedCommand;
-import com.kociszewski.movieservice.domain.events.MovieDeletedEvent;
-import com.kociszewski.movieservice.domain.events.MovieSavedEvent;
-import com.kociszewski.movieservice.domain.events.MovieSearchDelegatedEvent;
-import com.kociszewski.movieservice.domain.events.ToggleWatchedEvent;
+import com.kociszewski.movieservice.domain.commands.*;
+import com.kociszewski.movieservice.domain.events.*;
 import com.kociszewski.movieservice.domain.info.*;
 import com.kociszewski.movieservice.domain.info.Runtime;
 import com.kociszewski.movieservice.shared.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -25,18 +19,14 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted;
 
 @Aggregate
-@Data
+@Getter
 @Slf4j
 public class MovieAggregate {
 
     @AggregateIdentifier
     private String movieId;
-//    @AggregateMember
-//    private TrailerEntity trailerEntity;
-//    @AggregateMember
-//    private CastEntity castEntity;
 
-    private ExternalMovieId externalMovieId;
+    private String externalMovieId;
     private Poster poster;
     private Title title;
     private Title originalTitle;
@@ -58,23 +48,13 @@ public class MovieAggregate {
     public MovieAggregate(FindMovieCommand command) {
         apply(new MovieSearchDelegatedEvent(
                 command.getMovieId(),
-                command.getTrailerEntityId(),
-                command.getCastEntityId(),
                 command.getPhrase()));
     }
 
     @EventSourcingHandler
     private void on(MovieSearchDelegatedEvent event) {
         this.movieId = event.getMovieId();
-//        this.trailerEntity = TrailerEntity.builder()
-//                .trailerEntityId(event.getTrailerEntityId())
-//                .trailers(Collections.emptyList())
-//                .build();
-//        this.castEntity = CastEntity.builder()
-//                .castEntityId(event.getCastEntityId())
-//                .cast(Collections.emptyList())
-//                .build();
-        this.searchPhrase = event.getSearchPhrase();
+        this.searchPhrase = new SearchPhrase(event.getSearchPhrase());
     }
 
     @CommandHandler
@@ -106,6 +86,16 @@ public class MovieAggregate {
     }
 
     @CommandHandler
+    public void handle(FindCastCommand command) {
+        apply(new CastSearchDelegatedEvent(command.getMovieId(), command.getExternalMovieId()));
+    }
+
+    @CommandHandler
+    public void handle(FindTrailersCommand command) {
+        apply(new TrailersSearchDelegatedEvent(command.getMovieId(), command.getExternalMovieId()));
+    }
+
+    @CommandHandler
     public void handle(ToggleWatchedCommand command) {
         if (this.watched.isWatched() == command.getWatched().isWatched()) {
             log.info("Cannot toggle to the same state, skipping..");
@@ -127,7 +117,7 @@ public class MovieAggregate {
     }
 
     @EventSourcingHandler
-    public void on(MovieDeletedEvent event) {
+    private void on(MovieDeletedEvent event) {
         markDeleted();
     }
 }

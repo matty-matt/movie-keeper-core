@@ -1,5 +1,9 @@
 server:
-  port: 35003
+  port: 35004
+
+spring:
+  application:
+    name: proxy-service
 
 api:
   url: https://api.themoviedb.org/3

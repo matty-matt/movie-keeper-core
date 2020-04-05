@@ -1,6 +1,7 @@
 package com.kociszewski.movieservice.infrastructure;
 
 import com.kociszewski.movieservice.domain.commands.DeleteMovieCommand;
+import com.kociszewski.movieservice.domain.commands.FindCastCommand;
 import com.kociszewski.movieservice.domain.commands.FindMovieCommand;
 import com.kociszewski.movieservice.domain.commands.ToggleWatchedCommand;
 import com.kociszewski.movieservice.domain.queries.GetAllMoviesQuery;
@@ -31,15 +32,11 @@ public class MovieController {
 
     @PostMapping
     public Mono<ResponseEntity<MovieDTO>> addMovieByTitle(@RequestBody TitleBody titleBody) {
-        String movieId =UUID.randomUUID().toString();
-        String trailerEntityId = UUID.randomUUID().toString();
-        String castEntityId = UUID.randomUUID().toString();
+        String movieId = UUID.randomUUID().toString();
         commandGateway.send(
                 new FindMovieCommand(
                         movieId,
-                        trailerEntityId,
-                        castEntityId,
-                        new SearchPhrase(titleBody.getTitle())));
+                        titleBody.getTitle()));
 
         SubscriptionQueryResult<MovieDTO, MovieDTO> findMovieSubscription =
                 queryGateway.subscriptionQuery(
@@ -54,9 +51,9 @@ public class MovieController {
                         movie,
                         HttpStatus.CREATED,
                         (movieDTO) -> {
-                            var externalMovieId = new ExternalMovieId(movieDTO.getExternalMovieId());
-//                            commandGateway.send(new FindTrailersCommand(aggregateId, externalMovieId));
-//                            commandGateway.send(new FindCastCommand(aggregateId, externalMovieId));
+                            var externalMovieId = movieDTO.getExternalMovieId();
+                            commandGateway.send(new FindMovieCommand(movieId, externalMovieId));
+                            commandGateway.send(new FindCastCommand(movieId, externalMovieId));
                         }
                 ))
                 .doFinally(it -> findMovieSubscription.close());

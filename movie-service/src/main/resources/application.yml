@@ -2,6 +2,8 @@ server:
   port: 35001
 
 spring:
+  application:
+    name: movie-service
   data:
     mongodb:
       uri: mongodb://localhost:38550/moviekeeper

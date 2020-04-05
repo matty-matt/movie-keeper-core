@@ -5,11 +5,12 @@ import com.kociszewski.trailerservice.domain.commands.SaveTrailersCommand;
 import com.kociszewski.trailerservice.domain.events.TrailersDeletedEvent;
 import com.kociszewski.trailerservice.domain.events.TrailersFoundEvent;
 import com.kociszewski.trailerservice.domain.events.TrailersSavedEvent;
-import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
-import org.axonframework.modelling.command.EntityId;
+import org.axonframework.modelling.command.AggregateIdentifier;
+import org.axonframework.spring.stereotype.Aggregate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,15 +18,17 @@ import java.util.stream.Collectors;
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted;
 
-@Data
-@Builder
-public class TrailerEntity {
-    @EntityId
+@Aggregate
+@Getter
+public class TrailerAggregate {
+    @AggregateIdentifier
     private String trailerEntityId;
     private List<Trailer> trailers;
 
+    private TrailerAggregate() {}
+
     @CommandHandler
-    public void handle(FindTrailersCommand command) {
+    public TrailerAggregate(FindTrailersCommand command) {
         apply(new TrailersFoundEvent(command.getMovieId(), trailerEntityId, command.getExternalMovieId()));
     }
 
