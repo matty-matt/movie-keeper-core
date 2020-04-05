@@ -24,7 +24,7 @@ public class TmdbService {
                 .getResults()
                 .stream()
                 .findFirst()
-                .orElseThrow(NotFoundInExternalServiceException::new);
+                .orElseThrow(NotFoundInExternalServiceException::new).getId();
 
         ExternalMovieInfo externalMovieInfo = fetchMovieDetails(externalMovieId);
         externalMovieInfo.setInsertionDate(new Date());

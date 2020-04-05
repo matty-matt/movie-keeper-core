@@ -8,9 +8,3 @@ spring:
 api:
   url: https://api.themoviedb.org/3
   key: ${TMDB_API_KEY}
-
-axon:
-  serializer:
-    events: jackson
-    messages: jackson
-    general: xstream

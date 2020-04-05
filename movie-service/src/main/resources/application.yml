@@ -7,11 +7,3 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:38550/moviekeeper
-
-axon:
-  serializer:
-    events: jackson
-    messages: jackson
-    general: xstream
-  distributed:
-    enabled: true

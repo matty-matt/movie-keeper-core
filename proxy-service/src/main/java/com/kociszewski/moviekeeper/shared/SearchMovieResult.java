@@ -12,5 +12,5 @@ public class SearchMovieResult {
     private int page;
     private int totalResults;
     private int totalPages;
-    private List<String> results;
+    private List<ExternalMovieId> results;
 }
