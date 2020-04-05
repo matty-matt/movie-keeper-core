@@ -1,13 +1,12 @@
-//package com.kociszewski.movieservice;
+//package com.kociszewski.castservice;
 //
+//import com.kociszewski.movieservice.infrastructure.MovieDTO;
+//import com.kociszewski.movieservice.infrastructure.TitleBody;
 //import com.kociszewski.movieservice.infrastructure.cast.CastDTO;
 //import com.kociszewski.movieservice.infrastructure.cast.CastInfoDTO;
-//import com.kociszewski.movieservice.infrastructure.MovieDTO;
 //import com.kociszewski.movieservice.infrastructure.movie.NotFoundInExternalServiceException;
-//import com.kociszewski.movieservice.infrastructure.TitleBody;
 //import com.kociszewski.movieservice.infrastructure.trailer.TrailerDTO;
 //import com.kociszewski.movieservice.infrastructure.trailer.TrailerSectionDTO;
-//import com.kociszewski.movieservice.shared.*;
 //import org.junit.jupiter.api.AfterEach;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.extension.ExtendWith;
