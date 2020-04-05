@@ -1,7 +1,5 @@
 package com.kociszewski.movieservice.domain;
 
-import com.kociszewski.movieservice.domain.cast.CastEntity;
-import com.kociszewski.castservice.domain.events.CastDeletedEvent;
 import com.kociszewski.movieservice.domain.commands.DeleteMovieCommand;
 import com.kociszewski.movieservice.domain.commands.FindMovieCommand;
 import com.kociszewski.movieservice.domain.commands.SaveMovieCommand;
@@ -12,18 +10,14 @@ import com.kociszewski.movieservice.domain.events.MovieSearchDelegatedEvent;
 import com.kociszewski.movieservice.domain.events.ToggleWatchedEvent;
 import com.kociszewski.movieservice.domain.info.*;
 import com.kociszewski.movieservice.domain.info.Runtime;
-import com.kociszewski.movieservice.domain.trailer.TrailerEntity;
-import com.kociszewski.trailerservice.domain.events.TrailersDeletedEvent;
 import com.kociszewski.movieservice.shared.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
-import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,11 +30,11 @@ import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted
 public class MovieAggregate {
 
     @AggregateIdentifier
-    private MovieId movieId;
-    @AggregateMember
-    private TrailerEntity trailerEntity;
-    @AggregateMember
-    private CastEntity castEntity;
+    private String movieId;
+//    @AggregateMember
+//    private TrailerEntity trailerEntity;
+//    @AggregateMember
+//    private CastEntity castEntity;
 
     private ExternalMovieId externalMovieId;
     private Poster poster;
@@ -72,14 +66,14 @@ public class MovieAggregate {
     @EventSourcingHandler
     private void on(MovieSearchDelegatedEvent event) {
         this.movieId = event.getMovieId();
-        this.trailerEntity = TrailerEntity.builder()
-                .trailerEntityId(event.getTrailerEntityId())
-                .trailers(Collections.emptyList())
-                .build();
-        this.castEntity = CastEntity.builder()
-                .castEntityId(event.getCastEntityId())
-                .cast(Collections.emptyList())
-                .build();
+//        this.trailerEntity = TrailerEntity.builder()
+//                .trailerEntityId(event.getTrailerEntityId())
+//                .trailers(Collections.emptyList())
+//                .build();
+//        this.castEntity = CastEntity.builder()
+//                .castEntityId(event.getCastEntityId())
+//                .cast(Collections.emptyList())
+//                .build();
         this.searchPhrase = event.getSearchPhrase();
     }
 
@@ -128,8 +122,8 @@ public class MovieAggregate {
     @CommandHandler
     public void handle(DeleteMovieCommand command) {
         apply(new MovieDeletedEvent(command.getMovieId()));
-        apply(new TrailersDeletedEvent(trailerEntity.getTrailerEntityId()));
-        apply(new CastDeletedEvent(castEntity.getCastEntityId()));
+//        apply(new TrailersDeletedEvent(trailerEntity.getTrailerEntityId()));
+//        apply(new CastDeletedEvent(castEntity.getCastEntityId()));
     }
 
     @EventSourcingHandler

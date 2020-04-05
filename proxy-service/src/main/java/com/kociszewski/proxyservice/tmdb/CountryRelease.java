@@ -1,9 +1,8 @@
-package com.kociszewski.proxyservice.movierelease;
+package com.kociszewski.proxyservice.tmdb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.kociszewski.movieservice.infrastructure.tmdb.TmdbRelease;
 import lombok.Data;
 
 import java.util.List;

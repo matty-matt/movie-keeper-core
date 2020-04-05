@@ -1,7 +1,5 @@
 package com.kociszewski.proxyservice.tmdb;
 
-import com.kociszewski.proxyservice.movierelease.MovieReleaseService;
-import com.kociszewski.proxyservice.movierelease.ReleasesResult;
 import com.kociszewski.proxyservice.shared.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +16,7 @@ public class TmdbService {
     private final MovieReleaseService movieReleaseService;
 
     public ExternalMovie searchMovie(SearchPhrase searchPhrase) throws NotFoundInExternalServiceException {
-        ExternalMovieId externalMovieId = tmdbClient.search(searchPhrase.getPhrase())
+        String externalMovieId = tmdbClient.search(searchPhrase.getPhrase())
                 .get()
                 .retrieve()
                 .bodyToMono(SearchMovieResult.class)
@@ -41,16 +39,16 @@ public class TmdbService {
                 .build();
     }
 
-    private ExternalMovieInfo fetchMovieDetails(ExternalMovieId externalMovieId) {
-        return tmdbClient.movieDetails(externalMovieId.getId())
+    private ExternalMovieInfo fetchMovieDetails(String externalMovieId) {
+        return tmdbClient.movieDetails(externalMovieId)
                 .get()
                 .retrieve()
                 .bodyToMono(ExternalMovieInfo.class)
                 .block();
     }
 
-    public String retrieveDigitalRelease(ExternalMovieId externalMovieId) {
-        ReleasesResult releasesResult = tmdbClient.releases(externalMovieId.getId())
+    public String retrieveDigitalRelease(String externalMovieId) {
+        ReleasesResult releasesResult = tmdbClient.releases(externalMovieId)
                 .get()
                 .retrieve()
                 .bodyToMono(ReleasesResult.class)
@@ -59,25 +57,25 @@ public class TmdbService {
         return movieReleaseService.digitalRelease(releasesResult);
     }
 
-    public VoteDTO retrieveVote(ExternalMovieId externalMovieId) {
+    public VoteDTO retrieveVote(String externalMovieId) {
         // TODO check vote model and if it should be done using commands/queries/sagas(as it is refresh)
-        return tmdbClient.movieDetails(externalMovieId.getId())
+        return tmdbClient.movieDetails(externalMovieId)
                 .get()
                 .retrieve()
                 .bodyToMono(VoteDTO.class)
                 .block();
     }
 
-    public TrailerSectionDTO retrieveTrailers(ExternalMovieId externalMovieId) {
-        return tmdbClient.trailers(externalMovieId.getId())
+    public TrailerSectionDTO retrieveTrailers(String externalMovieId) {
+        return tmdbClient.trailers(externalMovieId)
                 .get()
                 .retrieve()
                 .bodyToMono(TrailerSectionDTO.class)
                 .block();
     }
 
-    public CastDTO retrieveCast(ExternalMovieId externalMovieId) {
-        return tmdbClient.cast(externalMovieId.getId())
+    public CastDTO retrieveCast(String externalMovieId) {
+        return tmdbClient.cast(externalMovieId)
                 .get()
                 .retrieve()
                 .bodyToMono(CastDTO.class)

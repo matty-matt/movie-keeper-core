@@ -1,7 +1,6 @@
 package com.kociszewski.trailerservice.infrastructure;
 
 import com.kociszewski.trailerservice.domain.queries.GetTrailersQuery;
-import com.kociszewski.movieservice.shared.MovieId;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
@@ -22,7 +21,7 @@ public class TrailerController {
     @GetMapping
     public List<TrailerDTO> trailers(@PathVariable("movieId") String movieId) {
         return queryGateway.query(
-                new GetTrailersQuery(new MovieId(movieId)),
+                new GetTrailersQuery(movieId),
                 ResponseTypes.multipleInstancesOf(TrailerDTO.class)).join();
     }
 }

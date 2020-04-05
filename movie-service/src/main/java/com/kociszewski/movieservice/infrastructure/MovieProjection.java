@@ -33,7 +33,7 @@ public class MovieProjection {
 
     @EventHandler
     public void handle(MovieSavedEvent event) {
-        log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId().getId());
+        log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId());
         movieRepository.findByExternalMovieId(event.getExternalMovie().getExternalMovieId().getId()).ifPresentOrElse(
                 movie -> handleMovieDuplicate(),
                 () -> persistMovie(event));
@@ -42,7 +42,7 @@ public class MovieProjection {
     @QueryHandler
     public MovieDTO handle(GetMovieQuery getMovieQuery) {
         return movieRepository.
-                findById(getMovieQuery.getMovieId().getId())
+                findById(getMovieQuery.getMovieId())
                 .orElseGet(() -> new MovieDTO(MovieState.NOT_FOUND));
     }
 
@@ -53,9 +53,9 @@ public class MovieProjection {
 
     @EventHandler
     public void handle(ToggleWatchedEvent event) {
-        log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId().getId());
+        log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId());
         MovieDTO updatedMovie = mongoTemplate.findAndModify(
-                Query.query(Criteria.where(ID).is(event.getMovieId().getId())),
+                Query.query(Criteria.where(ID).is(event.getMovieId())),
                 Update.update(WATCHED, event.getWatched().isWatched()),
                 MovieDTO.class);
         notifySubscribers(updatedMovie);
@@ -63,7 +63,7 @@ public class MovieProjection {
 
     @EventHandler
     public void handle(MovieDeletedEvent event) {
-        movieRepository.deleteById(event.getMovieId().getId());
+        movieRepository.deleteById(event.getMovieId());
     }
 
     private void handleMovieDuplicate() {
@@ -73,7 +73,7 @@ public class MovieProjection {
     private void persistMovie(MovieSavedEvent event) {
         ExternalMovieInfo externalMovieInfo = event.getExternalMovie().getExternalMovieInfo();
         MovieDTO movieDTO = MovieDTO.builder()
-                .aggregateId(event.getMovieId().getId())
+                .aggregateId(event.getMovieId())
                 .externalMovieId(event.getExternalMovie().getExternalMovieId().getId())
                 .posterPath(externalMovieInfo.getPosterPath())
                 .title(externalMovieInfo.getTitle())

@@ -1,6 +1,6 @@
 package com.kociszewski.trailerservice.domain.events;
 
-import com.kociszewski.movieservice.infrastructure.trailer.TrailerSectionDTO;
+import com.kociszewski.trailerservice.infrastructure.TrailerSectionDTO;
 import lombok.Value;
 
 @Value

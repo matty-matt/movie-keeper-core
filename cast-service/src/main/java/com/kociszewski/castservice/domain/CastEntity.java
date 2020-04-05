@@ -5,8 +5,7 @@ import com.kociszewski.castservice.domain.commands.SaveCastCommand;
 import com.kociszewski.castservice.domain.events.CastDeletedEvent;
 import com.kociszewski.castservice.domain.events.CastFoundEvent;
 import com.kociszewski.castservice.domain.events.CastSavedEvent;
-import com.kociszewski.movieservice.shared.CastEntityId;
-import com.kociszewski.movieservice.shared.CastInfo;
+import com.kociszewski.castservice.infrastructure.CastInfo;
 import lombok.Builder;
 import lombok.Data;
 import org.axonframework.commandhandling.CommandHandler;
@@ -23,18 +22,18 @@ import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted
 @Builder
 public class CastEntity {
     @EntityId
-    private CastEntityId castEntityId;
+    private String castEntityId;
     private List<CastInfo> cast;
 
     @CommandHandler
     public void handle(FindCastCommand command) {
-        AggregateLifecycle.apply(new CastFoundEvent(command.getMovieId(), castEntityId, command.getExternalMovieId()));
+        apply(new CastFoundEvent(command.getMovieId(), castEntityId, command.getExternalMovieId()));
     }
 
     @CommandHandler
     public void handle(SaveCastCommand command) {
         if (cast.isEmpty()) {
-            AggregateLifecycle.apply(new CastSavedEvent(command.getCastDTO()));
+            apply(new CastSavedEvent(command.getCastDTO()));
         }
     }
 
@@ -55,6 +54,6 @@ public class CastEntity {
 
     @EventSourcingHandler
     public void on(CastDeletedEvent event) {
-        AggregateLifecycle.markDeleted();
+        markDeleted();
     }
 }

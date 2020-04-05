@@ -1,7 +1,6 @@
 package com.kociszewski.castservice.infrastructure;
 
 import com.kociszewski.castservice.domain.queries.GetCastQuery;
-import com.kociszewski.movieservice.shared.MovieId;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
@@ -22,7 +21,7 @@ public class CastController {
     @GetMapping
     public List<CastInfoDTO> cast(@PathVariable("movieId") String movieId) {
         return queryGateway.query(
-                new GetCastQuery(new MovieId(movieId)),
+                new GetCastQuery(movieId),
                 ResponseTypes.multipleInstancesOf(CastInfoDTO.class)).join();
     }
 }

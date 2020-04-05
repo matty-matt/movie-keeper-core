@@ -1,4 +1,4 @@
-package com.kociszewski.proxyservice.movierelease;
+package com.kociszewski.proxyservice.tmdb;
 
 import lombok.Data;
 

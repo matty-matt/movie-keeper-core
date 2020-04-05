@@ -1,6 +1,5 @@
-package com.kociszewski.proxyservice.movierelease;
+package com.kociszewski.proxyservice.tmdb;
 
-import com.kociszewski.proxyservice.tmdb.TmdbRelease;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

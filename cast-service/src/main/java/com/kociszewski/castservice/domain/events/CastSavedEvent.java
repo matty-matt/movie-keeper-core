@@ -1,6 +1,6 @@
 package com.kociszewski.castservice.domain.events;
 
-import com.kociszewski.movieservice.infrastructure.cast.CastDTO;
+import com.kociszewski.castservice.infrastructure.CastDTO;
 import lombok.Value;
 
 @Value

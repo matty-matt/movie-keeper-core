@@ -5,8 +5,6 @@ import com.kociszewski.trailerservice.domain.commands.SaveTrailersCommand;
 import com.kociszewski.trailerservice.domain.events.TrailersDeletedEvent;
 import com.kociszewski.trailerservice.domain.events.TrailersFoundEvent;
 import com.kociszewski.trailerservice.domain.events.TrailersSavedEvent;
-import com.kociszewski.movieservice.shared.Trailer;
-import com.kociszewski.movieservice.shared.TrailerEntityId;
 import lombok.Builder;
 import lombok.Data;
 import org.axonframework.commandhandling.CommandHandler;
@@ -23,18 +21,18 @@ import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted
 @Builder
 public class TrailerEntity {
     @EntityId
-    private TrailerEntityId trailerEntityId;
+    private String trailerEntityId;
     private List<Trailer> trailers;
 
     @CommandHandler
     public void handle(FindTrailersCommand command) {
-        AggregateLifecycle.apply(new TrailersFoundEvent(command.getMovieId(), trailerEntityId, command.getExternalMovieId()));
+        apply(new TrailersFoundEvent(command.getMovieId(), trailerEntityId, command.getExternalMovieId()));
     }
 
     @CommandHandler
     public void handle(SaveTrailersCommand command) {
         if (trailers.isEmpty()) {
-            AggregateLifecycle.apply(new TrailersSavedEvent(command.getTrailerSectionDTO()));
+            apply(new TrailersSavedEvent(command.getTrailerSectionDTO()));
         }
     }
 
@@ -54,6 +52,6 @@ public class TrailerEntity {
 
     @EventSourcingHandler
     public void on(TrailersDeletedEvent event) {
-        AggregateLifecycle.markDeleted();
+        markDeleted();
     }
 }

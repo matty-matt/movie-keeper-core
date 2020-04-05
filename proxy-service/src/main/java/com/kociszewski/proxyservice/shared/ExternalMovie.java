@@ -6,7 +6,7 @@ import lombok.Value;
 @Builder
 @Value
 public class ExternalMovie {
-    private ExternalMovieId externalMovieId;
+    private String externalMovieId;
     private ExternalMovieInfo externalMovieInfo;
     private String digitalRelease;
 }

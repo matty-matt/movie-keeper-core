@@ -29,13 +29,13 @@ public class CastProjection {
     @QueryHandler
     public List<CastInfoDTO> handle(GetCastQuery query) {
         return castRepository
-                .findByMovieId(query.getMovieId().getId())
+                .findByMovieId(query.getMovieId())
                 .orElseThrow(CastNotFoundException::new).getCast();
     }
 
     @EventHandler
     public void handle(CastDeletedEvent event) {
-        castRepository.deleteById(event.getCastEntityId().getId());
+        castRepository.deleteById(event.getCastEntityId());
     }
 
     private void skip(String movieId) {

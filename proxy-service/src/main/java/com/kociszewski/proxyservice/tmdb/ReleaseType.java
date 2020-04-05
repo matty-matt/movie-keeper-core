@@ -1,4 +1,4 @@
-package com.kociszewski.proxyservice.movierelease;
+package com.kociszewski.proxyservice.tmdb;
 
 public enum ReleaseType {
     DIGITAL(4), PHYSICAL(5);
