@@ -27,12 +27,11 @@ import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted
 public class CastAggregate {
     @AggregateIdentifier
     private String castId;
-    private String movieId;
     private List<CastInfo> cast;
 
     @CommandHandler
     public CastAggregate(FindCastCommand command) {
-        apply(new CastFoundEvent(command.getCastId(), command.getMovieId(), command.getExternalMovieId()));
+        apply(new CastFoundEvent(command.getCastId(), command.getExternalMovieId()));
     }
 
     @EventSourcingHandler

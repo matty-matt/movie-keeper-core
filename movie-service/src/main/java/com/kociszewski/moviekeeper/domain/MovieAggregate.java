@@ -84,11 +84,6 @@ public class MovieAggregate {
     }
 
 //    @CommandHandler
-//    public void handle(FindCastCommand command) {
-//        apply(new CastSearchDelegatedEvent(command.getMovieId(), command.getExternalMovieId()));
-//    }
-
-//    @CommandHandler
 //    public void handle(FindTrailersCommand command) {
 //        apply(new TrailersSearchDelegatedEvent(command.getMovieId(), command.getExternalMovieId()));
 //    }
