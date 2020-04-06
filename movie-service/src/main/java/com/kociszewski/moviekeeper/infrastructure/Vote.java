@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeeper.shared;
+package com.kociszewski.moviekeeper.infrastructure;
 
 import lombok.Value;
 

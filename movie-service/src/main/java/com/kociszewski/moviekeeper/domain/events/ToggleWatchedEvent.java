@@ -1,6 +1,6 @@
 package com.kociszewski.moviekeeper.domain.events;
 
-import com.kociszewski.moviekeeper.shared.Watched;
+import com.kociszewski.moviekeeper.infrastructure.Watched;
 import lombok.Value;
 
 @Value

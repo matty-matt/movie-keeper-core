@@ -1,6 +1,6 @@
 package com.kociszewski.moviekeeper.tmdb;
 
-import com.kociszewski.moviekeeper.shared.*;
+import com.kociszewski.moviekeeper.infrastructure.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

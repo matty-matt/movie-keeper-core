@@ -1,9 +1,12 @@
 package com.kociszewski.moviekeeper.domain;
 
+import com.kociszewski.moviekeeper.domain.commands.SaveCastDetailsCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveMovieDetailsCommand;
+import com.kociszewski.moviekeeper.domain.events.CastFetchDelegatedEvent;
 import com.kociszewski.moviekeeper.domain.events.MovieFetchDelegatedEvent;
-import com.kociszewski.moviekeeper.shared.ExternalMovie;
-import com.kociszewski.moviekeeper.shared.MovieState;
+import com.kociszewski.moviekeeper.infrastructure.CastDTO;
+import com.kociszewski.moviekeeper.infrastructure.ExternalMovie;
+import com.kociszewski.moviekeeper.infrastructure.MovieState;
 import com.kociszewski.moviekeeper.tmdb.NotFoundInExternalServiceException;
 import com.kociszewski.moviekeeper.tmdb.TmdbService;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +29,11 @@ public class ProxyEventsHandler {
             externalMovie = ExternalMovie.builder().movieState(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE).build();
         }
         commandGateway.send(new SaveMovieDetailsCommand(event.getProxyId(), externalMovie));
+    }
+
+    @EventHandler
+    public void on(CastFetchDelegatedEvent event) {
+        CastDTO castDTO = tmdbService.retrieveCast(event.getExternalMovieId());
+        commandGateway.send(new SaveCastDetailsCommand(event.getProxyId(), castDTO));
     }
 }

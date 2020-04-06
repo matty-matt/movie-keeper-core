@@ -13,6 +13,7 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,7 @@ public class CastAggregate {
     @EventSourcingHandler
     public void on(CastSearchDelegatedEvent event) {
         this.castId = event.getCastId();
+        this.cast = new ArrayList<>();
     }
 
     @CommandHandler

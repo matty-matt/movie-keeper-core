@@ -9,7 +9,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class FetchCastCommand {
+public class FetchCastDetailsCommand {
     @TargetAggregateIdentifier
     String proxyId;
     String externalMovieId;

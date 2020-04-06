@@ -3,7 +3,6 @@ package com.kociszewski.moviekeeper.infrastructure;
 import com.kociszewski.moviekeeper.domain.commands.*;
 import com.kociszewski.moviekeeper.domain.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeeper.domain.queries.GetMovieQuery;
-import com.kociszewski.moviekeeper.shared.Watched;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;

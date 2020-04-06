@@ -4,7 +4,7 @@ import com.kociszewski.moviekeeper.domain.commands.*;
 import com.kociszewski.moviekeeper.domain.events.*;
 import com.kociszewski.moviekeeper.domain.info.*;
 import com.kociszewski.moviekeeper.domain.info.Runtime;
-import com.kociszewski.moviekeeper.shared.*;
+import com.kociszewski.moviekeeper.infrastructure.*;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;

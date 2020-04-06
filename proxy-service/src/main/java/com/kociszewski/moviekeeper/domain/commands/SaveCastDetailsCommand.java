@@ -1,14 +1,12 @@
 package com.kociszewski.moviekeeper.domain.commands;
 
 import com.kociszewski.moviekeeper.infrastructure.CastDTO;
-import lombok.*;
+import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
-public class SaveCastCommand {
+@Value
+public class SaveCastDetailsCommand {
     @TargetAggregateIdentifier
-    String castId;
-    CastDTO castDTO;
+    private String proxyId;
+    private CastDTO castDTO;
 }

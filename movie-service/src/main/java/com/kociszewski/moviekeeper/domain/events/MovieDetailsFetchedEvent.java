@@ -1,7 +1,7 @@
 package com.kociszewski.moviekeeper.domain.events;
 
 
-import com.kociszewski.moviekeeper.shared.ExternalMovie;
+import com.kociszewski.moviekeeper.infrastructure.ExternalMovie;
 import lombok.Value;
 
 @Value

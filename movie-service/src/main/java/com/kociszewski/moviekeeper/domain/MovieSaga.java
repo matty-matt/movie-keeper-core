@@ -61,15 +61,6 @@ public class MovieSaga {
         }
     }
 
-//    @SagaEventHandler(associationProperty = "movieId")
-//    public void handle(CastSearchDelegatedEvent event) {
-//        log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId());
-//
-//        String castId = CAST_PREFIX.concat(movieId);
-//        associateWith("castId", castId);
-//        commandGateway.send(new FetchCastCommand(castId, event.getExternalMovieId()));
-//    }
-
     @SagaEventHandler(associationProperty = "movieId")
     public void handle(TrailersSearchDelegatedEvent event) {
         log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId());

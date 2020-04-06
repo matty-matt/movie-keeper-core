@@ -1,6 +1,5 @@
-package com.kociszewski.moviekeeper.shared;
+package com.kociszewski.moviekeeper.infrastructure;
 
-import com.kociszewski.moviekeeper.infrastructure.MovieState;
 import lombok.Builder;
 import lombok.Value;
 

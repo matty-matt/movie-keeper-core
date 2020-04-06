@@ -5,7 +5,6 @@ import com.kociszewski.moviekeeper.domain.events.MovieSavedEvent;
 import com.kociszewski.moviekeeper.domain.events.ToggleWatchedEvent;
 import com.kociszewski.moviekeeper.domain.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeeper.domain.queries.GetMovieQuery;
-import com.kociszewski.moviekeeper.shared.ExternalMovieInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
