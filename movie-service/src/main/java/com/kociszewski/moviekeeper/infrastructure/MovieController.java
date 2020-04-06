@@ -1,10 +1,7 @@
 package com.kociszewski.moviekeeper.infrastructure;
 
-import com.kociszewski.moviekeeper.domain.commands.FindCastCommand;
-import com.kociszewski.moviekeeper.domain.commands.FindMovieCommand;
+import com.kociszewski.moviekeeper.domain.commands.*;
 import com.kociszewski.moviekeeper.domain.queries.GetAllMoviesQuery;
-import com.kociszewski.moviekeeper.domain.commands.DeleteMovieCommand;
-import com.kociszewski.moviekeeper.domain.commands.ToggleWatchedCommand;
 import com.kociszewski.moviekeeper.domain.queries.GetMovieQuery;
 import com.kociszewski.moviekeeper.shared.Watched;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +49,9 @@ public class MovieController {
                         HttpStatus.CREATED,
                         (movieDTO) -> {
                             var externalMovieId = movieDTO.getExternalMovieId();
-                            commandGateway.send(new FindMovieCommand(movieId, externalMovieId));
-                            commandGateway.send(new FindCastCommand(movieId, externalMovieId));
+                            var castId = UUID.randomUUID().toString();
+                            commandGateway.send(new FindCastCommand(castId, movieId, externalMovieId));
+//                            commandGateway.send(new FindTrailersCommand(movieId, externalMovieId));
                         }
                 ))
                 .doFinally(it -> findMovieSubscription.close());

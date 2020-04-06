@@ -5,7 +5,7 @@ import com.kociszewski.moviekeeper.domain.events.*;
 import com.kociszewski.moviekeeper.domain.info.*;
 import com.kociszewski.moviekeeper.domain.info.Runtime;
 import com.kociszewski.moviekeeper.shared.*;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -19,7 +19,7 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted;
 
 @Aggregate
-@Getter
+@NoArgsConstructor
 @Slf4j
 public class MovieAggregate {
 
@@ -41,8 +41,6 @@ public class MovieAggregate {
     private DateWrapper insertionDate;
     private DateWrapper lastRefreshDate;
     private SearchPhrase searchPhrase;
-
-    private MovieAggregate() {}
 
     @CommandHandler
     public MovieAggregate(FindMovieCommand command) {
@@ -85,15 +83,15 @@ public class MovieAggregate {
                 .collect(Collectors.toList());
     }
 
-    @CommandHandler
-    public void handle(FindCastCommand command) {
-        apply(new CastSearchDelegatedEvent(command.getMovieId(), command.getExternalMovieId()));
-    }
+//    @CommandHandler
+//    public void handle(FindCastCommand command) {
+//        apply(new CastSearchDelegatedEvent(command.getMovieId(), command.getExternalMovieId()));
+//    }
 
-    @CommandHandler
-    public void handle(FindTrailersCommand command) {
-        apply(new TrailersSearchDelegatedEvent(command.getMovieId(), command.getExternalMovieId()));
-    }
+//    @CommandHandler
+//    public void handle(FindTrailersCommand command) {
+//        apply(new TrailersSearchDelegatedEvent(command.getMovieId(), command.getExternalMovieId()));
+//    }
 
     @CommandHandler
     public void handle(ToggleWatchedCommand command) {

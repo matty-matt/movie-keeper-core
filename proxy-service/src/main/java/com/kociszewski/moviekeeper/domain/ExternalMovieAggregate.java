@@ -36,7 +36,9 @@ class ExternalMovieAggregate {
     
     @CommandHandler
     public void handle(SaveMovieDetailsCommand command) {
-        apply(new MovieDetailsFetchedEvent(command.getProxyId(), command.getExternalMovie()));
+        if (this.externalMovie == null) {
+            apply(new MovieDetailsFetchedEvent(command.getProxyId(), command.getExternalMovie()));
+        }
     }
     
     @EventSourcingHandler

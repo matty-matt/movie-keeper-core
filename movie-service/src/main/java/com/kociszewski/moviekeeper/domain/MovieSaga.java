@@ -1,7 +1,7 @@
 package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
-import com.kociszewski.moviekeeper.domain.commands.MovieDetailsFetchedEvent;
+import com.kociszewski.moviekeeper.domain.events.MovieDetailsFetchedEvent;
 import com.kociszewski.moviekeeper.domain.events.CastSearchDelegatedEvent;
 import com.kociszewski.moviekeeper.domain.events.TrailersSearchDelegatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
