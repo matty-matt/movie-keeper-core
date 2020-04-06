@@ -29,7 +29,7 @@ public class CastAggregate {
 
     @CommandHandler
     public CastAggregate(FindCastCommand command) {
-        apply(new CastSearchDelegatedEvent(command.getCastId(), command.getDupaId(), command.getExternalMovieId()));
+        apply(new CastSearchDelegatedEvent(command.getCastId(), command.getMovieId(), command.getExternalMovieId()));
     }
 
     @EventSourcingHandler

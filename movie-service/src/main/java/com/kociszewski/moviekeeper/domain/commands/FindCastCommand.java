@@ -8,5 +8,5 @@ public class FindCastCommand {
     @TargetAggregateIdentifier
     String castId;
     String externalMovieId;
-    String dupaId;
+    String movieId;
 }

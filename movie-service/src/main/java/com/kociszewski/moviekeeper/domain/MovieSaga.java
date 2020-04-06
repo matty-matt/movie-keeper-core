@@ -43,7 +43,6 @@ public class MovieSaga {
         log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId());
         movieId = event.getMovieId();
         String proxyId = PROXY_PREFIX.concat(movieId);
-        log.info("[saga] This is proxyId={}", proxyId);
         associateWith("proxyId", proxyId);
         commandGateway.send(new FetchMovieDetailsCommand(proxyId, event.getSearchPhrase()));
     }

@@ -25,7 +25,6 @@ public class CastSaga {
     public void handle(CastSearchDelegatedEvent event) {
         log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getCastId());
         String proxyId = PROXY_PREFIX.concat(event.getMovieId());
-        log.info("[saga] This is proxyId={}", proxyId);
         associateWith("proxyId", proxyId);
         commandGateway.send(new FetchCastCommand(proxyId, event.getExternalMovieId(), event.getCastId()));
     }
