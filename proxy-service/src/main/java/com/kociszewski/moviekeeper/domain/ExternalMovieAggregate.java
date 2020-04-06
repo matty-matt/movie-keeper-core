@@ -1,6 +1,8 @@
 package com.kociszewski.moviekeeper.domain;
 
+import com.kociszewski.moviekeeper.domain.commands.FetchCastCommand;
 import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
+import com.kociszewski.moviekeeper.domain.events.CastFetchDelegatedEvent;
 import com.kociszewski.moviekeeper.domain.events.MovieFetchDelegatedEvent;
 import com.kociszewski.moviekeeper.domain.commands.SaveMovieDetailsCommand;
 import com.kociszewski.moviekeeper.domain.events.MovieDetailsFetchedEvent;
@@ -22,6 +24,7 @@ class ExternalMovieAggregate {
 
     private String searchPhrase;
     private ExternalMovie externalMovie;
+    private String castId;
 
     @CommandHandler
     ExternalMovieAggregate(FetchMovieDetailsCommand command) {
@@ -44,5 +47,15 @@ class ExternalMovieAggregate {
     @EventSourcingHandler
     public void on(MovieDetailsFetchedEvent event) {
         this.externalMovie = event.getExternalMovie();
+    }
+
+    @CommandHandler
+    public void handle(FetchCastCommand command) {
+        apply(new CastFetchDelegatedEvent(command.getProxyId(), command.getExternalMovieId(), command.getCastId()));
+    }
+
+    @EventSourcingHandler
+    public void on(CastFetchDelegatedEvent event) {
+        this.castId = event.getCastId();
     }
 }

@@ -3,11 +3,9 @@ package com.kociszewski.moviekeeper.domain;
 import com.kociszewski.moviekeeper.domain.commands.FindCastCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveCastCommand;
 import com.kociszewski.moviekeeper.domain.events.CastDeletedEvent;
-import com.kociszewski.moviekeeper.domain.events.CastFoundEvent;
+import com.kociszewski.moviekeeper.domain.events.CastSearchDelegatedEvent;
 import com.kociszewski.moviekeeper.domain.events.CastSavedEvent;
 import com.kociszewski.moviekeeper.infrastructure.CastInfo;
-import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
@@ -31,11 +29,11 @@ public class CastAggregate {
 
     @CommandHandler
     public CastAggregate(FindCastCommand command) {
-        apply(new CastFoundEvent(command.getCastId(), command.getExternalMovieId()));
+        apply(new CastSearchDelegatedEvent(command.getCastId(), command.getDupaId(), command.getExternalMovieId()));
     }
 
     @EventSourcingHandler
-    public void on(CastFoundEvent event) {
+    public void on(CastSearchDelegatedEvent event) {
         this.castId = event.getCastId();
     }
 
