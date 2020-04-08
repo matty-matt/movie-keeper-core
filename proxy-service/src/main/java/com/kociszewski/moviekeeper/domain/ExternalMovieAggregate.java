@@ -1,13 +1,7 @@
 package com.kociszewski.moviekeeper.domain;
 
-import com.kociszewski.moviekeeper.domain.commands.FetchCastDetailsCommand;
-import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
-import com.kociszewski.moviekeeper.domain.commands.SaveCastDetailsCommand;
-import com.kociszewski.moviekeeper.domain.events.CastFetchDelegatedEvent;
-import com.kociszewski.moviekeeper.domain.events.CastDetailsFetchedEvent;
-import com.kociszewski.moviekeeper.domain.events.MovieFetchDelegatedEvent;
-import com.kociszewski.moviekeeper.domain.commands.SaveMovieDetailsCommand;
-import com.kociszewski.moviekeeper.domain.events.MovieDetailsFetchedEvent;
+import com.kociszewski.moviekeeper.domain.commands.*;
+import com.kociszewski.moviekeeper.domain.events.*;
 import com.kociszewski.moviekeeper.infrastructure.ExternalMovie;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
@@ -27,6 +21,7 @@ class ExternalMovieAggregate {
     private String searchPhrase;
     private ExternalMovie externalMovie;
     private String castId;
+    private String trailersId;
 
     @CommandHandler
     ExternalMovieAggregate(FetchMovieDetailsCommand command) {
@@ -65,4 +60,20 @@ class ExternalMovieAggregate {
     public void handle(SaveCastDetailsCommand command) {
         apply(new CastDetailsFetchedEvent(command.getProxyId(), command.getCastDTO()));
     }
+
+    @CommandHandler
+    public void handle(FetchTrailersDetailsCommand command) {
+        apply(new TrailersFetchDelegatedEvent(command.getProxyId(), command.getExternalMovieId(), command.getTrailersId()));
+    }
+
+    @EventSourcingHandler
+    public void on(TrailersFetchDelegatedEvent event) {
+        this.trailersId = event.getTrailersId();
+    }
+
+    @CommandHandler
+    public void handle(SaveTrailersDetailsCommand command) {
+        apply(new TrailersDetailsFetchedEvent(command.getProxyId(), command.getTrailerSectionDTO()));
+    }
+
 }

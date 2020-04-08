@@ -2,11 +2,14 @@ package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.SaveCastDetailsCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveMovieDetailsCommand;
+import com.kociszewski.moviekeeper.domain.commands.SaveTrailersDetailsCommand;
 import com.kociszewski.moviekeeper.domain.events.CastFetchDelegatedEvent;
 import com.kociszewski.moviekeeper.domain.events.MovieFetchDelegatedEvent;
+import com.kociszewski.moviekeeper.domain.events.TrailersFetchDelegatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.CastDTO;
 import com.kociszewski.moviekeeper.infrastructure.ExternalMovie;
 import com.kociszewski.moviekeeper.infrastructure.MovieState;
+import com.kociszewski.moviekeeper.infrastructure.TrailerSectionDTO;
 import com.kociszewski.moviekeeper.tmdb.NotFoundInExternalServiceException;
 import com.kociszewski.moviekeeper.tmdb.TmdbService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +37,18 @@ public class ProxyEventsHandler {
     @EventHandler
     public void on(CastFetchDelegatedEvent event) {
         CastDTO castDTO = tmdbService.retrieveCast(event.getExternalMovieId());
+        castDTO.setExternalMovieId(event.getExternalMovieId());
+        castDTO.setAggregateId(castDTO.getAggregateId());
+        castDTO.setMovieId(castDTO.getMovieId());
         commandGateway.send(new SaveCastDetailsCommand(event.getProxyId(), castDTO));
+    }
+
+    @EventHandler
+    public void on(TrailersFetchDelegatedEvent event) {
+        TrailerSectionDTO trailerSectionDTO = tmdbService.retrieveTrailers(event.getExternalMovieId());
+        trailerSectionDTO.setExternalMovieId(event.getExternalMovieId());
+        trailerSectionDTO.setAggregateId(trailerSectionDTO.getAggregateId());
+        trailerSectionDTO.setMovieId(trailerSectionDTO.getMovieId());
+        commandGateway.send(new SaveTrailersDetailsCommand(event.getProxyId(), trailerSectionDTO));
     }
 }

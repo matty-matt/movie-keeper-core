@@ -3,8 +3,8 @@ package com.kociszewski.moviekeeper.domain.events;
 import lombok.Value;
 
 @Value
-public class TrailersFoundEvent {
-    private String movieId;
-    private String trailerEntityId;
+public class TrailersFetchDelegatedEvent {
+    private String proxyId;
     private String externalMovieId;
+    private String trailersId;
 }

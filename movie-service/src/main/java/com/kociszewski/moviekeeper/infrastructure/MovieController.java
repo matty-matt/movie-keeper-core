@@ -49,8 +49,9 @@ public class MovieController {
                         (movieDTO) -> {
                             var externalMovieId = movieDTO.getExternalMovieId();
                             var castId = UUID.randomUUID().toString();
+                            var trailersId = UUID.randomUUID().toString();
                             commandGateway.send(new FindCastCommand(castId, externalMovieId, movieId));
-//                            commandGateway.send(new FindTrailersCommand(movieId, externalMovieId));
+                            commandGateway.send(new FindTrailersCommand(trailersId, externalMovieId, movieId));
                         }
                 ))
                 .doFinally(it -> findMovieSubscription.close());

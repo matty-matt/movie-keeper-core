@@ -2,12 +2,10 @@ package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
 import com.kociszewski.moviekeeper.domain.events.MovieDetailsFetchedEvent;
-import com.kociszewski.moviekeeper.domain.events.TrailersSearchDelegatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
 import com.kociszewski.moviekeeper.domain.commands.SaveMovieCommand;
 import com.kociszewski.moviekeeper.domain.queries.GetMovieQuery;
 import com.kociszewski.moviekeeper.domain.events.MovieSearchDelegatedEvent;
-import com.kociszewski.moviekeeper.external.trailer.FetchTrailersCommand;
 import com.kociszewski.moviekeeper.infrastructure.MovieState;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -60,43 +58,4 @@ public class MovieSaga {
             commandGateway.send(new SaveMovieCommand(movieId, event.getExternalMovie()));
         }
     }
-
-    @SagaEventHandler(associationProperty = "movieId")
-    public void handle(TrailersSearchDelegatedEvent event) {
-        log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId());
-
-        String trailersId = TRAILER_PREFIX.concat(movieId);
-        associateWith("trailersId", trailersId);
-        commandGateway.send(new FetchTrailersCommand(trailersId, event.getExternalMovieId()));
-    }
-
-//    @EventHandler
-//    public void handle(TrailersFoundEvent event) {
-//        log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId().getId());
-//        TrailerSectionDTO trailers = getTrailerSectionDTO(event.getExternalMovieId(), event.getTrailerEntityId(), event.getMovieId());
-//        commandGateway.send(new SaveTrailersCommand(event.getMovieId(), trailers));
-//    }
-//
-//    @EventHandler
-//    public void handle(CastFoundEvent event) {
-//        log.info("Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId().getId());
-//        CastDTO cast = getCastDTO(event.getExternalMovieId(), event.getCastEntityId(), event.getMovieId());
-//        commandGateway.send(new SaveCastCommand(event.getMovieId(), cast));
-//    }
-
-//    private TrailerSectionDTO getTrailerSectionDTO(ExternalMovieId externalMovieId, TrailerEntityId trailerEntityId, MovieId movieId) {
-//        TrailerSectionDTO trailers = externalService.retrieveTrailers(externalMovieId);
-//        trailers.setExternalMovieId(externalMovieId.getId());
-//        trailers.setAggregateId(trailerEntityId.getId());
-//        trailers.setMovieId(movieId.getId());
-//        return trailers;
-//    }
-//
-//    private CastDTO getCastDTO(ExternalMovieId externalMovieId, CastEntityId castEntityId, MovieId movieId) {
-//        CastDTO cast = externalService.retrieveCast(externalMovieId);
-//        cast.setExternalMovieId(externalMovieId.getId());
-//        cast.setAggregateId(castEntityId.getId());
-//        cast.setMovieId(movieId.getId());
-//        return cast;
-//    }
 }

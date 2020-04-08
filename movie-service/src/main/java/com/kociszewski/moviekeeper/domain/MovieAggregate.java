@@ -83,11 +83,6 @@ public class MovieAggregate {
                 .collect(Collectors.toList());
     }
 
-//    @CommandHandler
-//    public void handle(FindTrailersCommand command) {
-//        apply(new TrailersSearchDelegatedEvent(command.getMovieId(), command.getExternalMovieId()));
-//    }
-
     @CommandHandler
     public void handle(ToggleWatchedCommand command) {
         if (this.watched.isWatched() == command.getWatched().isWatched()) {
