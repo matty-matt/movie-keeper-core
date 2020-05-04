@@ -35,7 +35,9 @@ services:
     build:
       context: ./trailer-service
     ports:
-      - '35003:35002'
+      - '35003:35003'
   proxy-service:
     build:
       context: ./proxy-service
+    ports:
+      - '35004:35004'
