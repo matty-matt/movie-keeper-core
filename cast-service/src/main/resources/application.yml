@@ -6,7 +6,7 @@ spring:
     name: cast-service
   data:
     mongodb:
-      uri: mongodb://localhost:38550/moviekeeper
-#axon:
-#  eventhandling:
-#      processors:
+      uri: mongodb://mongo:38550/moviekeeper
+axon:
+  axonserver:
+    servers: axon
