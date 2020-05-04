@@ -4,7 +4,6 @@ services:
   gateway:
     container_name: api-gateway
     image: 'nginx:latest'
-    network_mode: host
     ports:
       - '35000:80'
     volumes:
