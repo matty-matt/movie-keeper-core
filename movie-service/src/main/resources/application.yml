@@ -6,9 +6,8 @@ spring:
     name: movie-service
   data:
     mongodb:
-      uri: mongodb://localhost:38550/moviekeeper
-#axon:
-#  eventhandling:
-#    processors:
-#      name:
-#        mode: tracking
+      uri: mongodb://mongo:38550/moviekeeper
+
+axon:
+  axonserver:
+    servers: axon

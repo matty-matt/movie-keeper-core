@@ -6,4 +6,8 @@ spring:
     name: trailer-service
   data:
     mongodb:
-      uri: mongodb://localhost:38550/moviekeeper
+      uri: mongodb://mongo:38550/moviekeeper
+
+axon:
+  axonserver:
+    servers: axon
