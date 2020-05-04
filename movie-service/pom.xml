@@ -3,14 +3,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.kociszewski</groupId>
-        <artifactId>movie-keeper-core</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.2.RELEASE</version>
+        <relativePath/>
     </parent>
     <artifactId>movie-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>movie-service</name>
     <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <java.version>11</java.version>
+        <axon.version>4.3.1</axon.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -81,9 +87,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
             </plugin>
         </plugins>
     </build>
