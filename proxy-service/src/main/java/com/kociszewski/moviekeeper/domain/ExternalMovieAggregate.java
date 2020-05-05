@@ -2,18 +2,23 @@ package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.*;
 import com.kociszewski.moviekeeper.domain.events.*;
+import com.kociszewski.moviekeeper.infrastructure.CastDTO;
 import com.kociszewski.moviekeeper.infrastructure.ExternalMovie;
+import com.kociszewski.moviekeeper.infrastructure.TrailerSectionDTO;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import static org.apache.logging.log4j.util.Strings.EMPTY;
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 @Aggregate
 @NoArgsConstructor
 class ExternalMovieAggregate {
+
+    private static final String PREFIX = "proxy_";
 
     @AggregateIdentifier
     private String proxyId;
@@ -58,7 +63,10 @@ class ExternalMovieAggregate {
 
     @CommandHandler
     public void handle(SaveCastDetailsCommand command) {
-        apply(new CastDetailsFetchedEvent(command.getProxyId(), command.getCastDTO()));
+        CastDTO castDTO = command.getCastDTO();
+        castDTO.setAggregateId(castId);
+        castDTO.setMovieId(proxyId.replace(PREFIX, EMPTY));
+        apply(new CastDetailsFetchedEvent(command.getProxyId(), castDTO));
     }
 
     @CommandHandler
@@ -73,7 +81,10 @@ class ExternalMovieAggregate {
 
     @CommandHandler
     public void handle(SaveTrailersDetailsCommand command) {
-        apply(new TrailersDetailsFetchedEvent(command.getProxyId(), command.getTrailerSectionDTO()));
+        TrailerSectionDTO trailerSectionDTO = command.getTrailerSectionDTO();
+        trailerSectionDTO.setAggregateId(trailersId);
+        trailerSectionDTO.setMovieId(proxyId.replace(PREFIX, EMPTY));
+        apply(new TrailersDetailsFetchedEvent(command.getProxyId(), trailerSectionDTO));
     }
 
 }

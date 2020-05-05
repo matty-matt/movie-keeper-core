@@ -38,8 +38,6 @@ public class ProxyEventsHandler {
     public void on(CastFetchDelegatedEvent event) {
         CastDTO castDTO = tmdbService.retrieveCast(event.getExternalMovieId());
         castDTO.setExternalMovieId(event.getExternalMovieId());
-        castDTO.setAggregateId(castDTO.getAggregateId());
-        castDTO.setMovieId(castDTO.getMovieId());
         commandGateway.send(new SaveCastDetailsCommand(event.getProxyId(), castDTO));
     }
 
@@ -47,8 +45,6 @@ public class ProxyEventsHandler {
     public void on(TrailersFetchDelegatedEvent event) {
         TrailerSectionDTO trailerSectionDTO = tmdbService.retrieveTrailers(event.getExternalMovieId());
         trailerSectionDTO.setExternalMovieId(event.getExternalMovieId());
-        trailerSectionDTO.setAggregateId(trailerSectionDTO.getAggregateId());
-        trailerSectionDTO.setMovieId(trailerSectionDTO.getMovieId());
         commandGateway.send(new SaveTrailersDetailsCommand(event.getProxyId(), trailerSectionDTO));
     }
 }
