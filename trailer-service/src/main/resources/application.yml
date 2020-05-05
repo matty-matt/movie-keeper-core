@@ -5,7 +5,7 @@ spring:
     name: trailer-service
   data:
     mongodb:
-      uri: mongodb://mongo:38550/moviekeeper
+      uri: mongodb://localhost:38550/moviekeeper
 ---
 spring:
   profiles: prod
