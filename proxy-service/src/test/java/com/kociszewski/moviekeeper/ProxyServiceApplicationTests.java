@@ -1,4 +1,4 @@
-package com.kociszewski.proxyservice;
+package com.kociszewski.moviekeeper;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
