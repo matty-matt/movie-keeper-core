@@ -1,13 +1,17 @@
 server:
   port: 35003
-
 spring:
   application:
     name: trailer-service
   data:
     mongodb:
       uri: mongodb://mongo:38550/moviekeeper
-
+---
+spring:
+  profiles: prod
+  data:
+    mongodb:
+      uri: mongodb://mongo:38550/moviekeeper
 axon:
   axonserver:
     servers: axon

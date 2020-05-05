@@ -1,14 +1,14 @@
 server:
   port: 35004
-
 spring:
   application:
     name: proxy-service
-
 api:
   url: https://api.themoviedb.org/3
   key: ${TMDB_API_KEY}
-
+---
+spring:
+  profiles: prod
 axon:
   axonserver:
     servers: axon

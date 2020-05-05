@@ -1,13 +1,17 @@
 server:
   port: 35002
-
 spring:
   application:
     name: cast-service
   data:
     mongodb:
+      uri: mongodb://localhost:38550/moviekeeper
+---
+spring:
+  profiles: prod
+  data:
+    mongodb:
       uri: mongodb://mongo:38550/moviekeeper
-
 axon:
   axonserver:
     servers: axon

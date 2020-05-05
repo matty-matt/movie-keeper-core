@@ -26,6 +26,8 @@ services:
       context: ./movie-service
     ports:
       - '35001:35001'
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
     command: [
       "./wait-for-it.sh", "axon:8124", "--timeout=30", "--",
       "java", "-jar", "app.jar"
@@ -35,6 +37,8 @@ services:
       context: ./cast-service
     ports:
       - '35002:35002'
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
     command: [
       "./wait-for-it.sh", "axon:8124", "--timeout=30", "--",
       "java", "-jar", "app.jar"
@@ -44,6 +48,8 @@ services:
       context: ./trailer-service
     ports:
       - '35003:35003'
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
     command: [
       "./wait-for-it.sh", "axon:8124", "--timeout=30", "--",
       "java", "-jar", "app.jar"
@@ -53,6 +59,7 @@ services:
       context: ./proxy-service
     environment:
       - TMDB_API_KEY=${TMDB_API_KEY}
+      - SPRING_PROFILES_ACTIVE=prod
     command: [
       "./wait-for-it.sh", "axon:8124", "--timeout=30", "--",
       "java", "-jar", "app.jar"
