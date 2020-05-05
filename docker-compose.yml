@@ -26,20 +26,34 @@ services:
       context: ./movie-service
     ports:
       - '35001:35001'
+    command: [
+      "./wait-for-it.sh", "axon:8124", "--timeout=30", "--",
+      "java", "-jar", "app.jar"
+    ]
   cast-service:
     build:
       context: ./cast-service
     ports:
       - '35002:35002'
+    command: [
+      "./wait-for-it.sh", "axon:8124", "--timeout=30", "--",
+      "java", "-jar", "app.jar"
+    ]
   trailer-service:
     build:
       context: ./trailer-service
     ports:
       - '35003:35003'
+    command: [
+      "./wait-for-it.sh", "axon:8124", "--timeout=30", "--",
+      "java", "-jar", "app.jar"
+    ]
   proxy-service:
     build:
       context: ./proxy-service
-    ports:
-      - '35004:35004'
     environment:
       - TMDB_API_KEY=${TMDB_API_KEY}
+    command: [
+      "./wait-for-it.sh", "axon:8124", "--timeout=30", "--",
+      "java", "-jar", "app.jar"
+    ]
