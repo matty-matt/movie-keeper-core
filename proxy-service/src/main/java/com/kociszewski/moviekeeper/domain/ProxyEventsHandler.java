@@ -23,16 +23,16 @@ public class ProxyEventsHandler {
     private final TmdbService tmdbService;
     private final CommandGateway commandGateway;
 
-    @EventHandler
-    public void on(MovieFetchDelegatedEvent event) {
-        ExternalMovie externalMovie;
-        try {
-            externalMovie = tmdbService.searchMovie(event.getSearchPhrase());
-        } catch (NotFoundInExternalServiceException e) {
-            externalMovie = ExternalMovie.builder().movieState(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE).build();
-        }
-        commandGateway.send(new SaveMovieDetailsCommand(event.getProxyId(), externalMovie));
-    }
+//    @EventHandler
+//    public void on(MovieFetchDelegatedEvent event) {
+//        ExternalMovie externalMovie;
+//        try {
+//            externalMovie = tmdbService.searchMovie(event.getSearchPhrase());
+//        } catch (NotFoundInExternalServiceException e) {
+//            externalMovie = ExternalMovie.builder().movieState(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE).build();
+//        }
+//        commandGateway.send(new SaveMovieDetailsCommand(event.getProxyId(), externalMovie));
+//    }
 
     @EventHandler
     public void on(CastFetchDelegatedEvent event) {
