@@ -79,7 +79,7 @@ public class TrailerAggregateTest {
     }
 
     @Test
-    public void shouldTrailersSavedEventAppearWhenTrailersExists() {
+    public void shouldTrailersSavedEventAppearWhenTrailersAlreadySet() {
         // TODO
     }
 
