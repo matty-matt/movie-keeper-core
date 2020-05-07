@@ -5,6 +5,7 @@ import com.kociszewski.moviekeeper.domain.commands.SaveTrailersCommand;
 import com.kociszewski.moviekeeper.domain.events.TrailersDeletedEvent;
 import com.kociszewski.moviekeeper.domain.events.TrailersSearchDelegatedEvent;
 import com.kociszewski.moviekeeper.domain.events.TrailersSavedEvent;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
@@ -22,6 +23,7 @@ import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted
 @Aggregate
 @NoArgsConstructor
 @Slf4j
+@Getter
 public class TrailerAggregate {
     @AggregateIdentifier
     private String trailersId;

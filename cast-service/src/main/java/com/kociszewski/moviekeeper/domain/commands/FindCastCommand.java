@@ -6,7 +6,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Value
 public class FindCastCommand {
     @TargetAggregateIdentifier
-    String castId;
-    String externalMovieId;
-    String movieId;
+    private String castId;
+    private String externalMovieId;
+    private String movieId;
 }
