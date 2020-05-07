@@ -4,11 +4,9 @@ import com.kociszewski.moviekeeper.infrastructure.CastDTO;
 import lombok.*;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
+@Value
 public class SaveCastCommand {
     @TargetAggregateIdentifier
-    String castId;
-    CastDTO castDTO;
+    private String castId;
+    private CastDTO castDTO;
 }

@@ -4,7 +4,7 @@ import lombok.*;
 
 @Value
 public class CastSearchDelegatedEvent {
-    String castId;
-    String movieId;
-    String externalMovieId;
+    private String castId;
+    private String movieId;
+    private String externalMovieId;
 }

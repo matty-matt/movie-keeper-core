@@ -3,11 +3,9 @@ package com.kociszewski.moviekeeper.domain.commands;
 import lombok.*;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
+@Value
 public class FetchMovieDetailsCommand {
     @TargetAggregateIdentifier
-    String proxyId;
-    String searchPhrase;
+    private String proxyId;
+    private String searchPhrase;
 }

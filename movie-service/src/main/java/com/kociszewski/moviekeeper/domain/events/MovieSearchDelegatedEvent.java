@@ -2,10 +2,8 @@ package com.kociszewski.moviekeeper.domain.events;
 
 import lombok.*;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
+@Value
 public class MovieSearchDelegatedEvent {
-    String movieId;
-    String searchPhrase;
+    private String movieId;
+    private String searchPhrase;
 }
