@@ -1,13 +1,10 @@
 package com.kociszewski.moviekeeper;
 
-import com.kociszewski.moviekeeper.domain.commands.FindTrailersCommand;
-import com.kociszewski.moviekeeper.domain.events.TrailersDetailsFetchedEvent;
+import com.kociszewski.moviekeeper.domain.events.TrailersSavedEvent;
 import com.kociszewski.moviekeeper.infrastructure.TrailerDTO;
 import com.kociszewski.moviekeeper.infrastructure.TrailerRepository;
-import org.awaitility.Awaitility;
-import org.awaitility.Durations;
-import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.gateway.EventGateway;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -30,24 +27,20 @@ public class TrailersIntegrationTest extends CommonIntegrationSetup {
     private TrailerRepository trailerRepository;
 
     @Autowired
-    private CommandGateway commandGateway;
-
-    @Autowired
     private EventGateway eventGateway;
+
+    private String movieId;
+
+    @BeforeEach
+    public void beforeEach() {
+        this.movieId = UUID.randomUUID().toString();
+        this.trailers = generateTrailers(movieId);
+    }
 
     @Test
     public void shouldRetrieveTrailers() {
         // given
-
-        String movieId = "movieDupa";
-        String trailersId = "trailersDupa";
-        String externalMovieId = "123";
-
-        commandGateway.sendAndWait(new FindTrailersCommand(trailersId, externalMovieId, movieId));
-        eventGateway.publish(new TrailersDetailsFetchedEvent("dupa", superMovieTrailers));
-
-//        ResponseEntity<MovieDTO> storedMovieResponse = storeMovie(CommonIntegrationSetup.SUPER_MOVIE);
-//        String movieId = Objects.requireNonNull(storedMovieResponse.getBody()).getAggregateId();
+        eventGateway.publish(new TrailersSavedEvent(trailers));
 
         await()
             .atMost(FIVE_SECONDS)
@@ -67,6 +60,6 @@ public class TrailersIntegrationTest extends CommonIntegrationSetup {
         List<TrailerDTO> trailerDTOS = Arrays.asList(trailerResponse.getBody());
 
         assertThat(trailerDTOS.size()).isEqualTo(2);
-        assertThat(trailerDTOS).isEqualTo(superMovieTrailers.getTrailers());
+        assertThat(trailerDTOS).isEqualTo(trailers.getTrailers());
     }
 }
