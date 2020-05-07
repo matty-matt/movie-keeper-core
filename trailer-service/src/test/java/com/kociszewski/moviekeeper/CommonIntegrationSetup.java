@@ -20,8 +20,8 @@ import java.util.UUID;
 @ActiveProfiles("test")
 public class CommonIntegrationSetup {
 
-    static final GenericContainer mongo;
-    static final GenericContainer axonServer;
+    private static final GenericContainer mongo;
+    private static final GenericContainer axonServer;
     private static final int MONGO_PORT = 29019;
     private static final int AXON_HTTP_PORT = 8024;
     private static final int AXON_GRPC_PORT = 8124;
