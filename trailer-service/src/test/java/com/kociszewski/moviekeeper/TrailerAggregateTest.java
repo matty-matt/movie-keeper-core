@@ -79,8 +79,24 @@ public class TrailerAggregateTest {
     }
 
     @Test
-    public void shouldTrailersSavedEventAppearWhenTrailersAlreadySet() {
-        // TODO
+    public void shouldTrailersSavedEventNotAppearWhenTrailersAlreadySet() {
+        fixture.given(
+                new TrailersSearchDelegatedEvent(trailersId, movieId, externalMovieId),
+                new TrailersSavedEvent(trailerSectionDTO))
+                .when(new SaveTrailersCommand(trailersId, trailerSectionDTO))
+                .expectNoEvents()
+                .expectState(state -> {
+                    var trailers = state.getTrailers();
+                    assertThat(trailers.size()).isEqualTo(1);
+                    var trailer = trailers.get(0);
+                    assertThat(trailer.getLanguage()).isEqualTo("en");
+                    assertThat(trailer.getCountry()).isEqualTo("US");
+                    assertThat(trailer.getKey()).isEqualTo("qazwsx");
+                    assertThat(trailer.getName()).isEqualTo("some trailer");
+                    assertThat(trailer.getSite()).isEqualTo("YouTube");
+                    assertThat(trailer.getSize()).isEqualTo(1080);
+                    assertThat(trailer.getType()).isEqualTo("Teaser");
+                });
     }
 
 }
