@@ -1,6 +1,5 @@
-package com.kociszewski.moviekeeper;
+package com.kociszewski.moviekeeper.domain;
 
-import com.kociszewski.moviekeeper.domain.TrailerAggregate;
 import com.kociszewski.moviekeeper.domain.commands.FindTrailersCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveTrailersCommand;
 import com.kociszewski.moviekeeper.domain.events.TrailersSavedEvent;
