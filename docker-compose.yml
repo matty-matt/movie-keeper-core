@@ -9,7 +9,7 @@ services:
     environment:
       MONGO_INITDB_DATABASE: moviekeeper
     volumes:
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
   axon:
     image: 'axoniq/axonserver:4.2.4-jdk11'
     ports:
@@ -20,7 +20,7 @@ services:
     ports:
       - '35000:80'
     volumes:
-      - "$PWD/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./api-gateway/nginx.conf:/etc/nginx/nginx.conf:ro"
   movie-service:
     build:
       context: ./movie-service
