@@ -1,7 +1,6 @@
 package com.kociszewski.moviekeeper;
 
 import com.kociszewski.moviekeeper.domain.events.CastSavedEvent;
-import com.kociszewski.moviekeeper.infrastructure.CastDTO;
 import com.kociszewski.moviekeeper.infrastructure.CastInfoDTO;
 import com.kociszewski.moviekeeper.infrastructure.CastRepository;
 import org.axonframework.eventhandling.gateway.EventGateway;
