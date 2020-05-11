@@ -7,9 +7,9 @@ Digital release dates of your stored movies are tracked by app.
 * [TMDb](https://www.themoviedb.org/?language=pl) ApiKey stored in environment variable TMDB_API_KEY
 
 ## Launching app
-Simply use `docker-compose up --build` to run application in production mode.
+**(prod)** Simply use `docker-compose up --build` to run application in production mode.
 
-When running from IDE, axon-server and mongodb should be launched first:
+**(dev)** When running from IDE, axon-server and mongodb should be launched first:
 ```
 docker-compose up --scale api-gateway=0 --scale movie-service=0 --scale cast-service=0 --scale proxy-service=0 --scale trailer-service=0
 ```
