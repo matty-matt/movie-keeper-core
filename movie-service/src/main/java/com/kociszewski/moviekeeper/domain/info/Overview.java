@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class Overview {
-    private String overview;
+     String overview;
 }

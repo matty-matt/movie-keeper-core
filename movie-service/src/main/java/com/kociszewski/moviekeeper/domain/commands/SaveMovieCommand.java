@@ -7,6 +7,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Value
 public class SaveMovieCommand {
     @TargetAggregateIdentifier
-    private String movieId;
-    private ExternalMovie externalMovie;
+    String movieId;
+    ExternalMovie externalMovie;
 }

@@ -5,6 +5,6 @@ import lombok.Value;
 
 @Value
 public class MovieDetailsFetchedEvent {
-    private String proxyId;
-    private ExternalMovie externalMovie;
+     String proxyId;
+     ExternalMovie externalMovie;
 }

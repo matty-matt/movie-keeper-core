@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class GetMovieQuery {
-    private String movieId;
+    String movieId;
 }

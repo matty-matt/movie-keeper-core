@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class Language {
-    private String originalLanguage;
+     String originalLanguage;
 }

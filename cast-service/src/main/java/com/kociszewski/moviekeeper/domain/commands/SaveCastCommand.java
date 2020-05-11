@@ -7,6 +7,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Value
 public class SaveCastCommand {
     @TargetAggregateIdentifier
-    private String castId;
-    private CastDTO castDTO;
+    String castId;
+    CastDTO castDTO;
 }

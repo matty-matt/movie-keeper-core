@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class MovieDeletedEvent {
-    private String movieId;
+     String movieId;
 }

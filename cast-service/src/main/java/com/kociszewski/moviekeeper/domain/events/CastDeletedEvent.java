@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class CastDeletedEvent {
-    private String castEntityId;
+    String castEntityId;
 }

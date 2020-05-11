@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class Runtime {
-    private int runtimeMinutes;
+     int runtimeMinutes;
 }

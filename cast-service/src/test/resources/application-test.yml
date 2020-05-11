@@ -1,0 +1,7 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:${ENV_MONGO_PORT}/moviekeeper
+axon:
+  axonserver:
+    servers: localhost:${ENV_AXON_GRPC_PORT}

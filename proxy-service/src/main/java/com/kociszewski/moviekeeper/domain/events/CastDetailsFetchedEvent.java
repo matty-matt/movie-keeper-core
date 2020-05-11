@@ -5,6 +5,6 @@ import lombok.Value;
 
 @Value
 public class CastDetailsFetchedEvent {
-    private String proxyId;
-    private CastDTO castDTO;
+     String proxyId;
+     CastDTO castDTO;
 }

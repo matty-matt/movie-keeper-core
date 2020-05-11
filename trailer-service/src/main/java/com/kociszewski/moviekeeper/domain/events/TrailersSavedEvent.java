@@ -5,5 +5,5 @@ import lombok.Value;
 
 @Value
 public class TrailersSavedEvent {
-    private TrailerSectionDTO trailerSectionDTO;
+     TrailerSectionDTO trailerSectionDTO;
 }

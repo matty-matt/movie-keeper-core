@@ -5,5 +5,5 @@ import lombok.Value;
 
 @Value
 public class CastSavedEvent {
-    private CastDTO castDTO;
+    CastDTO castDTO;
 }
