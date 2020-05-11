@@ -4,6 +4,6 @@ import lombok.*;
 
 @Value
 public class MovieSearchDelegatedEvent {
-    private String movieId;
-    private String searchPhrase;
+     String movieId;
+     String searchPhrase;
 }

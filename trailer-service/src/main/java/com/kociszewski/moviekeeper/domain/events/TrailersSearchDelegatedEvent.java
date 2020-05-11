@@ -4,7 +4,7 @@ import lombok.Value;
 
 @Value
 public class TrailersSearchDelegatedEvent {
-    private String trailersId;
-    private String movieId;
-    private String externalMovieId;
+     String trailersId;
+     String movieId;
+     String externalMovieId;
 }

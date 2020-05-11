@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class TrailersDeletedEvent {
-    private String trailerEntityId;
+     String trailerEntityId;
 }

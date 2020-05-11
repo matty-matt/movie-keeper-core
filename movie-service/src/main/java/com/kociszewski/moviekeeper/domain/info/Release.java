@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class Release {
-    private String date;
+     String date;
 }

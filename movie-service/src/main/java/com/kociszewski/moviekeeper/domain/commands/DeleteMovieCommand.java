@@ -6,5 +6,5 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Value
 public class DeleteMovieCommand {
     @TargetAggregateIdentifier
-    private String movieId;
+    String movieId;
 }

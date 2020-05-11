@@ -5,6 +5,6 @@ import lombok.Value;
 
 @Value
 public class ToggleWatchedEvent {
-    private String movieId;
-    private Watched watched;
+     String movieId;
+     Watched watched;
 }

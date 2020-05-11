@@ -7,6 +7,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Value
 public class ToggleWatchedCommand {
     @TargetAggregateIdentifier
-    private String movieId;
-    private Watched watched;
+    String movieId;
+    Watched watched;
 }

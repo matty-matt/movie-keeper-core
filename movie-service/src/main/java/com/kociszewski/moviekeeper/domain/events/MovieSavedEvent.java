@@ -5,6 +5,6 @@ import lombok.Value;
 
 @Value
 public class MovieSavedEvent {
-    private String movieId;
-    private ExternalMovie externalMovie;
+     String movieId;
+     ExternalMovie externalMovie;
 }

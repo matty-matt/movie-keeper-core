@@ -6,7 +6,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Value
 public class FetchCastDetailsCommand {
     @TargetAggregateIdentifier
-    private String proxyId;
-    private String externalMovieId;
-    private String castId;
+     String proxyId;
+     String externalMovieId;
+     String castId;
 }

@@ -6,6 +6,7 @@ import com.kociszewski.moviekeeper.domain.events.CastDeletedEvent;
 import com.kociszewski.moviekeeper.domain.events.CastSearchDelegatedEvent;
 import com.kociszewski.moviekeeper.domain.events.CastSavedEvent;
 import com.kociszewski.moviekeeper.infrastructure.CastInfo;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
@@ -23,6 +24,7 @@ import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted
 @Aggregate
 @NoArgsConstructor
 @Slf4j
+@Getter
 public class CastAggregate {
     @AggregateIdentifier
     private String castId;

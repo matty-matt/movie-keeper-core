@@ -6,6 +6,6 @@ import lombok.Value;
 
 @Value
 public class TrailersDetailsFetchedEvent {
-    private String proxyId;
-    private TrailerSectionDTO trailerSectionDTO;
+     String proxyId;
+     TrailerSectionDTO trailerSectionDTO;
 }

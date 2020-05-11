@@ -7,6 +7,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Value
 public class SaveTrailersCommand {
     @TargetAggregateIdentifier
-    private String trailersId;
-    private TrailerSectionDTO trailerSectionDTO;
+    String trailersId;
+    TrailerSectionDTO trailerSectionDTO;
 }
