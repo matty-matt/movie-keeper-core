@@ -24,7 +24,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MovieAggregateTest {
-    private static final String TITLE = "some title";
+    public static final String TITLE = "some title";
     private FixtureConfiguration<MovieAggregate> fixture;
     private String movieId;
     private String externalMovieId;
