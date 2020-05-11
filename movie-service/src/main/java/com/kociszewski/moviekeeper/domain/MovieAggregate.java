@@ -5,6 +5,7 @@ import com.kociszewski.moviekeeper.domain.events.*;
 import com.kociszewski.moviekeeper.domain.info.*;
 import com.kociszewski.moviekeeper.domain.info.Runtime;
 import com.kociszewski.moviekeeper.infrastructure.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
@@ -21,6 +22,7 @@ import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted
 @Aggregate
 @NoArgsConstructor
 @Slf4j
+@Getter
 public class MovieAggregate {
 
     @AggregateIdentifier
