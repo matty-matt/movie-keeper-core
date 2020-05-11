@@ -23,8 +23,6 @@ import static org.axonframework.modelling.saga.SagaLifecycle.end;
 @Slf4j
 public class MovieSaga {
 
-    public static final String TRAILER_PREFIX = "trailer_";
-    public static final String CAST_PREFIX = "cast_";
     public static final String PROXY_PREFIX = "proxy_";
 
     @Autowired
