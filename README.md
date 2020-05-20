@@ -6,6 +6,9 @@ Digital release dates of your stored movies are tracked by app.
 * Docker installed
 * [TMDb](https://www.themoviedb.org/?language=pl) ApiKey stored in environment variable TMDB_API_KEY
 
+## Architecture
+![Architecture on diagram](components.png "Architecture on diagram")
+
 ## Launching app
 **(prod)** Simply use `docker-compose up --build` to run application in production mode.
 
