@@ -1,4 +1,6 @@
 # MovieKeeperCore
+[![Build Status](https://travis-ci.org/matty-matt/movie-keeper-core.svg?branch=master)](https://travis-ci.org/matty-matt/movie-keeper-core)
+
 Backend for [MovieKeeper](https://github.com/TheMickeyMike/MovieKeeper) React application that allows storing movies you'd like to watch. 
 Digital release dates of your stored movies are tracked by app.
 
