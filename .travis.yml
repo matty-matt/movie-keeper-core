@@ -2,11 +2,16 @@ language: java
 jdk:
   - openjdk11
 jobs:
-  - stage: Tests
-    script: pushd movie-service && mvn test -B && popd
-  -
-    script: pushd trailer-service && mvn test -B && popd
-  -
-    script: pushd cast-service && mvn test -B && popd
-  -
-    script: pushd proxy-service && mvn test -B && popd
+  include:
+    - stage: Tests
+      name: movie-service tests
+      script: pushd movie-service && mvn test -B && popd
+    -
+      name: trailer-service tests
+      script: pushd trailer-service && mvn test -B && popd
+    -
+      name: cast-service tests
+      script: pushd cast-service && mvn test -B && popd
+    -
+      name: proxy-service tests
+      script: pushd proxy-service && mvn test -B && popd
