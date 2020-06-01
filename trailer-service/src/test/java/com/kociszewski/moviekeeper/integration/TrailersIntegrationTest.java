@@ -1,8 +1,10 @@
-package com.kociszewski.moviekeeper;
+package com.kociszewski.moviekeeper.integration;
 
+import com.kociszewski.moviekeeper.domain.commands.FindTrailersCommand;
 import com.kociszewski.moviekeeper.domain.events.TrailersSavedEvent;
 import com.kociszewski.moviekeeper.infrastructure.TrailerDTO;
 import com.kociszewski.moviekeeper.infrastructure.TrailerRepository;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.gateway.EventGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,20 +29,20 @@ public class TrailersIntegrationTest extends CommonIntegrationSetup {
     private TrailerRepository trailerRepository;
 
     @Autowired
-    private EventGateway eventGateway;
+    private CommandGateway commandGateway;
 
     private String movieId;
 
     @BeforeEach
     public void beforeEach() {
-        this.movieId = UUID.randomUUID().toString();
+        this.movieId = "123";
         this.trailers = generateTrailers(movieId);
     }
 
     @Test
     public void shouldRetrieveTrailers() {
         // given
-        eventGateway.publish(new TrailersSavedEvent(trailers.getAggregateId(), trailers));
+        commandGateway.send(new FindTrailersCommand(trailers.getAggregateId(), trailers.getExternalMovieId(), trailers.getMovieId()));
 
         await()
             .atMost(FIVE_SECONDS)

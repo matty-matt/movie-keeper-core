@@ -1,7 +1,8 @@
-package com.kociszewski.moviekeeper;
+package com.kociszewski.moviekeeper.integration;
 
-import com.kociszewski.moviekeeper.infrastructure.TrailerDTO;
-import com.kociszewski.moviekeeper.infrastructure.TrailerSectionDTO;
+import com.kociszewski.moviekeeper.infrastructure.CastDTO;
+import com.kociszewski.moviekeeper.infrastructure.CastInfoDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +13,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 
 @ExtendWith(SpringExtension.class)
@@ -25,6 +28,7 @@ public class CommonIntegrationSetup {
     private static final int MONGO_PORT = 29019;
     private static final int AXON_HTTP_PORT = 8024;
     private static final int AXON_GRPC_PORT = 8124;
+    protected static CastDTO CAST;
 
     static {
         // These containers should be started only once during whole test suite
@@ -48,36 +52,41 @@ public class CommonIntegrationSetup {
         System.setProperty("ENV_AXON_GRPC_PORT", String.valueOf(axonServer.getMappedPort(AXON_GRPC_PORT)));
     }
 
-    protected TrailerSectionDTO trailers;
+    protected CastDTO cast;
     @LocalServerPort
     protected int randomServerPort;
     @Autowired
     protected TestRestTemplate testRestTemplate;
 
-    protected TrailerSectionDTO generateTrailers(String movieId) {
-        return TrailerSectionDTO.builder()
+    @BeforeEach
+    public void before() {
+        CAST = generateCast("123");
+    }
+    protected CastDTO generateCast(String movieId) {
+        return CastDTO.builder()
                 .externalMovieId(UUID.randomUUID().toString())
                 .aggregateId(UUID.randomUUID().toString())
                 .movieId(movieId)
-                .trailers(Arrays.asList(
-                        TrailerDTO.builder()
-                                .language("en")
-                                .country("US")
-                                .key("asd")
-                                .name("First trailer")
-                                .site("YouTube")
-                                .size(1080)
-                                .type("Teaser")
+                .cast(Arrays.asList(
+                        CastInfoDTO.builder()
+                                .id("789")
+                                .castId("1")
+                                .character("John")
+                                .gender((short) 0)
+                                .name("Mike Smith")
+                                .order(1)
+                                .profilePath("/pic1.jpg")
                                 .build(),
-                        TrailerDTO.builder()
-                                .language("en")
-                                .country("US")
-                                .key("qwe")
-                                .name("Second trailer")
-                                .site("YouTube")
-                                .size(1080)
-                                .type("Teaser").
-                                build()))
+                        CastInfoDTO.builder()
+                                .id("790")
+                                .castId("2")
+                                .character("Alice")
+                                .gender((short) 1)
+                                .name("Rebecca White")
+                                .order(2)
+                                .profilePath("/pic2.jpg")
+                                .build()
+                ))
                 .build();
     }
 

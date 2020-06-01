@@ -1,9 +1,9 @@
-package com.kociszewski.moviekeeper;
+package com.kociszewski.moviekeeper.integration;
 
-import com.kociszewski.moviekeeper.domain.events.CastSavedEvent;
+import com.kociszewski.moviekeeper.domain.commands.FindCastCommand;
 import com.kociszewski.moviekeeper.infrastructure.CastInfoDTO;
 import com.kociszewski.moviekeeper.infrastructure.CastRepository;
-import org.axonframework.eventhandling.gateway.EventGateway;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class CastIntegrationTest extends CommonIntegrationSetup {
     private CastRepository castRepository;
 
     @Autowired
-    private EventGateway eventGateway;
+    private CommandGateway commandGateway;
 
     private String movieId;
 
@@ -37,9 +37,9 @@ public class CastIntegrationTest extends CommonIntegrationSetup {
     }
 
     @Test
-    public void shouldRetrieveTrailers() {
+    public void shouldRetrieveCast() {
         // given
-        eventGateway.publish(new CastSavedEvent(cast.getAggregateId(), cast));
+        commandGateway.send(new FindCastCommand(cast.getAggregateId(), cast.getExternalMovieId(), cast.getMovieId()));
 
         await()
                 .atMost(FIVE_SECONDS)
