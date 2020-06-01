@@ -1,7 +1,9 @@
 package com.kociszewski.moviekeeper.domain;
 
+import com.kociszewski.moviekeeper.domain.commands.DeleteTrailersCommand;
 import com.kociszewski.moviekeeper.domain.commands.FindTrailersCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveTrailersCommand;
+import com.kociszewski.moviekeeper.domain.events.TrailersDeletedEvent;
 import com.kociszewski.moviekeeper.domain.events.TrailersSavedEvent;
 import com.kociszewski.moviekeeper.domain.events.TrailersSearchDelegatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.TrailerDTO;
@@ -15,6 +17,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 public class TrailerAggregateTest {
 
@@ -96,6 +99,17 @@ public class TrailerAggregateTest {
                     assertThat(trailer.getSize()).isEqualTo(1080);
                     assertThat(trailer.getType()).isEqualTo("Teaser");
                 });
+    }
+
+    @Test
+    public void shouldTrailersDeletedEventAppear() {
+        fixture.given(
+                new TrailersSearchDelegatedEvent(trailersId, movieId, externalMovieId),
+                new TrailersSavedEvent(trailersId, trailerSectionDTO))
+                .when(new DeleteTrailersCommand(trailersId))
+                .expectEvents(
+                        new TrailersDeletedEvent(trailersId))
+                .expectMarkedDeleted();
     }
 
 }

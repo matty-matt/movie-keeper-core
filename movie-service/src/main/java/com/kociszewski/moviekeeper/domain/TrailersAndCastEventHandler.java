@@ -14,10 +14,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class TrailersAndCastEventHandler {
-    private boolean castFound = false;
-    private boolean trailersFound = false;
-    private boolean castDeleted = false;
-    private boolean trailersDeleted = false;
 
     @Autowired
     private CommandGateway commandGateway;

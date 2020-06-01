@@ -21,7 +21,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 public class MovieAggregateTest {
     public static final String TITLE = "some title";
@@ -113,15 +115,15 @@ public class MovieAggregateTest {
                 .expectNoEvents();
     }
 
-//    @Test
-//    public void shouldMovieDeletedEventAppear() {
-//        fixture.given(
-//                new MovieSearchDelegatedEvent(movieId, searchPhrase),
-//                new MovieSavedEvent(movieId, externalMovie))
-//                .when(new DeleteMovieCommand(movieId))
-//                .expectEvents(
-//                        new MovieDeletedEvent(movieId))
-//                .expectMarkedDeleted();
-//    }
+    @Test
+    public void shouldMovieDeletedEventAppear() {
+        fixture.given(
+                new MovieSearchDelegatedEvent(movieId, searchPhrase),
+                new MovieSavedEvent(movieId, externalMovie))
+                .when(new DeleteMovieCommand(movieId))
+                .expectEvents(
+                        new MovieDeletedEvent(movieId, any(), any()))
+                .expectMarkedDeleted();
+    }
 }
 
