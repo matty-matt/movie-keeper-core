@@ -28,7 +28,11 @@ public class CastSaga {
     @StartSaga
     @SagaEventHandler(associationProperty = "castId")
     public void handle(CastSearchDelegatedEvent event) {
-        log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getCastId());
+        log.info("[saga] Handling {}, castId={}, movieId={}, externalId={}",
+                event.getClass().getSimpleName(),
+                event.getCastId(),
+                event.getMovieId(),
+                event.getExternalMovieId());
         castId = event.getCastId();
         String proxyId = PROXY_PREFIX.concat(event.getMovieId());
         associateWith("proxyId", proxyId);

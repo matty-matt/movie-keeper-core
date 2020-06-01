@@ -28,7 +28,11 @@ public class TrailerSaga {
     @StartSaga
     @SagaEventHandler(associationProperty = "trailersId")
     public void handle(TrailersSearchDelegatedEvent event) {
-        log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getTrailersId());
+        log.info("[saga] Handling {}, trailersId={}, movieId={}, externalId={}",
+                event.getClass().getSimpleName(),
+                event.getTrailersId(),
+                event.getMovieId(),
+                event.getExternalMovieId());
         trailersId = event.getTrailersId();
         String proxyId = PROXY_PREFIX.concat(event.getMovieId());
         associateWith("proxyId", proxyId);

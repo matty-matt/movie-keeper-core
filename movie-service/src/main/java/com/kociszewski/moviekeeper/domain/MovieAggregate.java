@@ -14,6 +14,7 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
@@ -27,6 +28,9 @@ public class MovieAggregate {
 
     @AggregateIdentifier
     private String movieId;
+
+    private String trailersId;
+    private String castId;
 
     private String externalMovieId;
     private Poster poster;
@@ -86,6 +90,21 @@ public class MovieAggregate {
     }
 
     @CommandHandler
+    public void handle(DelegateTrailersAndCastSearchCommand command) {
+        if (castId == null || trailersId == null) {
+            String trailersId = UUID.randomUUID().toString();
+            String castId = UUID.randomUUID().toString();
+            apply(new TrailersAndCastSearchDelegatedEvent(command.getMovieId(), externalMovieId, trailersId, castId));
+        }
+    }
+
+    @EventSourcingHandler
+    private void on(TrailersAndCastSearchDelegatedEvent event) {
+        this.trailersId = event.getTrailersId();
+        this.castId = event.getCastId();
+    }
+
+    @CommandHandler
     public void handle(ToggleWatchedCommand command) {
         if (this.watched.isWatched() == command.getWatched().isWatched()) {
             log.info("Cannot toggle to the same state, skipping..");
@@ -102,8 +121,6 @@ public class MovieAggregate {
     @CommandHandler
     public void handle(DeleteMovieCommand command) {
         apply(new MovieDeletedEvent(command.getMovieId()));
-//        apply(new TrailersDeletedEvent(trailerEntity.getTrailerEntityId()));
-//        apply(new CastDeletedEvent(castEntity.getCastEntityId()));
     }
 
     @EventSourcingHandler

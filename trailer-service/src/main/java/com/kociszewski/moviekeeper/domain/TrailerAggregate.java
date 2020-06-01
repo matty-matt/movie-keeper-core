@@ -43,7 +43,7 @@ public class TrailerAggregate {
     @CommandHandler
     public void handle(SaveTrailersCommand command) {
         if (trailers.isEmpty()) {
-            apply(new TrailersSavedEvent(command.getTrailerSectionDTO()));
+            apply(new TrailersSavedEvent(command.getTrailersId(), command.getTrailerSectionDTO()));
         }
     }
 

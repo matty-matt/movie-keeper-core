@@ -44,7 +44,7 @@ public class CastAggregate {
     @CommandHandler
     public void handle(SaveCastCommand command) {
         if (cast.isEmpty()) {
-            apply(new CastSavedEvent(command.getCastDTO()));
+            apply(new CastSavedEvent(command.getCastId(), command.getCastDTO()));
         }
     }
 

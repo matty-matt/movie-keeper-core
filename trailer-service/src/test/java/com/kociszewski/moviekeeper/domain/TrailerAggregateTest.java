@@ -62,7 +62,7 @@ public class TrailerAggregateTest {
     public void shouldTrailersSavedEventAppearWhenTrailersEmpty() {
         fixture.given(new TrailersSearchDelegatedEvent(trailersId, movieId, externalMovieId))
                 .when(new SaveTrailersCommand(trailersId, trailerSectionDTO))
-                .expectEvents(new TrailersSavedEvent(trailerSectionDTO))
+                .expectEvents(new TrailersSavedEvent(trailersId, trailerSectionDTO))
                 .expectState(state -> {
                     var trailers = state.getTrailers();
                     assertThat(trailers.size()).isEqualTo(1);
@@ -81,7 +81,7 @@ public class TrailerAggregateTest {
     public void shouldTrailersSavedEventNotAppearWhenTrailersAlreadySet() {
         fixture.given(
                 new TrailersSearchDelegatedEvent(trailersId, movieId, externalMovieId),
-                new TrailersSavedEvent(trailerSectionDTO))
+                new TrailersSavedEvent(trailersId, trailerSectionDTO))
                 .when(new SaveTrailersCommand(trailersId, trailerSectionDTO))
                 .expectNoEvents()
                 .expectState(state -> {
