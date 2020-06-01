@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -56,6 +57,7 @@ public class MovieProjection {
         MovieDTO updatedMovie = mongoTemplate.findAndModify(
                 Query.query(Criteria.where(ID).is(event.getMovieId())),
                 Update.update(WATCHED, event.getWatched().isWatched()),
+                FindAndModifyOptions.options().returnNew(true),
                 MovieDTO.class);
         notifySubscribers(updatedMovie);
     }
