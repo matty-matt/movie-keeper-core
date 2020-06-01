@@ -5,5 +5,6 @@ import lombok.Value;
 
 @Value
 public class TrailersSavedEvent {
+     String trailersId;
      TrailerSectionDTO trailerSectionDTO;
 }

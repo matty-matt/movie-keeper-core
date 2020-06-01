@@ -1,14 +1,8 @@
 package com.kociszewski.moviekeeper.domain;
 
 
-import com.kociszewski.moviekeeper.domain.commands.DeleteMovieCommand;
-import com.kociszewski.moviekeeper.domain.commands.FindMovieCommand;
-import com.kociszewski.moviekeeper.domain.commands.SaveMovieCommand;
-import com.kociszewski.moviekeeper.domain.commands.ToggleWatchedCommand;
-import com.kociszewski.moviekeeper.domain.events.MovieDeletedEvent;
-import com.kociszewski.moviekeeper.domain.events.MovieSavedEvent;
-import com.kociszewski.moviekeeper.domain.events.MovieSearchDelegatedEvent;
-import com.kociszewski.moviekeeper.domain.events.ToggleWatchedEvent;
+import com.kociszewski.moviekeeper.domain.commands.*;
+import com.kociszewski.moviekeeper.domain.events.*;
 import com.kociszewski.moviekeeper.domain.info.*;
 import com.kociszewski.moviekeeper.domain.info.Runtime;
 import com.kociszewski.moviekeeper.infrastructure.*;
@@ -16,12 +10,15 @@ import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 public class MovieAggregateTest {
     public static final String TITLE = "some title";
@@ -30,6 +27,8 @@ public class MovieAggregateTest {
     private String externalMovieId;
     private String searchPhrase;
     private ExternalMovie externalMovie;
+    private String trailersId;
+    private String castId;
 
     @BeforeEach
     public void setup() {
@@ -55,6 +54,8 @@ public class MovieAggregateTest {
                         .lastRefreshDate(new Date())
                         .build())
                 .build();
+        this.castId = UUID.randomUUID().toString();
+        this.trailersId = UUID.randomUUID().toString();
     }
 
     @Test
@@ -94,6 +95,19 @@ public class MovieAggregateTest {
     }
 
     @Test
+    public void shouldTrailersAndCastSearchDelegatedEventEventAppear() {
+        fixture.given(
+                new MovieSearchDelegatedEvent(movieId, searchPhrase),
+                new MovieSavedEvent(movieId, externalMovie))
+                .when(new DelegateTrailersAndCastSearchCommand(movieId, castId, trailersId))
+                .expectEvents(new TrailersAndCastSearchDelegatedEvent(movieId, externalMovieId, trailersId, castId))
+                .expectState(state -> {
+                    assertThat(state.getTrailersId()).isEqualTo(trailersId);
+                    assertThat(state.getCastId()).isEqualTo(castId);
+                });
+    }
+
+    @Test
     public void shouldToggleWatchedEventAppear() {
         fixture.given(
                 new MovieSearchDelegatedEvent(movieId, searchPhrase),
@@ -120,7 +134,7 @@ public class MovieAggregateTest {
                 new MovieSavedEvent(movieId, externalMovie))
                 .when(new DeleteMovieCommand(movieId))
                 .expectEvents(
-                        new MovieDeletedEvent(movieId))
+                        new MovieDeletedEvent(movieId, any(), any()))
                 .expectMarkedDeleted();
     }
 }

@@ -39,7 +39,7 @@ public class CastIntegrationTest extends CommonIntegrationSetup {
     @Test
     public void shouldRetrieveTrailers() {
         // given
-        eventGateway.publish(new CastSavedEvent(cast));
+        eventGateway.publish(new CastSavedEvent(cast.getAggregateId(), cast));
 
         await()
                 .atMost(FIVE_SECONDS)

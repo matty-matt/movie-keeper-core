@@ -1,5 +1,6 @@
 package com.kociszewski.moviekeeper.domain;
 
+import com.kociszewski.moviekeeper.domain.commands.DeleteCastCommand;
 import com.kociszewski.moviekeeper.domain.commands.FindCastCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveCastCommand;
 import com.kociszewski.moviekeeper.domain.events.CastDeletedEvent;
@@ -44,7 +45,7 @@ public class CastAggregate {
     @CommandHandler
     public void handle(SaveCastCommand command) {
         if (cast.isEmpty()) {
-            apply(new CastSavedEvent(command.getCastDTO()));
+            apply(new CastSavedEvent(command.getCastId(), command.getCastDTO()));
         }
     }
 
@@ -61,6 +62,11 @@ public class CastAggregate {
                         .order(dto.getOrder())
                         .profilePath(dto.getProfilePath())
                         .build()).collect(Collectors.toList());
+    }
+
+    @CommandHandler
+    public void handle(DeleteCastCommand command) {
+        apply(new CastDeletedEvent(command.getCastId()));
     }
 
     @EventSourcingHandler

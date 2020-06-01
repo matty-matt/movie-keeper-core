@@ -35,7 +35,7 @@ public class TrailerProjection {
 
     @EventHandler
     public void handle(TrailersDeletedEvent event) {
-        trailerRepository.deleteById(event.getTrailerEntityId());
+        trailerRepository.deleteById(event.getTrailersId());
     }
 
     private void skip(String movieId) {

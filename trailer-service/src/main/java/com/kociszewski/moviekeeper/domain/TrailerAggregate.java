@@ -1,5 +1,6 @@
 package com.kociszewski.moviekeeper.domain;
 
+import com.kociszewski.moviekeeper.domain.commands.DeleteTrailersCommand;
 import com.kociszewski.moviekeeper.domain.commands.FindTrailersCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveTrailersCommand;
 import com.kociszewski.moviekeeper.domain.events.TrailersDeletedEvent;
@@ -43,7 +44,7 @@ public class TrailerAggregate {
     @CommandHandler
     public void handle(SaveTrailersCommand command) {
         if (trailers.isEmpty()) {
-            apply(new TrailersSavedEvent(command.getTrailerSectionDTO()));
+            apply(new TrailersSavedEvent(command.getTrailersId(), command.getTrailerSectionDTO()));
         }
     }
 
@@ -59,6 +60,11 @@ public class TrailerAggregate {
                         .site(dto.getSite())
                         .type(dto.getType())
                         .size(dto.getSize()).build()).collect(Collectors.toList());
+    }
+
+    @CommandHandler
+    public void handle(DeleteTrailersCommand command) {
+        apply(new TrailersDeletedEvent(command.getTrailersId()));
     }
 
     @EventSourcingHandler

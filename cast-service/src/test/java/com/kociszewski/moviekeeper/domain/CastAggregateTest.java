@@ -1,7 +1,9 @@
 package com.kociszewski.moviekeeper.domain;
 
+import com.kociszewski.moviekeeper.domain.commands.DeleteCastCommand;
 import com.kociszewski.moviekeeper.domain.commands.FindCastCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveCastCommand;
+import com.kociszewski.moviekeeper.domain.events.CastDeletedEvent;
 import com.kociszewski.moviekeeper.domain.events.CastSavedEvent;
 import com.kociszewski.moviekeeper.domain.events.CastSearchDelegatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.CastDTO;
@@ -62,7 +64,7 @@ public class CastAggregateTest {
     public void shouldCastSavedEventAppearWhenCastEmpty() {
         fixture.given(new CastSearchDelegatedEvent(castId, movieId, externalMovieId))
                 .when(new SaveCastCommand(castId, castDTO))
-                .expectEvents(new CastSavedEvent(castDTO))
+                .expectEvents(new CastSavedEvent(castId, castDTO))
                 .expectState(state -> {
                     var cast = state.getCast();
                     assertThat(cast.size()).isEqualTo(1);
@@ -80,7 +82,7 @@ public class CastAggregateTest {
     @Test
     public void shouldCastSavedEventAppearWhenCastIsAlreadySet() {
         fixture.given(new CastSearchDelegatedEvent(castId, movieId, externalMovieId),
-                      new CastSavedEvent(castDTO))
+                      new CastSavedEvent(castId, castDTO))
                 .when(new SaveCastCommand(castId, castDTO))
                 .expectNoEvents()
                 .expectState(state -> {
@@ -95,5 +97,15 @@ public class CastAggregateTest {
                     assertThat(actor.getOrder()).isEqualTo(1);
                     assertThat(actor.getProfilePath()).isEqualTo("/elon.jpg");
                 });
+    }
+
+    @Test
+    public void shouldCastDeletedEventAppear() {
+        fixture.given(new CastSearchDelegatedEvent(castId, movieId, externalMovieId),
+                new CastSavedEvent(castId, castDTO))
+                .when(new DeleteCastCommand(castId))
+                .expectEvents(
+                        new CastDeletedEvent(castId))
+                .expectMarkedDeleted();
     }
 }

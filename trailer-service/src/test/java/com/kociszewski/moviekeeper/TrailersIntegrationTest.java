@@ -40,7 +40,7 @@ public class TrailersIntegrationTest extends CommonIntegrationSetup {
     @Test
     public void shouldRetrieveTrailers() {
         // given
-        eventGateway.publish(new TrailersSavedEvent(trailers));
+        eventGateway.publish(new TrailersSavedEvent(trailers.getAggregateId(), trailers));
 
         await()
             .atMost(FIVE_SECONDS)

@@ -1,20 +1,24 @@
 package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
-import com.kociszewski.moviekeeper.domain.events.MovieDetailsFetchedEvent;
+import com.kociszewski.moviekeeper.domain.commands.FindCastCommand;
+import com.kociszewski.moviekeeper.domain.commands.FindTrailersCommand;
+import com.kociszewski.moviekeeper.domain.events.*;
 import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
 import com.kociszewski.moviekeeper.domain.commands.SaveMovieCommand;
 import com.kociszewski.moviekeeper.domain.queries.GetMovieQuery;
-import com.kociszewski.moviekeeper.domain.events.MovieSearchDelegatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.MovieState;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.EndSaga;
 import org.axonframework.modelling.saga.SagaEventHandler;
+import org.axonframework.modelling.saga.SagaLifecycle;
 import org.axonframework.modelling.saga.StartSaga;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.axonframework.spring.stereotype.Saga;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 import static org.axonframework.modelling.saga.SagaLifecycle.associateWith;
 import static org.axonframework.modelling.saga.SagaLifecycle.end;
@@ -23,7 +27,11 @@ import static org.axonframework.modelling.saga.SagaLifecycle.end;
 @Slf4j
 public class MovieSaga {
 
-    public static final String PROXY_PREFIX = "proxy_";
+    private static final String PROXY_PREFIX = "proxy_";
+    private static final String PROXY_ID = "proxyId";
+    public static final String CAST_ID = "castId";
+    public static final String TRAILERS_ID = "trailersId";
+    public static final String MOVIE_ID = "movieId";
 
     @Autowired
     private CommandGateway commandGateway;
@@ -34,7 +42,7 @@ public class MovieSaga {
     private String movieId;
 
     @StartSaga
-    @SagaEventHandler(associationProperty = "movieId")
+    @SagaEventHandler(associationProperty = MOVIE_ID)
     public void handle(MovieSearchDelegatedEvent event) {
         log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getMovieId());
         movieId = event.getMovieId();
@@ -43,7 +51,7 @@ public class MovieSaga {
         commandGateway.send(new FetchMovieDetailsCommand(proxyId, event.getSearchPhrase()));
     }
 
-    @SagaEventHandler(associationProperty = "proxyId")
+    @SagaEventHandler(associationProperty = PROXY_ID)
     @EndSaga
     public void handle(MovieDetailsFetchedEvent event) {
         log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getProxyId());

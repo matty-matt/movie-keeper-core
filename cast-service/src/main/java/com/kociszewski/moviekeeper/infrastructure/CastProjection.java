@@ -35,7 +35,7 @@ public class CastProjection {
 
     @EventHandler
     public void handle(CastDeletedEvent event) {
-        castRepository.deleteById(event.getCastEntityId());
+        castRepository.deleteById(event.getCastId());
     }
 
     private void skip(String movieId) {
