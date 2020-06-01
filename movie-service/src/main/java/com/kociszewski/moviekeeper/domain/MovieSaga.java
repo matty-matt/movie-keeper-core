@@ -28,10 +28,10 @@ import static org.axonframework.modelling.saga.SagaLifecycle.end;
 public class MovieSaga {
 
     private static final String PROXY_PREFIX = "proxy_";
-    private static final String CAST_ID = "castId";
-    private static final String TRAILERS_ID = "trailersId";
-    private static final String MOVIE_ID = "movieId";
     private static final String PROXY_ID = "proxyId";
+    public static final String CAST_ID = "castId";
+    public static final String TRAILERS_ID = "trailersId";
+    public static final String MOVIE_ID = "movieId";
 
     @Autowired
     private CommandGateway commandGateway;
@@ -40,8 +40,6 @@ public class MovieSaga {
     private QueryUpdateEmitter queryUpdateEmitter;
 
     private String movieId;
-    private boolean castFound = false;
-    private boolean trailersFound = false;
 
     @StartSaga
     @SagaEventHandler(associationProperty = MOVIE_ID)
@@ -64,40 +62,6 @@ public class MovieSaga {
             end();
         } else {
             commandGateway.send(new SaveMovieCommand(movieId, event.getExternalMovie()));
-        }
-    }
-
-    @StartSaga
-    @SagaEventHandler(associationProperty = MOVIE_ID)
-    public void handle(TrailersAndCastSearchDelegatedEvent event) {
-        log.info("[saga] Handling {}, movieId={}, castId={}, trailersId={}, externalId={}",
-                event.getClass().getSimpleName(),
-                event.getMovieId(),
-                event.getCastId(),
-                event.getTrailersId(),
-                event.getExternalMovieId());
-        var externalMovieId = event.getExternalMovieId();
-        associateWith(TRAILERS_ID, event.getTrailersId());
-        associateWith(CAST_ID, event.getCastId());
-        commandGateway.send(new FindCastCommand(event.getCastId(), externalMovieId, event.getMovieId()));
-        commandGateway.send(new FindTrailersCommand(event.getTrailersId(), externalMovieId, event.getMovieId()));
-    }
-
-    @SagaEventHandler(associationProperty = TRAILERS_ID)
-    public void handle(TrailersSavedEvent event) {
-        log.info("[saga] Trailers for movie saved");
-        trailersFound = true;
-        if (castFound) {
-            end();
-        }
-    }
-
-    @SagaEventHandler(associationProperty = CAST_ID)
-    public void handle(CastSavedEvent event) {
-        log.info("[saga] Cast for movie saved");
-        castFound = true;
-        if (trailersFound) {
-            end();
         }
     }
 }

@@ -120,7 +120,7 @@ public class MovieAggregate {
 
     @CommandHandler
     public void handle(DeleteMovieCommand command) {
-        apply(new MovieDeletedEvent(command.getMovieId()));
+        apply(new MovieDeletedEvent(command.getMovieId(), trailersId, castId));
     }
 
     @EventSourcingHandler

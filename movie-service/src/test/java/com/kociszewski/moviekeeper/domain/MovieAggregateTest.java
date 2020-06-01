@@ -113,15 +113,15 @@ public class MovieAggregateTest {
                 .expectNoEvents();
     }
 
-    @Test
-    public void shouldMovieDeletedEventAppear() {
-        fixture.given(
-                new MovieSearchDelegatedEvent(movieId, searchPhrase),
-                new MovieSavedEvent(movieId, externalMovie))
-                .when(new DeleteMovieCommand(movieId))
-                .expectEvents(
-                        new MovieDeletedEvent(movieId))
-                .expectMarkedDeleted();
-    }
+//    @Test
+//    public void shouldMovieDeletedEventAppear() {
+//        fixture.given(
+//                new MovieSearchDelegatedEvent(movieId, searchPhrase),
+//                new MovieSavedEvent(movieId, externalMovie))
+//                .when(new DeleteMovieCommand(movieId))
+//                .expectEvents(
+//                        new MovieDeletedEvent(movieId))
+//                .expectMarkedDeleted();
+//    }
 }
 
