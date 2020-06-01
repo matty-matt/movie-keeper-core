@@ -92,9 +92,7 @@ public class MovieAggregate {
     @CommandHandler
     public void handle(DelegateTrailersAndCastSearchCommand command) {
         if (castId == null || trailersId == null) {
-            String trailersId = UUID.randomUUID().toString();
-            String castId = UUID.randomUUID().toString();
-            apply(new TrailersAndCastSearchDelegatedEvent(command.getMovieId(), externalMovieId, trailersId, castId));
+            apply(new TrailersAndCastSearchDelegatedEvent(command.getMovieId(), externalMovieId, command.getTrailersId(), command.getCastId()));
         }
     }
 

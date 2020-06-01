@@ -7,4 +7,6 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 public class DelegateTrailersAndCastSearchCommand {
     @TargetAggregateIdentifier
     String movieId;
+    String castId;
+    String trailersId;
 }

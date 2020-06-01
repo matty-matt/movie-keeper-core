@@ -47,7 +47,10 @@ public class MovieController {
                         movie,
                         HttpStatus.CREATED,
                         (movieDTO) -> {
-                            commandGateway.send(new DelegateTrailersAndCastSearchCommand(movieId));
+                            commandGateway.send(new DelegateTrailersAndCastSearchCommand(
+                                    movieId,
+                                    UUID.randomUUID().toString(),
+                                    UUID.randomUUID().toString()));
                         }
                 ))
                 .doFinally(it -> findMovieSubscription.close());
