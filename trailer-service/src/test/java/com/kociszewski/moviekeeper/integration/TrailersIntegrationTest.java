@@ -1,11 +1,9 @@
 package com.kociszewski.moviekeeper.integration;
 
-import com.kociszewski.moviekeeper.domain.commands.FindTrailersCommand;
-import com.kociszewski.moviekeeper.domain.events.TrailersSavedEvent;
+import com.kociszewski.moviekeeper.domain.commands.CreateTrailersCommand;
 import com.kociszewski.moviekeeper.infrastructure.TrailerDTO;
 import com.kociszewski.moviekeeper.infrastructure.TrailerRepository;
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.axonframework.eventhandling.gateway.EventGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -42,7 +39,7 @@ public class TrailersIntegrationTest extends CommonIntegrationSetup {
     @Test
     public void shouldRetrieveTrailers() {
         // given
-        commandGateway.send(new FindTrailersCommand(trailers.getAggregateId(), trailers.getExternalMovieId(), trailers.getMovieId()));
+        commandGateway.send(new CreateTrailersCommand(trailers.getAggregateId(), trailers.getExternalMovieId(), trailers.getMovieId()));
 
         await()
             .atMost(FIVE_SECONDS)

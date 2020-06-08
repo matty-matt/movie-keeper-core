@@ -33,26 +33,26 @@ public class ProxyCommandHandler {
             externalMovie = ExternalMovie.builder().movieState(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE).build();
         }
 
-        eventGateway.publish(new MovieDetailsFetchedEvent(command.getProxyId(), externalMovie));
+        eventGateway.publish(new MovieDetailsEvent(command.getProxyId(), externalMovie));
     }
 
     @CommandHandler
-    public void handle(FetchCastDetailsCommand command) {
+    public void handle(FetchCastCommand command) {
         CastDTO castDTO = tmdbService.retrieveCast(command.getExternalMovieId());
         castDTO.setExternalMovieId(command.getExternalMovieId());
         castDTO.setAggregateId(command.getCastId());
         castDTO.setMovieId(command.getProxyId().replace(PREFIX, EMPTY));
 
-        eventGateway.publish(new CastDetailsFetchedEvent(command.getProxyId(), castDTO));
+        eventGateway.publish(new CastDetailsEvent(command.getProxyId(), castDTO));
     }
 
     @CommandHandler
-    public void handle(FetchTrailersDetailsCommand command) {
+    public void handle(FetchTrailersCommand command) {
         TrailerSectionDTO trailerSectionDTO = tmdbService.retrieveTrailers(command.getExternalMovieId());
         trailerSectionDTO.setExternalMovieId(command.getExternalMovieId());
         trailerSectionDTO.setAggregateId(command.getTrailersId());
         trailerSectionDTO.setMovieId(command.getProxyId().replace(PREFIX, EMPTY));
 
-        eventGateway.publish(new TrailersDetailsFetchedEvent(command.getProxyId(), trailerSectionDTO));
+        eventGateway.publish(new TrailersDetailsEvent(command.getProxyId(), trailerSectionDTO));
     }
 }

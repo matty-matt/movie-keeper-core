@@ -5,7 +5,7 @@ import lombok.Value;
 
 
 @Value
-public class TrailersDetailsFetchedEvent {
+public class TrailersDetailsEvent {
      String proxyId;
      TrailerSectionDTO trailerSectionDTO;
 }

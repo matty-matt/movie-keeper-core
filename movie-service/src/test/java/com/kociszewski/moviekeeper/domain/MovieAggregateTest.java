@@ -10,8 +10,6 @@ import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 
 import java.util.Collections;
 import java.util.Date;
@@ -61,8 +59,8 @@ public class MovieAggregateTest {
     @Test
     public void shouldMovieSearchDelegatedEventAppear() {
         fixture.givenNoPriorActivity()
-                .when(new FindMovieCommand(movieId, searchPhrase))
-                .expectEvents(new MovieSearchDelegatedEvent(movieId, searchPhrase))
+                .when(new CreateMovieCommand(movieId, searchPhrase))
+                .expectEvents(new MovieCreatedEvent(movieId, searchPhrase))
                 .expectState(state -> {
                     assertThat(state.getMovieId()).isEqualTo(movieId);
                     assertThat(state.getSearchPhrase()).isEqualTo(new SearchPhrase(searchPhrase));
@@ -72,7 +70,7 @@ public class MovieAggregateTest {
     @Test
     public void shouldMovieSavedEventAppear() {
         fixture.given(
-                new MovieSearchDelegatedEvent(movieId, searchPhrase))
+                new MovieCreatedEvent(movieId, searchPhrase))
                 .when(new SaveMovieCommand(movieId, externalMovie))
                 .expectEvents(new MovieSavedEvent(movieId, externalMovie))
                 .expectState(state -> {
@@ -97,7 +95,7 @@ public class MovieAggregateTest {
     @Test
     public void shouldTrailersAndCastSearchDelegatedEventEventAppear() {
         fixture.given(
-                new MovieSearchDelegatedEvent(movieId, searchPhrase),
+                new MovieCreatedEvent(movieId, searchPhrase),
                 new MovieSavedEvent(movieId, externalMovie))
                 .when(new DelegateTrailersAndCastSearchCommand(movieId, castId, trailersId))
                 .expectEvents(new TrailersAndCastSearchDelegatedEvent(movieId, externalMovieId, trailersId, castId))
@@ -110,7 +108,7 @@ public class MovieAggregateTest {
     @Test
     public void shouldToggleWatchedEventAppear() {
         fixture.given(
-                new MovieSearchDelegatedEvent(movieId, searchPhrase),
+                new MovieCreatedEvent(movieId, searchPhrase),
                 new MovieSavedEvent(movieId, externalMovie))
                 .when(new ToggleWatchedCommand(movieId, new Watched(true)))
                 .expectEvents(new ToggleWatchedEvent(movieId, new Watched(true)))
@@ -120,7 +118,7 @@ public class MovieAggregateTest {
     @Test
     public void shouldNotToggleWatchedEventAppear() {
         fixture.given(
-                new MovieSearchDelegatedEvent(movieId, searchPhrase),
+                new MovieCreatedEvent(movieId, searchPhrase),
                 new MovieSavedEvent(movieId, externalMovie),
                 new ToggleWatchedEvent(movieId, new Watched(true)))
                 .when(new ToggleWatchedCommand(movieId, new Watched(true)))
@@ -130,7 +128,7 @@ public class MovieAggregateTest {
     @Test
     public void shouldMovieDeletedEventAppear() {
         fixture.given(
-                new MovieSearchDelegatedEvent(movieId, searchPhrase),
+                new MovieCreatedEvent(movieId, searchPhrase),
                 new MovieSavedEvent(movieId, externalMovie))
                 .when(new DeleteMovieCommand(movieId))
                 .expectEvents(

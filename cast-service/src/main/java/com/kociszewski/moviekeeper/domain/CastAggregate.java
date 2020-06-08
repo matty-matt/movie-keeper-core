@@ -1,10 +1,10 @@
 package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.DeleteCastCommand;
-import com.kociszewski.moviekeeper.domain.commands.FindCastCommand;
+import com.kociszewski.moviekeeper.domain.commands.CreateCastCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveCastCommand;
 import com.kociszewski.moviekeeper.domain.events.CastDeletedEvent;
-import com.kociszewski.moviekeeper.domain.events.CastSearchDelegatedEvent;
+import com.kociszewski.moviekeeper.domain.events.CastCreatedEvent;
 import com.kociszewski.moviekeeper.domain.events.CastSavedEvent;
 import com.kociszewski.moviekeeper.infrastructure.CastInfo;
 import lombok.Getter;
@@ -32,12 +32,12 @@ public class CastAggregate {
     private List<CastInfo> cast;
 
     @CommandHandler
-    public CastAggregate(FindCastCommand command) {
-        apply(new CastSearchDelegatedEvent(command.getCastId(), command.getMovieId(), command.getExternalMovieId()));
+    public CastAggregate(CreateCastCommand command) {
+        apply(new CastCreatedEvent(command.getCastId(), command.getMovieId(), command.getExternalMovieId()));
     }
 
     @EventSourcingHandler
-    public void on(CastSearchDelegatedEvent event) {
+    public void on(CastCreatedEvent event) {
         this.castId = event.getCastId();
         this.cast = new ArrayList<>();
     }

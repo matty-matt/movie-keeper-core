@@ -1,12 +1,12 @@
 package com.kociszewski.moviekeeper.domain.commands;
 
-import lombok.*;
+import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Value
-public class FindCastCommand {
+public class CreateTrailersCommand {
     @TargetAggregateIdentifier
-    String castId;
+    String trailersId;
     String externalMovieId;
     String movieId;
 }

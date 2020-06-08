@@ -1,6 +1,6 @@
 package com.kociszewski.moviekeeper.integration;
 
-import com.kociszewski.moviekeeper.domain.commands.FindCastCommand;
+import com.kociszewski.moviekeeper.domain.commands.CreateCastCommand;
 import com.kociszewski.moviekeeper.infrastructure.CastInfoDTO;
 import com.kociszewski.moviekeeper.infrastructure.CastRepository;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -39,7 +39,7 @@ public class CastIntegrationTest extends CommonIntegrationSetup {
     @Test
     public void shouldRetrieveCast() {
         // given
-        commandGateway.send(new FindCastCommand(cast.getAggregateId(), cast.getExternalMovieId(), cast.getMovieId()));
+        commandGateway.send(new CreateCastCommand(cast.getAggregateId(), cast.getExternalMovieId(), cast.getMovieId()));
 
         await()
                 .atMost(FIVE_SECONDS)
