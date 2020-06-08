@@ -1,7 +1,7 @@
 package com.kociszewski.moviekeeper.integration;
 
 import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
-import com.kociszewski.moviekeeper.domain.events.MovieDetailsFetchedEvent;
+import com.kociszewski.moviekeeper.domain.events.MovieDetailsEvent;
 import com.kociszewski.moviekeeper.infrastructure.ExternalMovie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +26,6 @@ public class MockProxyCommandHandler {
         ExternalMovie movie = command.getSearchPhrase().equals(SUPER_MOVIE) ?
                 CommonIntegrationSetup.MOVIE :
                 CommonIntegrationSetup.ANOTHER_MOVIE;
-        eventGateway.publish(new MovieDetailsFetchedEvent(command.getProxyId(), movie));
+        eventGateway.publish(new MovieDetailsEvent(command.getProxyId(), movie));
     }
 }

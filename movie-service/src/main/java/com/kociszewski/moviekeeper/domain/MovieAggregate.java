@@ -14,7 +14,6 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
@@ -49,14 +48,14 @@ public class MovieAggregate {
     private SearchPhrase searchPhrase;
 
     @CommandHandler
-    public MovieAggregate(FindMovieCommand command) {
-        apply(new MovieSearchDelegatedEvent(
+    public MovieAggregate(CreateMovieCommand command) {
+        apply(new MovieCreatedEvent(
                 command.getMovieId(),
                 command.getPhrase()));
     }
 
     @EventSourcingHandler
-    private void on(MovieSearchDelegatedEvent event) {
+    private void on(MovieCreatedEvent event) {
         this.movieId = event.getMovieId();
         this.searchPhrase = new SearchPhrase(event.getSearchPhrase());
     }

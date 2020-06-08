@@ -33,7 +33,7 @@ public class ProxyCommandHandler {
             externalMovie = ExternalMovie.builder().movieState(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE).build();
         }
 
-        eventGateway.publish(new MovieDetailsFetchedEvent(command.getProxyId(), externalMovie));
+        eventGateway.publish(new MovieDetailsEvent(command.getProxyId(), externalMovie));
     }
 
     @CommandHandler

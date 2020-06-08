@@ -2,8 +2,8 @@ package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveMovieCommand;
-import com.kociszewski.moviekeeper.domain.events.MovieDetailsFetchedEvent;
-import com.kociszewski.moviekeeper.domain.events.MovieSearchDelegatedEvent;
+import com.kociszewski.moviekeeper.domain.events.MovieDetailsEvent;
+import com.kociszewski.moviekeeper.domain.events.MovieCreatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.ExternalMovie;
 import com.kociszewski.moviekeeper.infrastructure.ExternalMovieInfo;
 import com.kociszewski.moviekeeper.infrastructure.Genre;
@@ -65,7 +65,7 @@ public class MovieSagaTest {
         fixture.givenAggregate(movieId)
                 .published()
                 .whenAggregate(movieId)
-                .publishes(new MovieSearchDelegatedEvent(movieId, searchPhrase))
+                .publishes(new MovieCreatedEvent(movieId, searchPhrase))
                 .expectActiveSagas(1)
                 .expectDispatchedCommands(new FetchMovieDetailsCommand(proxyId, searchPhrase));
     }
@@ -73,9 +73,9 @@ public class MovieSagaTest {
     @Test
     public void shouldDispatchSaveCastCommand() {
         fixture.givenAggregate(movieId)
-                .published(new MovieSearchDelegatedEvent(movieId, searchPhrase))
+                .published(new MovieCreatedEvent(movieId, searchPhrase))
                 .whenAggregate(proxyId)
-                .publishes(new MovieDetailsFetchedEvent(proxyId, externalMovie))
+                .publishes(new MovieDetailsEvent(proxyId, externalMovie))
                 .expectActiveSagas(0)
                 .expectDispatchedCommands(new SaveMovieCommand(movieId, externalMovie));
     }
@@ -83,9 +83,9 @@ public class MovieSagaTest {
     @Test
     public void shouldNotDispatchSaveCastCommandWhenNotFoundInExternalService() {
         fixture.givenAggregate(movieId)
-                .published(new MovieSearchDelegatedEvent(movieId, searchPhrase))
+                .published(new MovieCreatedEvent(movieId, searchPhrase))
                 .whenAggregate(proxyId)
-                .publishes(new MovieDetailsFetchedEvent(proxyId, movieThatWasNotFoundInExternalService))
+                .publishes(new MovieDetailsEvent(proxyId, movieThatWasNotFoundInExternalService))
                 .expectActiveSagas(0)
                 .expectNoDispatchedCommands();
     }

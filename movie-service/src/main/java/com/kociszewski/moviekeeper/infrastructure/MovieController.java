@@ -30,7 +30,7 @@ public class MovieController {
     public Mono<ResponseEntity<MovieDTO>> addMovieByTitle(@RequestBody TitleBody titleBody) {
         String movieId = UUID.randomUUID().toString();
         commandGateway.send(
-                new FindMovieCommand(
+                new CreateMovieCommand(
                         movieId,
                         titleBody.getTitle()));
 
