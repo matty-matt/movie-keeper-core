@@ -1,9 +1,9 @@
 package com.kociszewski.moviekeeper.domain;
 
-import com.kociszewski.moviekeeper.domain.commands.FetchCastDetailsCommand;
+import com.kociszewski.moviekeeper.domain.commands.FetchCastCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveCastCommand;
-import com.kociszewski.moviekeeper.domain.events.CastDetailsFetchedEvent;
-import com.kociszewski.moviekeeper.domain.events.CastSearchDelegatedEvent;
+import com.kociszewski.moviekeeper.domain.events.CastDetailsEvent;
+import com.kociszewski.moviekeeper.domain.events.CastCreatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.CastDTO;
 import com.kociszewski.moviekeeper.infrastructure.CastInfoDTO;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -52,17 +52,17 @@ public class CastSagaTest {
         fixture.givenAggregate(castId)
                 .published()
                 .whenAggregate(castId)
-                .publishes(new CastSearchDelegatedEvent(castId, movieId, externalMovieId))
+                .publishes(new CastCreatedEvent(castId, movieId, externalMovieId))
                 .expectActiveSagas(1)
-                .expectDispatchedCommands(new FetchCastDetailsCommand(proxyId, externalMovieId, castId));
+                .expectDispatchedCommands(new FetchCastCommand(proxyId, externalMovieId, castId));
     }
 
     @Test
     public void shouldDispatchSaveCastCommand() {
         fixture.givenAggregate(castId)
-                .published(new CastSearchDelegatedEvent(castId, movieId, externalMovieId))
+                .published(new CastCreatedEvent(castId, movieId, externalMovieId))
                 .whenAggregate(proxyId)
-                .publishes(new CastDetailsFetchedEvent(proxyId, castDTO))
+                .publishes(new CastDetailsEvent(proxyId, castDTO))
                 .expectActiveSagas(0)
                 .expectDispatchedCommands(new SaveCastCommand(castId, castDTO));
     }

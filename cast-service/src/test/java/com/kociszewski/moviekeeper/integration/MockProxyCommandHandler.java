@@ -1,7 +1,7 @@
 package com.kociszewski.moviekeeper.integration;
 
-import com.kociszewski.moviekeeper.domain.commands.FetchCastDetailsCommand;
-import com.kociszewski.moviekeeper.domain.events.CastDetailsFetchedEvent;
+import com.kociszewski.moviekeeper.domain.commands.FetchCastCommand;
+import com.kociszewski.moviekeeper.domain.events.CastDetailsEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
@@ -20,8 +20,8 @@ public class MockProxyCommandHandler {
     private final EventGateway eventGateway;
 
     @CommandHandler
-    public void handle(FetchCastDetailsCommand command) {
+    public void handle(FetchCastCommand command) {
         log.info("MOCK fetching...");
-        eventGateway.publish(new CastDetailsFetchedEvent(command.getProxyId(), CAST));
+        eventGateway.publish(new CastDetailsEvent(command.getProxyId(), CAST));
     }
 }

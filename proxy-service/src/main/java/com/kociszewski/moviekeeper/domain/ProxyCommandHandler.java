@@ -37,13 +37,13 @@ public class ProxyCommandHandler {
     }
 
     @CommandHandler
-    public void handle(FetchCastDetailsCommand command) {
+    public void handle(FetchCastCommand command) {
         CastDTO castDTO = tmdbService.retrieveCast(command.getExternalMovieId());
         castDTO.setExternalMovieId(command.getExternalMovieId());
         castDTO.setAggregateId(command.getCastId());
         castDTO.setMovieId(command.getProxyId().replace(PREFIX, EMPTY));
 
-        eventGateway.publish(new CastDetailsFetchedEvent(command.getProxyId(), castDTO));
+        eventGateway.publish(new CastDetailsEvent(command.getProxyId(), castDTO));
     }
 
     @CommandHandler

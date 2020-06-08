@@ -1,9 +1,9 @@
 package com.kociszewski.moviekeeper.domain;
 
-import com.kociszewski.moviekeeper.domain.commands.FetchCastDetailsCommand;
+import com.kociszewski.moviekeeper.domain.commands.FetchCastCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveCastCommand;
-import com.kociszewski.moviekeeper.domain.events.CastDetailsFetchedEvent;
-import com.kociszewski.moviekeeper.domain.events.CastSearchDelegatedEvent;
+import com.kociszewski.moviekeeper.domain.events.CastDetailsEvent;
+import com.kociszewski.moviekeeper.domain.events.CastCreatedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.EndSaga;
@@ -27,7 +27,7 @@ public class CastSaga {
 
     @StartSaga
     @SagaEventHandler(associationProperty = "castId")
-    public void handle(CastSearchDelegatedEvent event) {
+    public void handle(CastCreatedEvent event) {
         log.info("[saga] Handling {}, castId={}, movieId={}, externalId={}",
                 event.getClass().getSimpleName(),
                 event.getCastId(),
@@ -36,12 +36,12 @@ public class CastSaga {
         castId = event.getCastId();
         String proxyId = PROXY_PREFIX.concat(event.getMovieId());
         associateWith("proxyId", proxyId);
-        commandGateway.send(new FetchCastDetailsCommand(proxyId, event.getExternalMovieId(), event.getCastId()));
+        commandGateway.send(new FetchCastCommand(proxyId, event.getExternalMovieId(), event.getCastId()));
     }
 
     @SagaEventHandler(associationProperty = "proxyId")
     @EndSaga
-    public void handle(CastDetailsFetchedEvent event) {
+    public void handle(CastDetailsEvent event) {
         log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getProxyId());
 
         var cast = event.getCastDTO();

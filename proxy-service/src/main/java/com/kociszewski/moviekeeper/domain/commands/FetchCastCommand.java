@@ -4,9 +4,9 @@ import lombok.*;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Value
-public class FindCastCommand {
+public class FetchCastCommand {
     @TargetAggregateIdentifier
-    String castId;
-    String externalMovieId;
-    String movieId;
+     String proxyId;
+     String externalMovieId;
+     String castId;
 }

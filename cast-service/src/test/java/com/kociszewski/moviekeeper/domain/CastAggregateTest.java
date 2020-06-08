@@ -1,11 +1,11 @@
 package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.DeleteCastCommand;
-import com.kociszewski.moviekeeper.domain.commands.FindCastCommand;
+import com.kociszewski.moviekeeper.domain.commands.CreateCastCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveCastCommand;
 import com.kociszewski.moviekeeper.domain.events.CastDeletedEvent;
 import com.kociszewski.moviekeeper.domain.events.CastSavedEvent;
-import com.kociszewski.moviekeeper.domain.events.CastSearchDelegatedEvent;
+import com.kociszewski.moviekeeper.domain.events.CastCreatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.CastDTO;
 import com.kociszewski.moviekeeper.infrastructure.CastInfoDTO;
 import org.axonframework.test.aggregate.AggregateTestFixture;
@@ -52,8 +52,8 @@ public class CastAggregateTest {
     @Test
     public void shouldCastSearchDelegatedEventAppear() {
         fixture.givenNoPriorActivity()
-                .when(new FindCastCommand(castId, externalMovieId, movieId))
-                .expectEvents(new CastSearchDelegatedEvent(castId, movieId, externalMovieId))
+                .when(new CreateCastCommand(castId, externalMovieId, movieId))
+                .expectEvents(new CastCreatedEvent(castId, movieId, externalMovieId))
                 .expectState(state -> {
                     assertThat(state.getCastId()).isEqualTo(castId);
                     assertThat(state.getCast()).isEmpty();
@@ -62,7 +62,7 @@ public class CastAggregateTest {
 
     @Test
     public void shouldCastSavedEventAppearWhenCastEmpty() {
-        fixture.given(new CastSearchDelegatedEvent(castId, movieId, externalMovieId))
+        fixture.given(new CastCreatedEvent(castId, movieId, externalMovieId))
                 .when(new SaveCastCommand(castId, castDTO))
                 .expectEvents(new CastSavedEvent(castId, castDTO))
                 .expectState(state -> {
@@ -81,7 +81,7 @@ public class CastAggregateTest {
 
     @Test
     public void shouldCastSavedEventAppearWhenCastIsAlreadySet() {
-        fixture.given(new CastSearchDelegatedEvent(castId, movieId, externalMovieId),
+        fixture.given(new CastCreatedEvent(castId, movieId, externalMovieId),
                       new CastSavedEvent(castId, castDTO))
                 .when(new SaveCastCommand(castId, castDTO))
                 .expectNoEvents()
@@ -101,7 +101,7 @@ public class CastAggregateTest {
 
     @Test
     public void shouldCastDeletedEventAppear() {
-        fixture.given(new CastSearchDelegatedEvent(castId, movieId, externalMovieId),
+        fixture.given(new CastCreatedEvent(castId, movieId, externalMovieId),
                 new CastSavedEvent(castId, castDTO))
                 .when(new DeleteCastCommand(castId))
                 .expectEvents(
