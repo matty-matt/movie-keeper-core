@@ -1,11 +1,11 @@
 package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.DeleteTrailersCommand;
-import com.kociszewski.moviekeeper.domain.commands.FindTrailersCommand;
+import com.kociszewski.moviekeeper.domain.commands.CreateTrailersCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveTrailersCommand;
 import com.kociszewski.moviekeeper.domain.events.TrailersDeletedEvent;
 import com.kociszewski.moviekeeper.domain.events.TrailersSavedEvent;
-import com.kociszewski.moviekeeper.domain.events.TrailersSearchDelegatedEvent;
+import com.kociszewski.moviekeeper.domain.events.TrailersCreatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.TrailerDTO;
 import com.kociszewski.moviekeeper.infrastructure.TrailerSectionDTO;
 import org.axonframework.test.aggregate.AggregateTestFixture;
@@ -53,8 +53,8 @@ public class TrailerAggregateTest {
     @Test
     public void shouldTrailersSearchDelegatedEventEventAppear() {
         fixture.givenNoPriorActivity()
-                .when(new FindTrailersCommand(trailersId, externalMovieId, movieId))
-                .expectEvents(new TrailersSearchDelegatedEvent(trailersId, movieId, externalMovieId))
+                .when(new CreateTrailersCommand(trailersId, externalMovieId, movieId))
+                .expectEvents(new TrailersCreatedEvent(trailersId, movieId, externalMovieId))
                 .expectState(state -> {
                     assertThat(state.getTrailersId()).isEqualTo(trailersId);
                     assertThat(state.getTrailers()).isEmpty();
@@ -63,7 +63,7 @@ public class TrailerAggregateTest {
 
     @Test
     public void shouldTrailersSavedEventAppearWhenTrailersEmpty() {
-        fixture.given(new TrailersSearchDelegatedEvent(trailersId, movieId, externalMovieId))
+        fixture.given(new TrailersCreatedEvent(trailersId, movieId, externalMovieId))
                 .when(new SaveTrailersCommand(trailersId, trailerSectionDTO))
                 .expectEvents(new TrailersSavedEvent(trailersId, trailerSectionDTO))
                 .expectState(state -> {
@@ -83,7 +83,7 @@ public class TrailerAggregateTest {
     @Test
     public void shouldTrailersSavedEventNotAppearWhenTrailersAlreadySet() {
         fixture.given(
-                new TrailersSearchDelegatedEvent(trailersId, movieId, externalMovieId),
+                new TrailersCreatedEvent(trailersId, movieId, externalMovieId),
                 new TrailersSavedEvent(trailersId, trailerSectionDTO))
                 .when(new SaveTrailersCommand(trailersId, trailerSectionDTO))
                 .expectNoEvents()
@@ -104,7 +104,7 @@ public class TrailerAggregateTest {
     @Test
     public void shouldTrailersDeletedEventAppear() {
         fixture.given(
-                new TrailersSearchDelegatedEvent(trailersId, movieId, externalMovieId),
+                new TrailersCreatedEvent(trailersId, movieId, externalMovieId),
                 new TrailersSavedEvent(trailersId, trailerSectionDTO))
                 .when(new DeleteTrailersCommand(trailersId))
                 .expectEvents(

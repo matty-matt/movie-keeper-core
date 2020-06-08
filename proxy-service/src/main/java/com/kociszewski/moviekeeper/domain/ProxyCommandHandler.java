@@ -47,12 +47,12 @@ public class ProxyCommandHandler {
     }
 
     @CommandHandler
-    public void handle(FetchTrailersDetailsCommand command) {
+    public void handle(FetchTrailersCommand command) {
         TrailerSectionDTO trailerSectionDTO = tmdbService.retrieveTrailers(command.getExternalMovieId());
         trailerSectionDTO.setExternalMovieId(command.getExternalMovieId());
         trailerSectionDTO.setAggregateId(command.getTrailersId());
         trailerSectionDTO.setMovieId(command.getProxyId().replace(PREFIX, EMPTY));
 
-        eventGateway.publish(new TrailersDetailsFetchedEvent(command.getProxyId(), trailerSectionDTO));
+        eventGateway.publish(new TrailersDetailsEvent(command.getProxyId(), trailerSectionDTO));
     }
 }

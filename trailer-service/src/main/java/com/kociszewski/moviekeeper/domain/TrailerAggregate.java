@@ -1,10 +1,10 @@
 package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.DeleteTrailersCommand;
-import com.kociszewski.moviekeeper.domain.commands.FindTrailersCommand;
+import com.kociszewski.moviekeeper.domain.commands.CreateTrailersCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveTrailersCommand;
 import com.kociszewski.moviekeeper.domain.events.TrailersDeletedEvent;
-import com.kociszewski.moviekeeper.domain.events.TrailersSearchDelegatedEvent;
+import com.kociszewski.moviekeeper.domain.events.TrailersCreatedEvent;
 import com.kociszewski.moviekeeper.domain.events.TrailersSavedEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,12 +31,12 @@ public class TrailerAggregate {
     private List<Trailer> trailers;
 
     @CommandHandler
-    public TrailerAggregate(FindTrailersCommand command) {
-        apply(new TrailersSearchDelegatedEvent(command.getTrailersId(), command.getMovieId(), command.getExternalMovieId()));
+    public TrailerAggregate(CreateTrailersCommand command) {
+        apply(new TrailersCreatedEvent(command.getTrailersId(), command.getMovieId(), command.getExternalMovieId()));
     }
 
     @EventSourcingHandler
-    public void on(TrailersSearchDelegatedEvent event) {
+    public void on(TrailersCreatedEvent event) {
         this.trailersId = event.getTrailersId();
         this.trailers = new ArrayList<>();
     }

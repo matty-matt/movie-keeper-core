@@ -4,7 +4,7 @@ import lombok.*;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Value
-public class FetchTrailersDetailsCommand {
+public class FetchTrailersCommand {
     @TargetAggregateIdentifier
      String proxyId;
      String externalMovieId;

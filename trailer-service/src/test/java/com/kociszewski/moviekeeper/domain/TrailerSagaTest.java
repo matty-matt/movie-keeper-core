@@ -1,9 +1,9 @@
 package com.kociszewski.moviekeeper.domain;
 
-import com.kociszewski.moviekeeper.domain.commands.FetchTrailersDetailsCommand;
+import com.kociszewski.moviekeeper.domain.commands.FetchTrailersCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveTrailersCommand;
-import com.kociszewski.moviekeeper.domain.events.TrailersDetailsFetchedEvent;
-import com.kociszewski.moviekeeper.domain.events.TrailersSearchDelegatedEvent;
+import com.kociszewski.moviekeeper.domain.events.TrailersDetailsEvent;
+import com.kociszewski.moviekeeper.domain.events.TrailersCreatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.TrailerDTO;
 import com.kociszewski.moviekeeper.infrastructure.TrailerSectionDTO;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -53,17 +53,17 @@ public class TrailerSagaTest {
         fixture.givenAggregate(trailersId)
                 .published()
                 .whenAggregate(trailersId)
-                .publishes(new TrailersSearchDelegatedEvent(trailersId, movieId, externalMovieId))
+                .publishes(new TrailersCreatedEvent(trailersId, movieId, externalMovieId))
                 .expectActiveSagas(1)
-                .expectDispatchedCommands(new FetchTrailersDetailsCommand(proxyId, externalMovieId, trailersId));
+                .expectDispatchedCommands(new FetchTrailersCommand(proxyId, externalMovieId, trailersId));
     }
 
     @Test
     public void shouldDispatchSaveTrailersCommand() {
         fixture.givenAggregate(trailersId)
-                .published(new TrailersSearchDelegatedEvent(trailersId, movieId, externalMovieId))
+                .published(new TrailersCreatedEvent(trailersId, movieId, externalMovieId))
                 .whenAggregate(proxyId)
-                .publishes(new TrailersDetailsFetchedEvent(proxyId, trailerSectionDTO))
+                .publishes(new TrailersDetailsEvent(proxyId, trailerSectionDTO))
                 .expectActiveSagas(0)
                 .expectDispatchedCommands(new SaveTrailersCommand(trailersId, trailerSectionDTO));
     }

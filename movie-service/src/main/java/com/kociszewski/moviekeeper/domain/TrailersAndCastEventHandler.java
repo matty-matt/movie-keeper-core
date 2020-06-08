@@ -3,7 +3,7 @@ package com.kociszewski.moviekeeper.domain;
 import com.kociszewski.moviekeeper.domain.commands.DeleteCastCommand;
 import com.kociszewski.moviekeeper.domain.commands.DeleteTrailersCommand;
 import com.kociszewski.moviekeeper.domain.commands.CreateCastCommand;
-import com.kociszewski.moviekeeper.domain.commands.FindTrailersCommand;
+import com.kociszewski.moviekeeper.domain.commands.CreateTrailersCommand;
 import com.kociszewski.moviekeeper.domain.events.*;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -28,7 +28,7 @@ public class TrailersAndCastEventHandler {
                 event.getExternalMovieId());
         var externalMovieId = event.getExternalMovieId();
         commandGateway.send(new CreateCastCommand(event.getCastId(), externalMovieId, event.getMovieId()));
-        commandGateway.send(new FindTrailersCommand(event.getTrailersId(), externalMovieId, event.getMovieId()));
+        commandGateway.send(new CreateTrailersCommand(event.getTrailersId(), externalMovieId, event.getMovieId()));
     }
 
     @EventHandler
