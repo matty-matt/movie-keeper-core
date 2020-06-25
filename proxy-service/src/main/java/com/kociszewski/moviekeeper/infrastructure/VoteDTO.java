@@ -8,4 +8,5 @@ import lombok.Data;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class VoteDTO {
     private double voteAverage;
+    private long voteCount;
 }

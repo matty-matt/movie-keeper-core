@@ -8,5 +8,6 @@ import lombok.Value;
 public class RefreshData {
     String movieId;
     double averageVote;
+    long voteCount;
     String digitalReleaseDate;
 }
