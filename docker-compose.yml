@@ -64,3 +64,14 @@ services:
       "./wait-for-it.sh", "axon:8124", "--timeout=30", "--",
       "java", "-jar", "app.jar"
     ]
+  digital-release-tracker:
+    build:
+      context: ./digital-release-tracker
+    ports:
+      - '35005:35005'
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    command: [
+      "./wait-for-it.sh", "axon:8124", "--timeout=30", "--",
+      "java", "-jar", "app.jar"
+    ]
