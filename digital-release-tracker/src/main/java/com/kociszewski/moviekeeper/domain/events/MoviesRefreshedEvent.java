@@ -1,11 +1,11 @@
 package com.kociszewski.moviekeeper.domain.events;
 
-import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
+import com.kociszewski.moviekeeper.infrastructure.RefreshData;
 import lombok.Value;
 
 import java.util.List;
 
 @Value
 public class MoviesRefreshedEvent {
-    List<MovieDTO> refreshedMovies;
+    List<RefreshData> refreshedMovies;
 }

@@ -5,39 +5,26 @@ import com.kociszewski.moviekeeper.domain.commands.CreateRefreshMoviesCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveRefreshedMoviesCommand;
 import com.kociszewski.moviekeeper.domain.events.MoviesRefreshedEvent;
 import com.kociszewski.moviekeeper.domain.events.RefreshMoviesDelegatedEvent;
-import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
-import com.kociszewski.moviekeeper.infrastructure.ReleaseTrackerRepository;
+import com.kociszewski.moviekeeper.infrastructure.ReleaseTrackerProjection;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventhandling.gateway.EventGateway;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class ReleaseTrackerCommandHandler {
 
     private final EventGateway eventGateway;
-    private final ReleaseTrackerRepository releaseTrackerRepository;
+    private final ReleaseTrackerProjection releaseTrackerProjection;
 
     @CommandHandler
     public void handle(CreateRefreshMoviesCommand command) {
-        List<String> notWatchedMovies = releaseTrackerRepository.findExternalMovieIdByWatchedFalse()
-                .stream()
-                .map(MovieDTO::getExternalMovieId)
-                .collect(Collectors.toList());
-        log.info("Refreshing not watched movies: " + notWatchedMovies);
-
-        eventGateway.publish(new RefreshMoviesDelegatedEvent(command.getRefreshId(), notWatchedMovies));
+        eventGateway.publish(new RefreshMoviesDelegatedEvent(command.getRefreshId(), releaseTrackerProjection.findMoviesToRefresh()));
     }
 
     @CommandHandler
     public void handle(SaveRefreshedMoviesCommand command) {
-        // TODO lista z prawdziwego zdarzenia;
-//        eventGateway.publish(new MoviesRefreshedEvent(command));
+        eventGateway.publish(new MoviesRefreshedEvent(command.getRefreshedMovies()));
     }
 }

@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ReleaseTrackerRepository extends MongoRepository<MovieDTO, String> {
     List<MovieDTO> findExternalMovieIdByWatchedFalse();
+    List<MovieDTO> findAllByWatchedFalse();
 }
