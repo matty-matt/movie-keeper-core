@@ -1,0 +1,18 @@
+server:
+  port: 35005
+
+spring:
+  application:
+    name: digital-release-tracker
+  data:
+    mongodb:
+      uri: mongodb://localhost:38550/moviekeeper
+---
+spring:
+  profiles: prod
+  data:
+    mongodb:
+      uri: mongodb://mongo:38550/moviekeeper
+axon:
+  axonserver:
+    servers: axon
