@@ -14,14 +14,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class DigitalReleaseProjection {
+public class ReleaseTrackerProjection {
 
-    private final DigitalReleaseRepository digitalReleaseRepository;
+    private final ReleaseTrackerRepository releaseTrackerRepository;
     private final QueryUpdateEmitter queryUpdateEmitter;
 
     @QueryHandler
     public List<MovieDTO> handle(GetRefreshedMoviesQuery query) {
-        return digitalReleaseRepository.findAll();
+        return releaseTrackerRepository.findAll();
     }
 
     @EventHandler

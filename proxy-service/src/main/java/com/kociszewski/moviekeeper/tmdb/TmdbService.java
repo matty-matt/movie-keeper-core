@@ -58,7 +58,6 @@ public class TmdbService {
     }
 
     public VoteDTO retrieveVote(String externalMovieId) {
-        // TODO check vote model and if it should be done using commands/queries/sagas(as it is refresh)
         return tmdbClient.movieDetails(externalMovieId)
                 .get()
                 .retrieve()

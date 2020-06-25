@@ -1,6 +1,6 @@
 package com.kociszewski.moviekeeper.infrastructure;
 
-import com.kociszewski.moviekeeper.domain.commands.RefreshMoviesCommand;
+import com.kociszewski.moviekeeper.domain.commands.CreateRefreshMoviesCommand;
 import com.kociszewski.moviekeeper.domain.queries.GetRefreshedMoviesQuery;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/movies")
-public class DigitalReleaseController {
+public class ReleaseTrackerController {
 
     private final CommandGateway commandGateway;
     private final QueryGateway queryGateway;
@@ -25,7 +25,7 @@ public class DigitalReleaseController {
     @GetMapping("/refresh")
     public Mono<MovieDTO> refreshMovies() {
         commandGateway.send(
-                new RefreshMoviesCommand(UUID.randomUUID().toString()));
+                new CreateRefreshMoviesCommand(UUID.randomUUID().toString()));
 
         SubscriptionQueryResult<MovieDTO, MovieDTO> refreshedMoviesSubscription =
                 queryGateway.subscriptionQuery(
