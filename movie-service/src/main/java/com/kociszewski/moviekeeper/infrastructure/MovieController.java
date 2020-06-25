@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -69,11 +70,11 @@ public class MovieController {
     }
 
     @GetMapping
-    public Flux<MovieDTO> getAllMovies() {
+    public List<MovieDTO> getAllMovies() {
         // Or maybe ServerSentEvents by Spring WebFlux (preferably)
-        return Flux.fromIterable(queryGateway.query(
+        return queryGateway.query(
                 new GetAllMoviesQuery(),
-                ResponseTypes.multipleInstancesOf(MovieDTO.class)).join());
+                ResponseTypes.multipleInstancesOf(MovieDTO.class)).join();
     }
 
     @PutMapping("/{movieId}")

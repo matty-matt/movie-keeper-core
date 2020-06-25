@@ -10,6 +10,7 @@ import org.axonframework.eventhandling.gateway.EventGateway;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -19,11 +20,15 @@ public class ReleaseTrackerCommandHandler {
 
     @CommandHandler
     public void handle(RefreshMoviesCommand command) {
-        eventGateway.publish(new MoviesRefreshedEvent(Arrays.asList(MovieDTO.builder()
-                .title("Test")
-                .releaseDateDigital("2020-06-30T00:00").build(), MovieDTO.builder()
-                .title("TEST2")
-                .releaseDateDigital("takitam")
-                .build())));
+        eventGateway.publish(new MoviesRefreshedEvent(Arrays.asList(
+                MovieDTO.builder()
+                        .aggregateId(UUID.randomUUID().toString())
+                        .title("Test")
+                        .releaseDateDigital("2020-06-30T00:00").build(),
+                MovieDTO.builder()
+                        .aggregateId(UUID.randomUUID().toString())
+                        .title("TEST2")
+                        .releaseDateDigital("takitam")
+                        .build())));
     }
 }
