@@ -2,6 +2,8 @@ package com.kociszewski.moviekeeper.domain;
 
 
 import com.kociszewski.moviekeeper.domain.commands.CreateRefreshMoviesCommand;
+import com.kociszewski.moviekeeper.domain.commands.SaveRefreshedMoviesCommand;
+import com.kociszewski.moviekeeper.domain.events.MoviesRefreshedEvent;
 import com.kociszewski.moviekeeper.domain.events.RefreshMoviesDelegatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
 import com.kociszewski.moviekeeper.infrastructure.ReleaseTrackerRepository;
@@ -31,5 +33,11 @@ public class ReleaseTrackerCommandHandler {
         log.info("Refreshing not watched movies: " + notWatchedMovies);
 
         eventGateway.publish(new RefreshMoviesDelegatedEvent(command.getRefreshId(), notWatchedMovies));
+    }
+
+    @CommandHandler
+    public void handle(SaveRefreshedMoviesCommand command) {
+        // TODO lista z prawdziwego zdarzenia;
+//        eventGateway.publish(new MoviesRefreshedEvent(command));
     }
 }

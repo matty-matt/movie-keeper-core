@@ -11,6 +11,9 @@ import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventhandling.gateway.EventGateway;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.apache.logging.log4j.util.Strings.EMPTY;
 
 @Component
@@ -58,10 +61,15 @@ public class ProxyCommandHandler {
 
     @CommandHandler
     public void handle(RefreshMoviesCommand command) {
-        command.getMoviesToRefresh().forEach(movieId -> {
-            VoteDTO vote = tmdbService.retrieveVote(movieId);
-            String digitalReleaseDate = tmdbService.retrieveDigitalRelease(movieId);
-            log.info("Fetching new avgVote and releaseDate for movie={}. New vote={}, new digitalReleaseDate={}", movieId, vote.getVoteAverage(), digitalReleaseDate);
-        });
+        List<RefreshData> refreshedMovies = command.getMoviesToRefresh()
+                .parallelStream()
+                .map(movieId -> RefreshData.builder()
+                    .movieId(movieId)
+                    .averageVote(tmdbService.retrieveVote(movieId).getVoteAverage())
+                    .digitalReleaseDate(tmdbService.retrieveDigitalRelease(movieId))
+                    .build())
+                .peek(rd -> log.info("Fetched on refresh, {}", rd))
+                .collect(Collectors.toList());
+        eventGateway.publish(new MoviesRefreshDataEvent(command.getProxyId(), refreshedMovies));
     }
 }

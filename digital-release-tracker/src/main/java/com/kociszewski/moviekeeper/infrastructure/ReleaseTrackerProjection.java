@@ -26,11 +26,6 @@ public class ReleaseTrackerProjection {
 
     @EventHandler
     public void handle(MoviesRefreshedEvent event) {
-        if (event.getRefreshedMovies().isEmpty()) {
-            log.info("stonks");
-        } else {
-            log.info("stonksy dwa");
-            queryUpdateEmitter.emit(GetRefreshedMoviesQuery.class, query -> true, event.getRefreshedMovies());
-        }
+        queryUpdateEmitter.emit(GetRefreshedMoviesQuery.class, query -> true, event.getRefreshedMovies());
     }
 }
