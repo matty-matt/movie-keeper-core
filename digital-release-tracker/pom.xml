@@ -18,6 +18,7 @@
         <java.version>11</java.version>
         <axon.version>4.3.1</axon.version>
         <lombok.version>1.18.8</lombok.version>
+        <awaitility.version>4.0.2</awaitility.version>
     </properties>
 
     <dependencies>
@@ -53,6 +54,13 @@
             <groupId>org.axonframework</groupId>
             <artifactId>axon-test</artifactId>
             <version>${axon.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
 

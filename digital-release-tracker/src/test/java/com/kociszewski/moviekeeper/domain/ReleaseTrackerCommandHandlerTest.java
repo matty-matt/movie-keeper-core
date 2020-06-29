@@ -41,6 +41,7 @@ public class ReleaseTrackerCommandHandlerTest {
         // given
         String refreshId = UUID.randomUUID().toString();
         when(releaseTrackerProjection.findMoviesToRefresh()).thenReturn(Collections.emptyList());
+        doNothing().when(eventGateway).publish(new RefreshMoviesDelegatedEvent(refreshId, Collections.emptyList()));
 
         // when
         subject.handle(new CreateRefreshMoviesCommand(refreshId));
