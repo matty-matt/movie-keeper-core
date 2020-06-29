@@ -133,5 +133,50 @@ public class MovieAggregateTest {
                         new MovieDeletedEvent(movieId, any(), any()))
                 .expectMarkedDeleted();
     }
-}
 
+    @Test
+    public void shouldDataRefreshedEventAppear() {
+        Vote refreshedVote = new Vote(10, 10000);
+        String refreshedDate = "2020-07-01T00:00";
+        Release refreshedRelease = new Release(refreshedDate);
+        fixture.given(
+                new MovieCreatedEvent(movieId, searchPhrase),
+                new MovieSavedEvent(movieId, externalMovie))
+                .when(new UpdateRefreshDataCommand(movieId, RefreshData.builder()
+                        .aggregateId(movieId)
+                        .voteCount(10000)
+                        .averageVote(10)
+                        .digitalReleaseDate(refreshedDate)
+                        .build()))
+                .expectEvents(new DataRefreshedEvent(
+                        movieId,
+                        refreshedVote,
+                        refreshedRelease))
+                .expectState(state -> {
+                    assertThat(state.getVote()).isEqualTo(refreshedVote);
+                    assertThat(state.getDigitalRelease()).isEqualTo(refreshedRelease);
+                });
+    }
+
+    @Test
+    public void shouldNotDataRefreshedEventAppear() {
+        Vote refreshedVote = new Vote(10, 10000);
+        String refreshedDate = "2020-07-01T00:00";
+        Release refreshedRelease = new Release(refreshedDate);
+        fixture.given(
+                new MovieCreatedEvent(movieId, searchPhrase),
+                new MovieSavedEvent(movieId, externalMovie),
+                new DataRefreshedEvent(movieId, refreshedVote, refreshedRelease))
+                .when(new UpdateRefreshDataCommand(movieId, RefreshData.builder()
+                        .aggregateId(movieId)
+                        .voteCount(10000)
+                        .averageVote(10)
+                        .digitalReleaseDate(refreshedDate)
+                        .build()))
+                .expectNoEvents()
+                .expectState(state -> {
+                    assertThat(state.getVote()).isEqualTo(refreshedVote);
+                    assertThat(state.getDigitalRelease()).isEqualTo(refreshedRelease);
+                });
+    }
+}
