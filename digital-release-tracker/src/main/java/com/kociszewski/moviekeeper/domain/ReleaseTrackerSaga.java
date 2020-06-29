@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static org.axonframework.modelling.saga.SagaLifecycle.associateWith;
+import static org.axonframework.modelling.saga.SagaLifecycle.end;
 
 @Saga
 @Slf4j
@@ -49,6 +50,7 @@ public class ReleaseTrackerSaga {
         associateWith("proxyId", proxyId);
         commandGateway.send(new SaveRefreshedMoviesCommand(refreshId, event.getRefreshedMovies()));
         delegateAggregateUpdates(event.getRefreshedMovies());
+        end();
     }
 
     private void delegateAggregateUpdates(List<RefreshData> refreshedMovies) {
