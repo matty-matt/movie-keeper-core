@@ -1,5 +1,6 @@
 package com.kociszewski.moviekeeper.domain.commands;
 
+import com.kociszewski.moviekeeper.infrastructure.RefreshMovie;
 import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
@@ -9,5 +10,5 @@ import java.util.List;
 public class RefreshMoviesCommand {
     @TargetAggregateIdentifier
     String proxyId;
-    List<String> moviesToRefresh;
+    List<RefreshMovie> moviesToRefresh;
 }

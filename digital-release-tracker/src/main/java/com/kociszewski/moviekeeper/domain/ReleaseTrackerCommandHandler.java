@@ -5,6 +5,7 @@ import com.kociszewski.moviekeeper.domain.commands.CreateRefreshMoviesCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveRefreshedMoviesCommand;
 import com.kociszewski.moviekeeper.domain.events.MoviesRefreshedEvent;
 import com.kociszewski.moviekeeper.domain.events.RefreshMoviesDelegatedEvent;
+import com.kociszewski.moviekeeper.infrastructure.RefreshMovie;
 import com.kociszewski.moviekeeper.infrastructure.ReleaseTrackerProjection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class ReleaseTrackerCommandHandler {
 
     @CommandHandler
     public void handle(CreateRefreshMoviesCommand command) {
-        List<String> moviesToRefresh = releaseTrackerProjection.findMoviesToRefresh();
+        List<RefreshMovie> moviesToRefresh = releaseTrackerProjection.findMoviesToRefresh();
         if (moviesToRefresh.isEmpty()) {
             log.info("No movies to refresh. Database is empty!");
         } else {

@@ -122,4 +122,22 @@ public class MovieAggregate {
     private void on(MovieDeletedEvent event) {
         markDeleted();
     }
+
+    @CommandHandler
+    public void handle(UpdateRefreshDataCommand command) {
+        RefreshData refreshData = command.getRefreshData();
+        Vote refreshedVote = new Vote(refreshData.getAverageVote(), refreshData.getVoteCount());
+        Release refreshedRelease = new Release(refreshData.getDigitalReleaseDate());
+        if (vote.equals(refreshedVote) && digitalRelease.equals(refreshedRelease)) {
+            log.info("Aggregate is up to date.");
+            return;
+        }
+        apply(new DataRefreshedEvent(command.getMovieId(), refreshedVote, refreshedRelease));
+    }
+
+    @EventSourcingHandler
+    private void on(DataRefreshedEvent event) {
+        this.vote = event.getRefreshedVote();
+        this.digitalRelease = event.getRefreshedRelease();
+    }
 }

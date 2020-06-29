@@ -53,10 +53,14 @@ public class ReleaseTrackerProjection {
         queryUpdateEmitter.emit(GetRefreshedMoviesQuery.class, query -> true, releaseTrackerRepository.findAllByWatchedFalse());
     }
 
-    public List<String> findMoviesToRefresh() {
+    public List<RefreshMovie> findMoviesToRefresh() {
         return releaseTrackerRepository.findExternalMovieIdByWatchedFalse()
                 .stream()
-                .map(MovieDTO::getExternalMovieId)
+                .map(movie -> RefreshMovie
+                        .builder()
+                        .aggregateId(movie.getAggregateId())
+                        .externalMovieId(movie.getExternalMovieId())
+                        .build())
                 .collect(Collectors.toList());
     }
 }

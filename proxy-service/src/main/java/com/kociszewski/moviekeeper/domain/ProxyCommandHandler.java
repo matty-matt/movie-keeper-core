@@ -63,13 +63,14 @@ public class ProxyCommandHandler {
     public void handle(RefreshMoviesCommand command) {
         List<RefreshData> refreshedMovies = command.getMoviesToRefresh()
                 .parallelStream()
-                .map(movieId -> {
-                    VoteDTO voteObject = tmdbService.retrieveVote(movieId);
+                .map(movie -> {
+                    VoteDTO voteObject = tmdbService.retrieveVote(movie.getExternalMovieId());
                     return RefreshData.builder()
-                            .movieId(movieId)
+                            .movieId(movie.getExternalMovieId())
+                            .aggregateId(movie.getAggregateId())
                             .averageVote(voteObject.getVoteAverage())
                             .voteCount(voteObject.getVoteCount())
-                            .digitalReleaseDate(tmdbService.retrieveDigitalRelease(movieId))
+                            .digitalReleaseDate(tmdbService.retrieveDigitalRelease(movie.getExternalMovieId()))
                             .build();
                 })
                 .peek(rd -> log.info("Fetched on refresh, {}", rd))

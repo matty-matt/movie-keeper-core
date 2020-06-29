@@ -7,6 +7,7 @@ import lombok.Value;
 @Builder
 public class RefreshData {
     String movieId;
+    String aggregateId;
     double averageVote;
     long voteCount;
     String digitalReleaseDate;
