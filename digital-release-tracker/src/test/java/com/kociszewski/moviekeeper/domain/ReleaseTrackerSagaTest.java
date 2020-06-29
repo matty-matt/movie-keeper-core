@@ -1,6 +1,5 @@
-package com.kociszewski.moviekeeper;
+package com.kociszewski.moviekeeper.domain;
 
-import com.kociszewski.moviekeeper.domain.ReleaseTrackerSaga;
 import com.kociszewski.moviekeeper.domain.commands.RefreshMoviesCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveRefreshedMoviesCommand;
 import com.kociszewski.moviekeeper.domain.commands.UpdateRefreshDataCommand;
