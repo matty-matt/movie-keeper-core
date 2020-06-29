@@ -7,12 +7,16 @@ import com.kociszewski.moviekeeper.domain.events.MoviesRefreshedEvent;
 import com.kociszewski.moviekeeper.domain.events.RefreshMoviesDelegatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.ReleaseTrackerProjection;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventhandling.gateway.EventGateway;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ReleaseTrackerCommandHandler {
 
     private final EventGateway eventGateway;
@@ -20,7 +24,12 @@ public class ReleaseTrackerCommandHandler {
 
     @CommandHandler
     public void handle(CreateRefreshMoviesCommand command) {
-        eventGateway.publish(new RefreshMoviesDelegatedEvent(command.getRefreshId(), releaseTrackerProjection.findMoviesToRefresh()));
+        List<String> moviesToRefresh = releaseTrackerProjection.findMoviesToRefresh();
+        if (moviesToRefresh.isEmpty()) {
+            log.info("No movies to refresh. Database is empty!");
+        } else {
+            eventGateway.publish(new RefreshMoviesDelegatedEvent(command.getRefreshId(), moviesToRefresh));
+        }
     }
 
     @CommandHandler
