@@ -39,7 +39,6 @@ public class MovieDTO {
     private List<GenreDTO> genres;
     private boolean watched;
     private Date creationDate;
-    private Date lastRefreshDate;
 
     @JsonProperty("image")
     public String getPosterPath() {

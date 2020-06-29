@@ -111,7 +111,6 @@ public class CommonIntegrationSetup {
                         .runtime(120)
                         .genres(Arrays.asList(new Genre("1", "Sci-Fi"), new Genre("2", "Action")))
                         .insertionDate(now)
-                        .lastRefreshDate(now)
                         .watched(false)
                         .build()).build();
     }

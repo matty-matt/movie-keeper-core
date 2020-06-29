@@ -49,7 +49,6 @@ public class MovieAggregateTest {
                         .voteAverage(2.4)
                         .voteCount(7989)
                         .insertionDate(new Date())
-                        .lastRefreshDate(new Date())
                         .build())
                 .build();
         this.castId = UUID.randomUUID().toString();
@@ -85,7 +84,6 @@ public class MovieAggregateTest {
                             new Vote(externalMovie.getExternalMovieInfo().getVoteAverage(), externalMovie.getExternalMovieInfo().getVoteCount()));
                     assertThat(state.getRuntime()).isEqualTo(new Runtime(externalMovie.getExternalMovieInfo().getRuntime()));
                     assertThat(state.getInsertionDate()).isEqualTo(new DateWrapper(externalMovie.getExternalMovieInfo().getInsertionDate()));
-                    assertThat(state.getLastRefreshDate()).isEqualTo(new DateWrapper(externalMovie.getExternalMovieInfo().getLastRefreshDate()));
                     assertThat(state.getWatched()).isEqualTo(new Watched(false));
                     assertThat(state.getOriginalLanguage()).isEqualTo(new Language(externalMovie.getExternalMovieInfo().getOriginalLanguage()));
                     assertThat(state.getGenres()).isEqualTo(externalMovie.getExternalMovieInfo().getGenres());

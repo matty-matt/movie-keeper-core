@@ -40,7 +40,6 @@ public class MovieDTO {
     private List<GenreDTO> genres;
     private boolean watched;
     private Date creationDate;
-    private Date lastRefreshDate;
 
     @JsonIgnore
     private MovieState movieState;

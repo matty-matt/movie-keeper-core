@@ -91,7 +91,6 @@ public class MovieProjection {
                         .map(genre -> GenreDTO.builder().id(genre.getId()).name(genre.getName()).build())
                         .collect(Collectors.toList()))
                 .creationDate(externalMovieInfo.getInsertionDate())
-                .lastRefreshDate(externalMovieInfo.getLastRefreshDate())
                 .watched(externalMovieInfo.isWatched())
                 .build();
         movieRepository.insert(movieDTO);

@@ -44,7 +44,6 @@ public class MovieAggregate {
     private Release premiereRelease;
     private Watched watched;
     private DateWrapper insertionDate;
-    private DateWrapper lastRefreshDate;
     private SearchPhrase searchPhrase;
 
     @CommandHandler
@@ -80,7 +79,6 @@ public class MovieAggregate {
         this.vote = new Vote(movieInfo.getVoteAverage(), movieInfo.getVoteCount());
         this.runtime = new Runtime(movieInfo.getRuntime());
         this.insertionDate = new DateWrapper(movieInfo.getInsertionDate());
-        this.lastRefreshDate = new DateWrapper(movieInfo.getLastRefreshDate());
         this.watched = new Watched(false);
         this.originalLanguage = new Language(movieInfo.getOriginalLanguage());
         this.genres = movieInfo.getGenres().stream()

@@ -41,7 +41,6 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
         persistedMovie.ifPresent(movie -> {
             assertThat(movie).isEqualTo(body);
             assertThat(movie.getCreationDate()).isEqualTo(now);
-            assertThat(movie.getLastRefreshDate()).isEqualTo(now);
             assertThat(movie.isWatched()).isFalse();
         });
     }

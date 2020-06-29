@@ -52,7 +52,6 @@ public class MovieSagaTest {
                         .voteAverage(2.4)
                         .voteCount(7989)
                         .insertionDate(new Date())
-                        .lastRefreshDate(new Date())
                         .build())
                 .build();
         movieThatWasNotFoundInExternalService = ExternalMovie.builder()
