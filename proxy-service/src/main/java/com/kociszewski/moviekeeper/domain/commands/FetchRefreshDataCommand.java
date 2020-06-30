@@ -7,7 +7,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import java.util.List;
 
 @Value
-public class FetchRefreshData {
+public class FetchRefreshDataCommand {
     @TargetAggregateIdentifier
     String proxyId;
     List<RefreshMovie> moviesToRefresh;

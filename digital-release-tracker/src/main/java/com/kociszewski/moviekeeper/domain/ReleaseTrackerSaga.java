@@ -1,6 +1,6 @@
 package com.kociszewski.moviekeeper.domain;
 
-import com.kociszewski.moviekeeper.domain.commands.FetchRefreshData;
+import com.kociszewski.moviekeeper.domain.commands.FetchRefreshDataCommand;
 import com.kociszewski.moviekeeper.domain.commands.RefreshMultipleMoviesCommand;
 import com.kociszewski.moviekeeper.domain.events.MoviesRefreshDataEvent;
 import com.kociszewski.moviekeeper.domain.events.RefreshMoviesDelegatedEvent;
@@ -34,7 +34,7 @@ public class ReleaseTrackerSaga {
         refreshId = event.getRefreshId();
         String proxyId = PROXY_PREFIX.concat(refreshId);
         associateWith("proxyId", proxyId);
-        commandGateway.send(new FetchRefreshData(proxyId, event.getMoviesToRefresh()));
+        commandGateway.send(new FetchRefreshDataCommand(proxyId, event.getMoviesToRefresh()));
     }
 
     @EndSaga

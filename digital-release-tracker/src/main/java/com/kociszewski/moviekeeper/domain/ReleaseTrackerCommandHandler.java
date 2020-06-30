@@ -42,9 +42,4 @@ public class ReleaseTrackerCommandHandler {
             eventGateway.publish(new RefreshMoviesDelegatedEvent(command.getRefreshId(), moviesToRefresh));
         }
     }
-
-//    @CommandHandler
-//    public void handle(SaveRefreshedMoviesCommand command) {
-//        eventGateway.publish(new MoviesRefreshedEvent(command.getRefreshedMovies()));
-//    }
 }
