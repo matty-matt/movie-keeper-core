@@ -77,7 +77,7 @@ public class MovieProjection {
 
     @QueryHandler
     public List<MovieDTO> handle(GetNotSeenMoviesQuery query) {
-        return movieRepository.findByWatchedFalse();
+        return movieRepository.findAllByWatchedFalse();
     }
 
     public BulkWriteResult refreshMovies(List<RefreshData> moviesToRefresh) {
@@ -93,7 +93,7 @@ public class MovieProjection {
         BulkWriteResult result = bulkOperations.execute();
         log.info("BulkWriteResult = {}", result);
 
-        queryUpdateEmitter.emit(GetRefreshedMoviesQuery.class, query -> true, movieRepository.findByWatchedFalse());
+        queryUpdateEmitter.emit(GetRefreshedMoviesQuery.class, query -> true, movieRepository.findAllByWatchedFalse());
         return result;
     }
 

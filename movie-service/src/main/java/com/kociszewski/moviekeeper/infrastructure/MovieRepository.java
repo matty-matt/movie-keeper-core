@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface MovieRepository extends MongoRepository<MovieDTO, String> {
     Optional<MovieDTO> findByExternalMovieId(String externalMovieId);
-    List<MovieDTO> findByWatchedFalse();
+    List<MovieDTO> findAllByWatchedFalse();
 }
