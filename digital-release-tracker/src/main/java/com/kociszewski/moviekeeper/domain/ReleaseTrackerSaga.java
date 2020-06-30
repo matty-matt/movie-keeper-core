@@ -46,11 +46,8 @@ public class ReleaseTrackerSaga {
     @SagaEventHandler(associationProperty = PROXY_ID)
     public void handle(MoviesRefreshDataEvent event) {
         log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getProxyId());
-        String proxyId = PROXY_PREFIX.concat(event.getProxyId());
-        associateWith("proxyId", proxyId);
         commandGateway.send(new SaveRefreshedMoviesCommand(refreshId, event.getRefreshedMovies()));
         delegateAggregateUpdates(event.getRefreshedMovies());
-        end();
     }
 
     private void delegateAggregateUpdates(List<RefreshData> refreshedMovies) {

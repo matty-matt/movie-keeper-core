@@ -16,7 +16,6 @@ import org.axonframework.spring.stereotype.Saga;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.axonframework.modelling.saga.SagaLifecycle.associateWith;
-import static org.axonframework.modelling.saga.SagaLifecycle.end;
 
 @Saga
 @Slf4j
@@ -54,7 +53,6 @@ public class MovieSaga {
         var movie = event.getExternalMovie();
         if (MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE == movie.getMovieState()) {
             queryUpdateEmitter.emit(GetMovieQuery.class, query -> true, new MovieDTO(MovieState.NOT_FOUND_IN_EXTERNAL_SERVICE));
-            end();
         } else {
             commandGateway.send(new SaveMovieCommand(movieId, event.getExternalMovie()));
         }
