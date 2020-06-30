@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static org.axonframework.modelling.saga.SagaLifecycle.associateWith;
-import static org.axonframework.modelling.saga.SagaLifecycle.end;
 
 @Saga
 @Slf4j
