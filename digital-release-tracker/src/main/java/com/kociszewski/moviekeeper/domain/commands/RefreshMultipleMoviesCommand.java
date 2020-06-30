@@ -1,14 +1,14 @@
 package com.kociszewski.moviekeeper.domain.commands;
 
-import com.kociszewski.moviekeeper.infrastructure.RefreshMovie;
+import com.kociszewski.moviekeeper.infrastructure.RefreshData;
 import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 import java.util.List;
 
 @Value
-public class RefreshMoviesCommand {
+public class RefreshMultipleMoviesCommand {
     @TargetAggregateIdentifier
-    String proxyId;
-    List<RefreshMovie> moviesToRefresh;
+    String refreshId;
+    List<RefreshData> refreshedMovies;
 }

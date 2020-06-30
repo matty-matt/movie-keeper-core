@@ -5,7 +5,7 @@ import com.kociszewski.moviekeeper.infrastructure.Vote;
 import lombok.Value;
 
 @Value
-public class DataRefreshedEvent {
+public class MovieRefreshedEvent {
     String movieId;
     Vote refreshedVote;
     Release refreshedRelease;

@@ -5,7 +5,7 @@ import lombok.Value;
 
 import java.util.List;
 
-//@Value
-//public class MoviesRefreshedEvent {
-//    List<RefreshData> refreshedMovies;
-//}
+@Value
+public class MultipleMoviesRefreshedEvent {
+    List<RefreshData> refreshedMovies;
+}

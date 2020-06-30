@@ -4,9 +4,11 @@ import com.kociszewski.moviekeeper.infrastructure.RefreshData;
 import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
-//@Value
-//public class UpdateRefreshDataCommand {
-//    @TargetAggregateIdentifier
-//    String movieId;
-//    RefreshData refreshData;
-//}
+import java.util.List;
+
+@Value
+public class RefreshMultipleMoviesCommand {
+    @TargetAggregateIdentifier
+    String refreshId;
+    List<RefreshData> refreshedMovies;
+}
