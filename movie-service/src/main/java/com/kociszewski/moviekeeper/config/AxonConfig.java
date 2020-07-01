@@ -21,7 +21,7 @@ public class AxonConfig {
                 c -> trackingProcessorConfig);
 
         // This prevents from replaying MultipleMoviesRefreshedEvent in RefreshEventHandler
-        configurer.registerTrackingEventProcessor("com.kociszewski.moviekeeper.refresh",
+        configurer.registerTrackingEventProcessor("com.kociszewski.moviekeeper.notreplayable",
                 org.axonframework.config.Configuration::eventStore,
                 c -> trackingProcessorConfig);
     }

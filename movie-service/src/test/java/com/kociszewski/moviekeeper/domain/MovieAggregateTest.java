@@ -135,7 +135,7 @@ public class MovieAggregateTest {
     }
 
     @Test
-    public void shouldDataRefreshedEventAppear() {
+    public void shouldMovieRefreshedEventAppear() {
         Vote refreshedVote = new Vote(10, 10000);
         String refreshedDate = "2020-07-01T00:00";
         Release refreshedRelease = new Release(refreshedDate);
@@ -159,7 +159,7 @@ public class MovieAggregateTest {
     }
 
     @Test
-    public void shouldNotDataRefreshedEventAppear() {
+    public void shouldNotMovieRefreshedEventAppear() {
         Vote refreshedVote = new Vote(10, 10000);
         String refreshedDate = "2020-07-01T00:00";
         Release refreshedRelease = new Release(refreshedDate);
