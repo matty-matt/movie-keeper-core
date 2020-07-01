@@ -142,13 +142,13 @@ public class MovieAggregateTest {
         fixture.given(
                 new MovieCreatedEvent(movieId, searchPhrase),
                 new MovieSavedEvent(movieId, externalMovie))
-                .when(new UpdateRefreshDataCommand(movieId, RefreshData.builder()
+                .when(new RefreshMovieCommand(movieId, RefreshData.builder()
                         .aggregateId(movieId)
                         .voteCount(10000)
                         .averageVote(10)
                         .digitalReleaseDate(refreshedDate)
                         .build()))
-                .expectEvents(new DataRefreshedEvent(
+                .expectEvents(new MovieRefreshedEvent(
                         movieId,
                         refreshedVote,
                         refreshedRelease))
@@ -166,8 +166,8 @@ public class MovieAggregateTest {
         fixture.given(
                 new MovieCreatedEvent(movieId, searchPhrase),
                 new MovieSavedEvent(movieId, externalMovie),
-                new DataRefreshedEvent(movieId, refreshedVote, refreshedRelease))
-                .when(new UpdateRefreshDataCommand(movieId, RefreshData.builder()
+                new MovieRefreshedEvent(movieId, refreshedVote, refreshedRelease))
+                .when(new RefreshMovieCommand(movieId, RefreshData.builder()
                         .aggregateId(movieId)
                         .voteCount(10000)
                         .averageVote(10)

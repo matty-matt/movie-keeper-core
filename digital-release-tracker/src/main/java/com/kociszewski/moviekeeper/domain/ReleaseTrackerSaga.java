@@ -1,11 +1,9 @@
 package com.kociszewski.moviekeeper.domain;
 
-import com.kociszewski.moviekeeper.domain.commands.RefreshMoviesCommand;
-import com.kociszewski.moviekeeper.domain.commands.SaveRefreshedMoviesCommand;
-import com.kociszewski.moviekeeper.domain.commands.UpdateRefreshDataCommand;
+import com.kociszewski.moviekeeper.domain.commands.FetchRefreshDataCommand;
+import com.kociszewski.moviekeeper.domain.commands.RefreshMultipleMoviesCommand;
 import com.kociszewski.moviekeeper.domain.events.MoviesRefreshDataEvent;
 import com.kociszewski.moviekeeper.domain.events.RefreshMoviesDelegatedEvent;
-import com.kociszewski.moviekeeper.infrastructure.RefreshData;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.EndSaga;
@@ -13,8 +11,6 @@ import org.axonframework.modelling.saga.SagaEventHandler;
 import org.axonframework.modelling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 import static org.axonframework.modelling.saga.SagaLifecycle.associateWith;
 
@@ -38,19 +34,13 @@ public class ReleaseTrackerSaga {
         refreshId = event.getRefreshId();
         String proxyId = PROXY_PREFIX.concat(refreshId);
         associateWith("proxyId", proxyId);
-        commandGateway.send(new RefreshMoviesCommand(proxyId, event.getMoviesToRefresh()));
+        commandGateway.send(new FetchRefreshDataCommand(proxyId, event.getMoviesToRefresh()));
     }
 
     @EndSaga
     @SagaEventHandler(associationProperty = PROXY_ID)
     public void handle(MoviesRefreshDataEvent event) {
         log.info("[saga] Handling {}, id={}", event.getClass().getSimpleName(), event.getProxyId());
-        commandGateway.send(new SaveRefreshedMoviesCommand(refreshId, event.getRefreshedMovies()));
-        delegateAggregateUpdates(event.getRefreshedMovies());
-    }
-
-    private void delegateAggregateUpdates(List<RefreshData> refreshedMovies) {
-        refreshedMovies.parallelStream()
-                .forEach(movie -> commandGateway.send(new UpdateRefreshDataCommand(movie.getAggregateId(), movie)));
+        commandGateway.send(new RefreshMultipleMoviesCommand(refreshId, event.getRefreshedMovies()));
     }
 }

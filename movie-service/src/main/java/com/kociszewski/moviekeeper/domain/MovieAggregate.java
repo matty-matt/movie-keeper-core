@@ -124,19 +124,19 @@ public class MovieAggregate {
     }
 
     @CommandHandler
-    public void handle(UpdateRefreshDataCommand command) {
+    public void handle(RefreshMovieCommand command) {
         RefreshData refreshData = command.getRefreshData();
         Vote refreshedVote = new Vote(refreshData.getAverageVote(), refreshData.getVoteCount());
         Release refreshedRelease = new Release(refreshData.getDigitalReleaseDate());
         if (vote.equals(refreshedVote) && digitalRelease.equals(refreshedRelease)) {
-            log.info("Aggregate is up to date.");
+            log.info("Aggregate {} is up to date.", movieId);
             return;
         }
-        apply(new DataRefreshedEvent(command.getMovieId(), refreshedVote, refreshedRelease));
+        apply(new MovieRefreshedEvent(command.getMovieId(), refreshedVote, refreshedRelease));
     }
 
     @EventSourcingHandler
-    private void on(DataRefreshedEvent event) {
+    private void on(MovieRefreshedEvent event) {
         this.vote = event.getRefreshedVote();
         this.digitalRelease = event.getRefreshedRelease();
     }

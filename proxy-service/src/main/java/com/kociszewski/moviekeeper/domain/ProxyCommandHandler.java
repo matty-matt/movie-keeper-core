@@ -60,7 +60,7 @@ public class ProxyCommandHandler {
 
 
     @CommandHandler
-    public void handle(RefreshMoviesCommand command) {
+    public void handle(FetchRefreshDataCommand command) {
         List<RefreshData> refreshedMovies = command.getMoviesToRefresh()
                 .parallelStream()
                 .map(movie -> {

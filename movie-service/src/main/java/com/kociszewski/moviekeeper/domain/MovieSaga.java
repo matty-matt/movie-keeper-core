@@ -27,6 +27,7 @@ public class MovieSaga {
     public static final String TRAILERS_ID = "trailersId";
     public static final String MOVIE_ID = "movieId";
 
+    //TODO spróbować przez RequiredArgsConstructor i @Component
     @Autowired
     private CommandGateway commandGateway;
 

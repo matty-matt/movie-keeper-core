@@ -1,22 +1,26 @@
 package com.kociszewski.moviekeeper.domain;
 
-import com.kociszewski.moviekeeper.domain.commands.DeleteCastCommand;
-import com.kociszewski.moviekeeper.domain.commands.DeleteTrailersCommand;
-import com.kociszewski.moviekeeper.domain.commands.CreateCastCommand;
-import com.kociszewski.moviekeeper.domain.commands.CreateTrailersCommand;
+import com.kociszewski.moviekeeper.domain.commands.*;
 import com.kociszewski.moviekeeper.domain.events.*;
+import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
+import com.kociszewski.moviekeeper.infrastructure.MovieProjection;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.EventHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.axonframework.eventhandling.gateway.EventGateway;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Slf4j
-@Service
-public class TrailersAndCastEventHandler {
+@Component
+@RequiredArgsConstructor
+public class CommonEventHandler {
 
-    @Autowired
-    private CommandGateway commandGateway;
+    private final CommandGateway commandGateway;
+    private final EventGateway eventGateway;
+    private final MovieProjection movieProjection;
 
     @EventHandler
     public void handle(TrailersAndCastSearchDelegatedEvent event) {
@@ -40,5 +44,14 @@ public class TrailersAndCastEventHandler {
                 event.getTrailersId());
         commandGateway.send(new DeleteCastCommand(event.getCastId()));
         commandGateway.send(new DeleteTrailersCommand(event.getTrailersId()));
+    }
+
+    @EventHandler
+    public void handle(MultipleMoviesRefreshedEvent event) {
+        List<MovieDTO> refreshedMovies = movieProjection.refreshMovies(event.getRefreshedMovies());
+        eventGateway.publish(new MoviesRefreshedEvent(refreshedMovies));
+        event.getRefreshedMovies()
+                .parallelStream()
+                .forEach(movie -> commandGateway.send(new RefreshMovieCommand(movie.getAggregateId(), movie)));
     }
 }

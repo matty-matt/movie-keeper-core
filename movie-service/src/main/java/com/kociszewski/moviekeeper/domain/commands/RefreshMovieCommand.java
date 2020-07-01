@@ -5,7 +5,7 @@ import lombok.Value;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Value
-public class UpdateRefreshDataCommand {
+public class RefreshMovieCommand {
     @TargetAggregateIdentifier
     String movieId;
     RefreshData refreshData;

@@ -15,14 +15,14 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ReleaseTrackerIntegrationTest {
-
-    @SpyBean
-    private ReleaseRefreshScheduler releaseRefreshScheduler;
-
-    @Test
-    public void test() {
-        await()
-                .atMost(TEN_SECONDS)
-                .untilAsserted(() -> verify(releaseRefreshScheduler, atLeast(1)).refreshUnseenMovies());
-    }
+//
+//    @SpyBean
+//    private ReleaseRefreshScheduler releaseRefreshScheduler;
+//
+//    @Test
+//    public void test() {
+//        await()
+//                .atMost(TEN_SECONDS)
+//                .untilAsserted(() -> verify(releaseRefreshScheduler, atLeast(1)).refreshUnseenMovies());
+//    }
 }
