@@ -11,7 +11,7 @@ import java.util.List;
 public class ReleaseTrackerProjection {
     @QueryHandler
     public List<MovieDTO> handle(GetRefreshedMoviesQuery query) {
-        // For Axon because without it he thinks that is not handled
+        // Subscription query cannot exist without one @QueryHandler
         return Collections.emptyList();
     }
 }
