@@ -11,6 +11,7 @@ public class AxonConfig {
 
     @Autowired
     public void customConfig(EventProcessingConfigurer configurer) {
+        // This prevents from replaying in ReleaseTrackerSaga
         var trackingProcessorConfig = TrackingEventProcessorConfiguration
                 .forSingleThreadedProcessing()
                 .andInitialTrackingToken(StreamableMessageSource::createHeadToken);
