@@ -16,10 +16,10 @@ public class ReleaseRefreshScheduler {
 
     private final CommandGateway commandGateway;
 
-    @Scheduled(initialDelay = 10000, fixedDelay = 60000)
-    public void refreshUnseenMovies() {
-        log.info("Refreshing not seen movies!");
-        commandGateway.send(
-                new CreateRefreshMoviesCommand(UUID.randomUUID().toString()));
-    }
+//    @Scheduled(initialDelay = 10000, fixedDelay = 60000)
+//    public void refreshUnseenMovies() {
+//        log.info("Refreshing not seen movies!");
+//        commandGateway.send(
+//                new CreateRefreshMoviesCommand(UUID.randomUUID().toString()));
+//    }
 }

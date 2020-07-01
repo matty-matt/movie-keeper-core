@@ -2,6 +2,7 @@ package com.kociszewski.moviekeeper.domain;
 
 
 import com.kociszewski.moviekeeper.domain.commands.CreateRefreshMoviesCommand;
+import com.kociszewski.moviekeeper.domain.events.MoviesRefreshedEvent;
 import com.kociszewski.moviekeeper.domain.events.RefreshMoviesDelegatedEvent;
 import com.kociszewski.moviekeeper.domain.queries.GetNotSeenMoviesQuery;
 import com.kociszewski.moviekeeper.domain.queries.GetRefreshedMoviesQuery;
@@ -10,6 +11,7 @@ import com.kociszewski.moviekeeper.infrastructure.RefreshMovie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.gateway.EventGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ReleaseTrackerCommandHandler {
+public class ReleaseTrackerHandler {
 
     private final EventGateway eventGateway;
     private final QueryGateway queryGateway;
@@ -46,5 +48,11 @@ public class ReleaseTrackerCommandHandler {
         } else {
             eventGateway.publish(new RefreshMoviesDelegatedEvent(command.getRefreshId(), moviesToRefresh));
         }
+    }
+
+    @EventHandler
+    public void handle(MoviesRefreshedEvent event) {
+        log.info("Got refreshed movies from movie-service");
+        queryUpdateEmitter.emit(GetRefreshedMoviesQuery.class, query -> true, event.getRefreshedMovies());
     }
 }

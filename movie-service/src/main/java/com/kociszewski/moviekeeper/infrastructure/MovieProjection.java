@@ -6,7 +6,6 @@ import com.kociszewski.moviekeeper.domain.events.ToggleWatchedEvent;
 import com.kociszewski.moviekeeper.domain.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeeper.domain.queries.GetMovieQuery;
 import com.kociszewski.moviekeeper.domain.queries.GetNotSeenMoviesQuery;
-import com.kociszewski.moviekeeper.domain.queries.GetRefreshedMoviesQuery;
 import com.mongodb.bulk.BulkWriteResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +79,7 @@ public class MovieProjection {
         return movieRepository.findAllByWatchedFalse();
     }
 
-    public BulkWriteResult refreshMovies(List<RefreshData> moviesToRefresh) {
+    public List<MovieDTO> refreshMovies(List<RefreshData> moviesToRefresh) {
         BulkOperations bulkOperations = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, MovieDTO.class);
         moviesToRefresh.forEach(refreshData -> {
             Query query = Query.query(Criteria.where(EXTERNAL_MOVIE_ID).is(refreshData.getMovieId()));
@@ -93,8 +92,7 @@ public class MovieProjection {
         BulkWriteResult result = bulkOperations.execute();
         log.info("BulkWriteResult = {}", result);
 
-        queryUpdateEmitter.emit(GetRefreshedMoviesQuery.class, query -> true, movieRepository.findAllByWatchedFalse());
-        return result;
+        return movieRepository.findAllByWatchedFalse();
     }
 
     private void handleMovieDuplicate() {
