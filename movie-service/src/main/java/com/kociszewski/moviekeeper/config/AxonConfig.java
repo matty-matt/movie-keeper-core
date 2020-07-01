@@ -10,12 +10,18 @@ import org.springframework.context.annotation.Configuration;
 public class AxonConfig {
 
     @Autowired
-    public void customConfig(EventProcessingConfigurer configurer) {
-        // This prevents from replaying in ReleaseTrackerSaga
+    public void customTrackingConfig(EventProcessingConfigurer configurer) {
         var trackingProcessorConfig = TrackingEventProcessorConfiguration
                 .forSingleThreadedProcessing()
                 .andInitialTrackingToken(StreamableMessageSource::createHeadToken);
+
+        // This prevents from replaying in MovieSaga
         configurer.registerTrackingEventProcessor("MovieSagaProcessor",
+                org.axonframework.config.Configuration::eventStore,
+                c -> trackingProcessorConfig);
+
+        // This prevents from replaying MultipleMoviesRefreshedEvent in RefreshEventHandler
+        configurer.registerTrackingEventProcessor("com.kociszewski.moviekeeper.refresh",
                 org.axonframework.config.Configuration::eventStore,
                 c -> trackingProcessorConfig);
     }

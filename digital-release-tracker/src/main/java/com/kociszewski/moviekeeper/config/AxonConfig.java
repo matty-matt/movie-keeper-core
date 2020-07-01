@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class AxonConfig {
 
     @Autowired
-    public void customConfig(EventProcessingConfigurer configurer) {
+    public void customTrackingConfig(EventProcessingConfigurer configurer) {
         // This prevents from replaying in ReleaseTrackerSaga
         var trackingProcessorConfig = TrackingEventProcessorConfiguration
                 .forSingleThreadedProcessing()
