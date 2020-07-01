@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -23,17 +24,20 @@ public class ReleaseTrackerController {
     private final QueryGateway queryGateway;
 
     @GetMapping("/refresh")
-    public Mono<MovieDTO> refreshMovies() {
+    public Mono<List<MovieDTO>> refreshMovies() {
         commandGateway.send(
                 new CreateRefreshMoviesCommand(UUID.randomUUID().toString()));
 
-        SubscriptionQueryResult<MovieDTO, MovieDTO> refreshedMoviesSubscription =
+        SubscriptionQueryResult<MovieDTO, List<MovieDTO>> refreshedMoviesSubscription =
                 queryGateway.subscriptionQuery(
                         new GetRefreshedMoviesQuery(),
                         ResponseTypes.instanceOf(MovieDTO.class),
-                        ResponseTypes.instanceOf(MovieDTO.class)
+                        ResponseTypes.multipleInstancesOf(MovieDTO.class)
                 );
 
-        return refreshedMoviesSubscription.updates().next();
+        return refreshedMoviesSubscription
+                .updates()
+                .next()
+                .doFinally(as -> refreshedMoviesSubscription.close());
     }
 }
