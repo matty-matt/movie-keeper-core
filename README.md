@@ -6,7 +6,7 @@ Digital release dates of your stored movies are tracked by app.
 
 ## Prerequisites
 * Docker installed
-* [TMDb](https://www.themoviedb.org/?language=pl) ApiKey stored in environment variable TMDB_API_KEY
+* [TMDb](https://www.themoviedb.org) ApiKey stored in environment variable TMDB_API_KEY
 
 ## Architecture
 ![Architecture on diagram](components.png "Architecture on diagram")
