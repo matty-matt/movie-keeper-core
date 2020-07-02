@@ -15,3 +15,6 @@ jobs:
     -
       name: proxy-service tests
       script: pushd proxy-service && mvn test -B && popd
+    -
+      name: digital-release-tracker tests
+      script: pushd digital-release-tracker && mvn test -B && popd
