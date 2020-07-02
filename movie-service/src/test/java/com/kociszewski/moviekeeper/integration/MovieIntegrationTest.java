@@ -3,6 +3,7 @@ package com.kociszewski.moviekeeper.integration;
 import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
 import com.kociszewski.moviekeeper.infrastructure.MovieRepository;
 import com.kociszewski.moviekeeper.infrastructure.WatchedBody;
+import com.kociszewski.moviekeeper.integration.common.CommonIntegrationSetup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
