@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeeper.integration;
+package com.kociszewski.moviekeeper.integration.common;
 
 import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
 import com.kociszewski.moviekeeper.domain.events.MovieDetailsEvent;
@@ -29,4 +29,5 @@ public class MockProxyCommandHandler {
                 CommonIntegrationSetup.ANOTHER_MOVIE;
         eventGateway.publish(new MovieDetailsEvent(command.getProxyId(), movie));
     }
+    // TODO DeleteTrailersCommand and Cast
 }

@@ -13,14 +13,14 @@ import java.util.*;
 
 public class CommonIntegrationSetup extends TestContainersSetup {
 
-    public static final String SUPER_MOVIE = "SuperMovie";
+    protected static final String SUPER_MOVIE = "SuperMovie";
     protected static final String GET_OR_POST_MOVIES = "http://localhost:%d/movies";
     protected static final String ALTER_MOVIE_URL = "http://localhost:%d/movies/%s";
     protected static final String ANOTHER_SUPER_MOVIE = "AnotherSuperMovie";
-    public static ExternalMovie MOVIE;
-    public static ExternalMovie ANOTHER_MOVIE;
-    protected static Date now;
-    protected List<MovieDTO> moviesToCleanAfterTests;
+    protected static Date NOW;
+    static ExternalMovie MOVIE;
+    static ExternalMovie ANOTHER_MOVIE;
+    private List<MovieDTO> moviesToCleanAfterTests;
 
     @LocalServerPort
     protected int randomServerPort;
@@ -31,7 +31,7 @@ public class CommonIntegrationSetup extends TestContainersSetup {
     @BeforeEach
     public void before() {
         moviesToCleanAfterTests = new ArrayList<>();
-        now = new Date();
+        NOW = new Date();
         MOVIE = generateExternalMovie(SUPER_MOVIE);
         ANOTHER_MOVIE = generateExternalMovie(ANOTHER_SUPER_MOVIE);
     }
@@ -73,7 +73,7 @@ public class CommonIntegrationSetup extends TestContainersSetup {
                         .voteCount(2389)
                         .runtime(120)
                         .genres(Arrays.asList(new Genre("1", "Sci-Fi"), new Genre("2", "Action")))
-                        .insertionDate(now)
+                        .insertionDate(NOW)
                         .watched(false)
                         .build()).build();
     }

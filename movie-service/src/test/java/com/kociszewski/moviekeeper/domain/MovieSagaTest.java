@@ -81,6 +81,7 @@ public class MovieSagaTest {
 
     @Test
     public void shouldNotDispatchSaveCastCommandWhenNotFoundInExternalService() {
+        // TODO NPE
         fixture.givenAggregate(movieId)
                 .published(new MovieCreatedEvent(movieId, searchPhrase))
                 .whenAggregate(proxyId)

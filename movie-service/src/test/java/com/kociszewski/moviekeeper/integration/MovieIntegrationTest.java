@@ -41,7 +41,7 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
         Optional<MovieDTO> persistedMovie = movieRepository.findByExternalMovieId(body.getExternalMovieId());
         persistedMovie.ifPresent(movie -> {
             assertThat(movie).isEqualTo(body);
-            assertThat(movie.getCreationDate()).isEqualTo(now);
+            assertThat(movie.getCreationDate()).isEqualTo(NOW);
             assertThat(movie.isWatched()).isFalse();
         });
     }
