@@ -87,45 +87,49 @@ public class NotReplayableEventHandlerTest extends TestContainersSetup {
         );
     }
 
-    @Test
-    public void shouldHandleMultipleMoviesRefreshedEvent() {
-        // given
-        ArgumentCaptor<MoviesRefreshedEvent> eventCaptor = ArgumentCaptor.forClass(MoviesRefreshedEvent.class);
-        ArgumentCaptor<RefreshMovieCommand> commandCaptor = ArgumentCaptor.forClass(RefreshMovieCommand.class);
-        when(movieProjection.refreshMovies(refreshDataList)).thenReturn(refreshedMovies);
-        doNothing().when(eventGateway).publish(eventCaptor.capture());
-        when(commandGateway.send(commandCaptor.capture())).thenReturn(null);
+//    @Test
+//    public void shouldHandleMultipleMoviesRefreshedEvent() {
+//        // given
+//        ArgumentCaptor<MoviesRefreshedEvent> eventCaptor = ArgumentCaptor.forClass(MoviesRefreshedEvent.class);
+//        ArgumentCaptor<RefreshMovieCommand> commandCaptor = ArgumentCaptor.forClass(RefreshMovieCommand.class);
+//        when(movieProjection.refreshMovies(refreshDataList)).thenReturn(refreshedMovies);
+//        doNothing().when(eventGateway).publish(eventCaptor.capture());
+//        when(commandGateway.send(commandCaptor.capture())).thenReturn(null);
+//
+//        // when
+//        subject.handle(new MultipleMoviesRefreshedEvent(refreshDataList));
+//
+//        // then
+//        verify(eventGateway, times(1)).publish(eventCaptor.getValue());
+//        verify(movieProjection, times(1)).refreshMovies(refreshDataList);
+//        verify(commandGateway, times(1)).send(commandCaptor.getAllValues().get(0));
+//        verify(commandGateway, times(1)).send(commandCaptor.getAllValues().get(1));
+//        assertThat(eventCaptor.getValue().getRefreshedMovies()).isEqualTo(refreshedMovies);
+//        assertThat(commandCaptor.getValue().getMovieId()).isEqualTo(firstAggregateId);
+//    }
+//
+//    @Test
+//    public void shouldHandleTrailersAndCastSearchDelegatedEvent() {
+//        // given
+//        String externalMovieId = "123";
+//        when(commandGateway.send(any())).thenReturn(null);
+//
+//        // when
+//        subject.handle(new TrailersAndCastSearchDelegatedEvent(movieId, externalMovieId, trailersId, castId));
+//
+//        // then
+//        verify(commandGateway, times(2)).send(any());
+//    }
 
-        // when
-        subject.handle(new MultipleMoviesRefreshedEvent(refreshDataList));
-
-        // then
-        verify(eventGateway, times(1)).publish(eventCaptor.getValue());
-        verify(movieProjection, times(1)).refreshMovies(refreshDataList);
-        verify(commandGateway, times(1)).send(commandCaptor.getAllValues().get(0));
-        verify(commandGateway, times(1)).send(commandCaptor.getAllValues().get(1));
-        assertThat(eventCaptor.getValue().getRefreshedMovies()).isEqualTo(refreshedMovies);
-        assertThat(commandCaptor.getValue().getMovieId()).isEqualTo(firstAggregateId);
-    }
-
-    @Test
-    public void shouldHandleTrailersAndCastSearchDelegatedEvent() {
-        // given
-        String externalMovieId = "123";
-        when(commandGateway.send(any())).thenReturn(null);
-
-        // when
-        subject.handle(new TrailersAndCastSearchDelegatedEvent(movieId, externalMovieId, trailersId, castId));
-
-        // then
-        verify(commandGateway, times(2)).send(any());
-    }
-
-    @Test
-    public void shouldHandleMovieDeletedEvent() {
-        // when
-        subject.handle(new MovieDeletedEvent(movieId, trailersId, castId));
-
-        verify(commandGateway, times(2)).send(any());
-    }
+//    @Test
+//    public void shouldHandleMovieDeletedEvent() {
+//        // given
+//        when(commandGateway.send(any())).thenReturn(null);
+//
+//        // when
+//        subject.handle(new MovieDeletedEvent(movieId, trailersId, castId));
+//
+//        // then
+//        verify(commandGateway, times(2)).send(any());
+//    }
 }
