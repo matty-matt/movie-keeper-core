@@ -17,10 +17,8 @@ import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.util.*;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-public class CommonIntegrationSetup {
+
+public class CommonIntegrationSetup extends TestContainersSetup {
 
     protected static final String SUPER_MOVIE = "SuperMovie";
     protected static final String GET_OR_POST_MOVIES = "http://localhost:%d/movies";
@@ -29,35 +27,6 @@ public class CommonIntegrationSetup {
     protected static Date NOW;
     static ExternalMovie MOVIE;
     static ExternalMovie ANOTHER_MOVIE;
-
-    private static final int MONGO_PORT = 29019;
-    private static final int AXON_HTTP_PORT = 8024;
-    private static final int AXON_GRPC_PORT = 8124;
-
-    static final GenericContainer mongo;
-    static final GenericContainer axonServer;
-
-    static {
-        // These containers should be started only once during whole test suite
-        axonServer = new GenericContainer("axoniq/axonserver:latest")
-                .withExposedPorts(AXON_HTTP_PORT, AXON_GRPC_PORT)
-                .waitingFor(
-                        Wait.forLogMessage(".*Started AxonServer.*", 1)
-                );
-        axonServer.start();
-
-        mongo = new GenericContainer("mongo:latest")
-                .withExposedPorts(MONGO_PORT)
-                .withEnv("MONGO_INITDB_DATABASE", "moviekeeper")
-                .withCommand(String.format("mongod --port %d", MONGO_PORT))
-                .waitingFor(
-                        Wait.forLogMessage(".*waiting for connections.*", 1)
-                );
-        mongo.start();
-
-        System.setProperty("ENV_MONGO_PORT", String.valueOf(mongo.getMappedPort(MONGO_PORT)));
-        System.setProperty("ENV_AXON_GRPC_PORT", String.valueOf(axonServer.getMappedPort(AXON_GRPC_PORT)));
-    }
 
     private List<MovieDTO> moviesToCleanAfterTests;
 
