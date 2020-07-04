@@ -2,8 +2,8 @@ package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveMovieCommand;
-import com.kociszewski.moviekeeper.domain.events.MovieDetailsEvent;
 import com.kociszewski.moviekeeper.domain.events.MovieCreatedEvent;
+import com.kociszewski.moviekeeper.domain.events.MovieDetailsEvent;
 import com.kociszewski.moviekeeper.infrastructure.ExternalMovie;
 import com.kociszewski.moviekeeper.infrastructure.ExternalMovieInfo;
 import com.kociszewski.moviekeeper.infrastructure.Genre;
@@ -81,7 +81,6 @@ public class MovieSagaTest {
 
     @Test
     public void shouldNotDispatchSaveCastCommandWhenNotFoundInExternalService() {
-        // TODO NPE
         fixture.givenAggregate(movieId)
                 .published(new MovieCreatedEvent(movieId, searchPhrase))
                 .whenAggregate(proxyId)

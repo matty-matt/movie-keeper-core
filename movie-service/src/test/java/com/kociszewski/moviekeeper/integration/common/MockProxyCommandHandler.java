@@ -3,7 +3,6 @@ package com.kociszewski.moviekeeper.integration.common;
 import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
 import com.kociszewski.moviekeeper.domain.events.MovieDetailsEvent;
 import com.kociszewski.moviekeeper.infrastructure.ExternalMovie;
-import com.kociszewski.moviekeeper.integration.common.CommonIntegrationSetup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
@@ -29,5 +28,4 @@ public class MockProxyCommandHandler {
                 CommonIntegrationSetup.ANOTHER_MOVIE;
         eventGateway.publish(new MovieDetailsEvent(command.getProxyId(), movie));
     }
-    // TODO DeleteTrailersCommand and Cast
 }

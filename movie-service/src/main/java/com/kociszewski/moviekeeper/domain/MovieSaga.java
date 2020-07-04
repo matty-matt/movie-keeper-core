@@ -6,6 +6,8 @@ import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
 import com.kociszewski.moviekeeper.domain.commands.SaveMovieCommand;
 import com.kociszewski.moviekeeper.domain.queries.GetMovieQuery;
 import com.kociszewski.moviekeeper.infrastructure.MovieState;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.EndSaga;
@@ -14,6 +16,7 @@ import org.axonframework.modelling.saga.StartSaga;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.axonframework.spring.stereotype.Saga;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import static org.axonframework.modelling.saga.SagaLifecycle.associateWith;
 
@@ -23,17 +26,13 @@ public class MovieSaga {
 
     private static final String PROXY_PREFIX = "proxy_";
     private static final String PROXY_ID = "proxyId";
-    public static final String CAST_ID = "castId";
-    public static final String TRAILERS_ID = "trailersId";
-    public static final String MOVIE_ID = "movieId";
+    private static final String MOVIE_ID = "movieId";
 
-    //TODO spróbować przez RequiredArgsConstructor i @Component
     @Autowired
     private CommandGateway commandGateway;
 
     @Autowired
     private QueryUpdateEmitter queryUpdateEmitter;
-
     private String movieId;
 
     @StartSaga
