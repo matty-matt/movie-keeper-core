@@ -26,14 +26,13 @@ public class CommonIntegrationSetup {
     private static final int AXON_HTTP_PORT = 8024;
     private static final int AXON_GRPC_PORT = 8124;
 
-    private static final GenericContainer mongo;
-    private static final GenericContainer axonServer;
-
     protected static final String SUPER_MOVIE = "SuperMovie";
     protected static final String GET_OR_POST_MOVIES = "http://localhost:%d/movies";
     protected static final String ALTER_MOVIE_URL = "http://localhost:%d/movies/%s";
     protected static final String ANOTHER_SUPER_MOVIE = "AnotherSuperMovie";
     protected static Date NOW;
+    static final GenericContainer mongo;
+    static final GenericContainer axonServer;
     static ExternalMovie MOVIE;
     static ExternalMovie ANOTHER_MOVIE;
 
