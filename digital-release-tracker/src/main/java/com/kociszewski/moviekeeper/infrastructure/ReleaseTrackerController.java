@@ -7,7 +7,7 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.axonframework.queryhandling.SubscriptionQueryResult;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
@@ -23,7 +23,7 @@ public class ReleaseTrackerController {
     private final CommandGateway commandGateway;
     private final QueryGateway queryGateway;
 
-    @GetMapping("/refresh")
+    @PutMapping("/refresh")
     public Mono<List<MovieDTO>> refreshMovies() {
         commandGateway.send(
                 new CreateRefreshMoviesCommand(UUID.randomUUID().toString()));
