@@ -16,7 +16,7 @@
     <properties>
         <java.version>11</java.version>
         <axon.version>4.3.4</axon.version>
-        <lombok.version>1.8.12</lombok.version>
+        <lombok.version>1.18.12</lombok.version>
         <awaitility.version>4.0.3</awaitility.version>
         <testcontainers.version>1.14.3</testcontainers.version>
     </properties>
