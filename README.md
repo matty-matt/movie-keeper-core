@@ -50,3 +50,7 @@ Ports may vary depending on run context (through api-gateway, or directly to mic
   ```
   curl -X DELETE http://localhost:35000/movies/{id}
   ```
+- Force refresh votes and release dates for all not seen movies
+  ```
+  curl -X PUT http://localhost:35000/refresh
+  ```
