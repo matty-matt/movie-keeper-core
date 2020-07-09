@@ -5,7 +5,6 @@ import com.kociszewski.moviekeeper.domain.commands.CreateRefreshMoviesCommand;
 import com.kociszewski.moviekeeper.domain.events.MoviesRefreshedEvent;
 import com.kociszewski.moviekeeper.domain.events.RefreshMoviesDelegatedEvent;
 import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
-import com.kociszewski.moviekeeper.infrastructure.RefreshMovie;
 import com.kociszewski.moviekeeper.integration.common.TestContainersSetup;
 import org.axonframework.eventhandling.gateway.EventGateway;
 import org.axonframework.messaging.responsetypes.ResponseType;
