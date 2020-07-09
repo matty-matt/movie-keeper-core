@@ -5,8 +5,10 @@ import com.kociszewski.moviekeeper.integration.common.TestContainersSetup;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+
 import static org.awaitility.Awaitility.await;
-import static org.awaitility.Durations.TEN_SECONDS;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
@@ -19,7 +21,7 @@ public class ReleaseTrackerSchedulerTest extends TestContainersSetup {
     @Test
     public void test() {
         await()
-                .atMost(TEN_SECONDS)
+                .atMost(Duration.of(15L, ChronoUnit.SECONDS))
                 .untilAsserted(() -> verify(releaseRefreshScheduler, atLeast(1)).refreshUnseenMovies());
     }
 }
