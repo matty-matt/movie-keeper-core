@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.2.RELEASE</version>
+        <version>2.3.1.RELEASE</version>
         <relativePath/>
     </parent>
     <groupId>com.kociszewski</groupId>
@@ -15,10 +15,10 @@
 
     <properties>
         <java.version>11</java.version>
-        <axon.version>4.3.1</axon.version>
-        <lombok.version>1.18.8</lombok.version>
-        <awaitility.version>4.0.2</awaitility.version>
-        <testcontainers.version>1.13.0</testcontainers.version>
+        <axon.version>4.3.4</axon.version>
+        <lombok.version>1.8.12</lombok.version>
+        <awaitility.version>4.0.3</awaitility.version>
+        <testcontainers.version>1.14.3</testcontainers.version>
     </properties>
     <dependencies>
         <dependency>
