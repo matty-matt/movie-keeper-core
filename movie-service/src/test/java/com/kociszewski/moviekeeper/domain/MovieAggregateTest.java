@@ -49,7 +49,6 @@ public class MovieAggregateTest {
                         .voteAverage(2.4)
                         .voteCount(7989)
                         .insertionDate(new Date())
-                        .lastRefreshDate(new Date())
                         .build())
                 .build();
         this.castId = UUID.randomUUID().toString();
@@ -85,7 +84,6 @@ public class MovieAggregateTest {
                             new Vote(externalMovie.getExternalMovieInfo().getVoteAverage(), externalMovie.getExternalMovieInfo().getVoteCount()));
                     assertThat(state.getRuntime()).isEqualTo(new Runtime(externalMovie.getExternalMovieInfo().getRuntime()));
                     assertThat(state.getInsertionDate()).isEqualTo(new DateWrapper(externalMovie.getExternalMovieInfo().getInsertionDate()));
-                    assertThat(state.getLastRefreshDate()).isEqualTo(new DateWrapper(externalMovie.getExternalMovieInfo().getLastRefreshDate()));
                     assertThat(state.getWatched()).isEqualTo(new Watched(false));
                     assertThat(state.getOriginalLanguage()).isEqualTo(new Language(externalMovie.getExternalMovieInfo().getOriginalLanguage()));
                     assertThat(state.getGenres()).isEqualTo(externalMovie.getExternalMovieInfo().getGenres());
@@ -135,5 +133,50 @@ public class MovieAggregateTest {
                         new MovieDeletedEvent(movieId, any(), any()))
                 .expectMarkedDeleted();
     }
-}
 
+    @Test
+    public void shouldMovieRefreshedEventAppear() {
+        Vote refreshedVote = new Vote(10, 10000);
+        String refreshedDate = "2020-07-01T00:00";
+        Release refreshedRelease = new Release(refreshedDate);
+        fixture.given(
+                new MovieCreatedEvent(movieId, searchPhrase),
+                new MovieSavedEvent(movieId, externalMovie))
+                .when(new RefreshMovieCommand(movieId, RefreshData.builder()
+                        .aggregateId(movieId)
+                        .voteCount(10000)
+                        .averageVote(10)
+                        .digitalReleaseDate(refreshedDate)
+                        .build()))
+                .expectEvents(new MovieRefreshedEvent(
+                        movieId,
+                        refreshedVote,
+                        refreshedRelease))
+                .expectState(state -> {
+                    assertThat(state.getVote()).isEqualTo(refreshedVote);
+                    assertThat(state.getDigitalRelease()).isEqualTo(refreshedRelease);
+                });
+    }
+
+    @Test
+    public void shouldNotMovieRefreshedEventAppear() {
+        Vote refreshedVote = new Vote(10, 10000);
+        String refreshedDate = "2020-07-01T00:00";
+        Release refreshedRelease = new Release(refreshedDate);
+        fixture.given(
+                new MovieCreatedEvent(movieId, searchPhrase),
+                new MovieSavedEvent(movieId, externalMovie),
+                new MovieRefreshedEvent(movieId, refreshedVote, refreshedRelease))
+                .when(new RefreshMovieCommand(movieId, RefreshData.builder()
+                        .aggregateId(movieId)
+                        .voteCount(10000)
+                        .averageVote(10)
+                        .digitalReleaseDate(refreshedDate)
+                        .build()))
+                .expectNoEvents()
+                .expectState(state -> {
+                    assertThat(state.getVote()).isEqualTo(refreshedVote);
+                    assertThat(state.getDigitalRelease()).isEqualTo(refreshedRelease);
+                });
+    }
+}

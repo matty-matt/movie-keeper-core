@@ -44,7 +44,6 @@ public class MovieAggregate {
     private Release premiereRelease;
     private Watched watched;
     private DateWrapper insertionDate;
-    private DateWrapper lastRefreshDate;
     private SearchPhrase searchPhrase;
 
     @CommandHandler
@@ -80,7 +79,6 @@ public class MovieAggregate {
         this.vote = new Vote(movieInfo.getVoteAverage(), movieInfo.getVoteCount());
         this.runtime = new Runtime(movieInfo.getRuntime());
         this.insertionDate = new DateWrapper(movieInfo.getInsertionDate());
-        this.lastRefreshDate = new DateWrapper(movieInfo.getLastRefreshDate());
         this.watched = new Watched(false);
         this.originalLanguage = new Language(movieInfo.getOriginalLanguage());
         this.genres = movieInfo.getGenres().stream()
@@ -123,5 +121,23 @@ public class MovieAggregate {
     @EventSourcingHandler
     private void on(MovieDeletedEvent event) {
         markDeleted();
+    }
+
+    @CommandHandler
+    public void handle(RefreshMovieCommand command) {
+        RefreshData refreshData = command.getRefreshData();
+        Vote refreshedVote = new Vote(refreshData.getAverageVote(), refreshData.getVoteCount());
+        Release refreshedRelease = new Release(refreshData.getDigitalReleaseDate());
+        if (vote.equals(refreshedVote) && digitalRelease.equals(refreshedRelease)) {
+            log.info("Aggregate {} is up to date.", movieId);
+            return;
+        }
+        apply(new MovieRefreshedEvent(command.getMovieId(), refreshedVote, refreshedRelease));
+    }
+
+    @EventSourcingHandler
+    private void on(MovieRefreshedEvent event) {
+        this.vote = event.getRefreshedVote();
+        this.digitalRelease = event.getRefreshedRelease();
     }
 }

@@ -5,11 +5,14 @@ import com.kociszewski.moviekeeper.domain.events.MovieSavedEvent;
 import com.kociszewski.moviekeeper.domain.events.ToggleWatchedEvent;
 import com.kociszewski.moviekeeper.domain.queries.GetAllMoviesQuery;
 import com.kociszewski.moviekeeper.domain.queries.GetMovieQuery;
+import com.kociszewski.moviekeeper.domain.queries.GetNotSeenMoviesQuery;
+import com.mongodb.bulk.BulkWriteResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -27,6 +30,10 @@ public class MovieProjection {
 
     private static final String ID = "_id";
     private static final String WATCHED = "watched";
+    private static final String EXTERNAL_MOVIE_ID = "externalMovieId";
+    private static final String VOTE_AVERAGE_MDB = "voteAverageMdb";
+    private static final String VOTE_COUNT = "voteCount";
+    private static final String RELEASE_DATE_DIGITAL = "releaseDateDigital";
     private final MovieRepository movieRepository;
     private final QueryUpdateEmitter queryUpdateEmitter;
     private final MongoTemplate mongoTemplate;
@@ -67,6 +74,27 @@ public class MovieProjection {
         movieRepository.deleteById(event.getMovieId());
     }
 
+    @QueryHandler
+    public List<MovieDTO> handle(GetNotSeenMoviesQuery query) {
+        return movieRepository.findAllByWatchedFalse();
+    }
+
+    public List<MovieDTO> refreshMovies(List<RefreshData> moviesToRefresh) {
+        BulkOperations bulkOperations = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, MovieDTO.class);
+        moviesToRefresh.forEach(refreshData -> {
+            Query query = Query.query(Criteria.where(EXTERNAL_MOVIE_ID).is(refreshData.getMovieId()));
+            Update update = Update.update(VOTE_AVERAGE_MDB, refreshData.getAverageVote())
+                    .set(VOTE_COUNT, refreshData.getVoteCount())
+                    .set(RELEASE_DATE_DIGITAL, refreshData.getDigitalReleaseDate());
+            bulkOperations.updateOne(query, update);
+        });
+
+        BulkWriteResult result = bulkOperations.execute();
+        log.info("BulkWriteResult = {}", result);
+
+        return movieRepository.findAllByWatchedFalse();
+    }
+
     private void handleMovieDuplicate() {
         notifySubscribers(new MovieDTO(MovieState.ALREADY_ADDED));
     }
@@ -91,7 +119,6 @@ public class MovieProjection {
                         .map(genre -> GenreDTO.builder().id(genre.getId()).name(genre.getName()).build())
                         .collect(Collectors.toList()))
                 .creationDate(externalMovieInfo.getInsertionDate())
-                .lastRefreshDate(externalMovieInfo.getLastRefreshDate())
                 .watched(externalMovieInfo.isWatched())
                 .build();
         movieRepository.insert(movieDTO);

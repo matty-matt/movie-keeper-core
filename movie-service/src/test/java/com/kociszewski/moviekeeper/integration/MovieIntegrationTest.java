@@ -3,6 +3,7 @@ package com.kociszewski.moviekeeper.integration;
 import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
 import com.kociszewski.moviekeeper.infrastructure.MovieRepository;
 import com.kociszewski.moviekeeper.infrastructure.WatchedBody;
+import com.kociszewski.moviekeeper.integration.common.CommonIntegrationSetup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -40,8 +41,7 @@ public class MovieIntegrationTest extends CommonIntegrationSetup {
         Optional<MovieDTO> persistedMovie = movieRepository.findByExternalMovieId(body.getExternalMovieId());
         persistedMovie.ifPresent(movie -> {
             assertThat(movie).isEqualTo(body);
-            assertThat(movie.getCreationDate()).isEqualTo(now);
-            assertThat(movie.getLastRefreshDate()).isEqualTo(now);
+            assertThat(movie.getCreationDate()).isEqualTo(NOW);
             assertThat(movie.isWatched()).isFalse();
         });
     }

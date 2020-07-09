@@ -2,8 +2,8 @@ package com.kociszewski.moviekeeper.domain;
 
 import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
 import com.kociszewski.moviekeeper.domain.commands.SaveMovieCommand;
-import com.kociszewski.moviekeeper.domain.events.MovieDetailsEvent;
 import com.kociszewski.moviekeeper.domain.events.MovieCreatedEvent;
+import com.kociszewski.moviekeeper.domain.events.MovieDetailsEvent;
 import com.kociszewski.moviekeeper.infrastructure.ExternalMovie;
 import com.kociszewski.moviekeeper.infrastructure.ExternalMovieInfo;
 import com.kociszewski.moviekeeper.infrastructure.Genre;
@@ -52,7 +52,6 @@ public class MovieSagaTest {
                         .voteAverage(2.4)
                         .voteCount(7989)
                         .insertionDate(new Date())
-                        .lastRefreshDate(new Date())
                         .build())
                 .build();
         movieThatWasNotFoundInExternalService = ExternalMovie.builder()

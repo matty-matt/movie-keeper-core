@@ -30,7 +30,6 @@ public class ExternalMovieInfo {
     private int runtime;
     private List<Genre> genres;
     private Date insertionDate;
-    private Date lastRefreshDate;
     private boolean watched;
 
     public void setPosterPath(String posterPath) {

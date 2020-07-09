@@ -1,4 +1,4 @@
-package com.kociszewski.moviekeeper.integration;
+package com.kociszewski.moviekeeper.integration.common;
 
 import com.kociszewski.moviekeeper.domain.commands.FetchMovieDetailsCommand;
 import com.kociszewski.moviekeeper.domain.events.MovieDetailsEvent;
@@ -10,7 +10,7 @@ import org.axonframework.eventhandling.gateway.EventGateway;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import static com.kociszewski.moviekeeper.integration.CommonIntegrationSetup.SUPER_MOVIE;
+import static com.kociszewski.moviekeeper.integration.common.CommonIntegrationSetup.SUPER_MOVIE;
 
 @Profile("test")
 @Slf4j

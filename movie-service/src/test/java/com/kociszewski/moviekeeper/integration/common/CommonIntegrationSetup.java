@@ -1,7 +1,8 @@
-package com.kociszewski.moviekeeper.integration;
+package com.kociszewski.moviekeeper.integration.common;
 
 import com.kociszewski.moviekeeper.infrastructure.*;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.util.*;
 
@@ -22,53 +21,30 @@ import java.util.*;
 @ActiveProfiles("test")
 public class CommonIntegrationSetup {
 
-    private static final int MONGO_PORT = 29019;
-    private static final int AXON_HTTP_PORT = 8024;
-    private static final int AXON_GRPC_PORT = 8124;
+    protected static final String SUPER_MOVIE = "SuperMovie";
     protected static final String GET_OR_POST_MOVIES = "http://localhost:%d/movies";
     protected static final String ALTER_MOVIE_URL = "http://localhost:%d/movies/%s";
-    protected static final String SUPER_MOVIE = "SuperMovie";
     protected static final String ANOTHER_SUPER_MOVIE = "AnotherSuperMovie";
-    protected static Date now;
-    protected static ExternalMovie MOVIE;
-    protected static ExternalMovie ANOTHER_MOVIE;
-    protected List<MovieDTO> moviesToCleanAfterTests;
+    protected static Date NOW;
+    static ExternalMovie MOVIE;
+    static ExternalMovie ANOTHER_MOVIE;
 
     @LocalServerPort
     protected int randomServerPort;
-
     @Autowired
     protected TestRestTemplate testRestTemplate;
+    private List<MovieDTO> moviesToCleanAfterTests;
 
-    static final GenericContainer mongo;
-    static final GenericContainer axonServer;
-
-    static {
-        // These containers should be started only once during whole test suite
-        axonServer = new GenericContainer("axoniq/axonserver:latest")
-                .withExposedPorts(AXON_HTTP_PORT, AXON_GRPC_PORT)
-                .waitingFor(
-                        Wait.forLogMessage(".*Started AxonServer.*", 1)
-                );
-        axonServer.start();
-
-        mongo = new GenericContainer("mongo:latest")
-                .withExposedPorts(MONGO_PORT)
-                .withEnv("MONGO_INITDB_DATABASE", "moviekeeper")
-                .withCommand(String.format("mongod --port %d", MONGO_PORT))
-                .waitingFor(
-                        Wait.forLogMessage(".*waiting for connections.*", 1)
-                );
-        mongo.start();
-
-        System.setProperty("ENV_MONGO_PORT", String.valueOf(mongo.getMappedPort(MONGO_PORT)));
-        System.setProperty("ENV_AXON_GRPC_PORT", String.valueOf(axonServer.getMappedPort(AXON_GRPC_PORT)));
+    @BeforeAll
+    public static void beforeAll() {
+        TestContainers.startAxonServer();
+        TestContainers.startMongo();
     }
 
     @BeforeEach
     public void before() {
         moviesToCleanAfterTests = new ArrayList<>();
-        now = new Date();
+        NOW = new Date();
         MOVIE = generateExternalMovie(SUPER_MOVIE);
         ANOTHER_MOVIE = generateExternalMovie(ANOTHER_SUPER_MOVIE);
     }
@@ -110,8 +86,7 @@ public class CommonIntegrationSetup {
                         .voteCount(2389)
                         .runtime(120)
                         .genres(Arrays.asList(new Genre("1", "Sci-Fi"), new Genre("2", "Action")))
-                        .insertionDate(now)
-                        .lastRefreshDate(now)
+                        .insertionDate(NOW)
                         .watched(false)
                         .build()).build();
     }
