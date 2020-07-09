@@ -8,7 +8,7 @@ import com.kociszewski.moviekeeper.domain.events.TrailersAndCastSearchDelegatedE
 import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
 import com.kociszewski.moviekeeper.infrastructure.MovieProjection;
 import com.kociszewski.moviekeeper.infrastructure.RefreshData;
-import com.kociszewski.moviekeeper.integration.common.CommonIntegrationSetup;
+import com.kociszewski.moviekeeper.integration.common.TestContainersSetup;
 import com.kociszewski.moviekeeper.notreplayable.NotReplayableEventHandler;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.gateway.EventGateway;
@@ -25,7 +25,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-public class NotReplayableEventHandlerTest extends CommonIntegrationSetup {
+public class NotReplayableEventHandlerTest extends TestContainersSetup {
 
     @Autowired
     private NotReplayableEventHandler subject;
