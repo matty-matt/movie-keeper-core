@@ -8,15 +8,20 @@ import com.kociszewski.moviekeeper.domain.events.TrailersAndCastSearchDelegatedE
 import com.kociszewski.moviekeeper.infrastructure.MovieDTO;
 import com.kociszewski.moviekeeper.infrastructure.MovieProjection;
 import com.kociszewski.moviekeeper.infrastructure.RefreshData;
-import com.kociszewski.moviekeeper.integration.common.TestContainersSetup;
+import com.kociszewski.moviekeeper.integration.common.TestContainers;
 import com.kociszewski.moviekeeper.notreplayable.NotReplayableEventHandler;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.gateway.EventGateway;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +30,10 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-public class NotReplayableEventHandlerTest extends TestContainersSetup {
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+public class NotReplayableEventHandlerTest {
 
     @Autowired
     private NotReplayableEventHandler subject;
@@ -45,6 +53,12 @@ public class NotReplayableEventHandlerTest extends TestContainersSetup {
     private String movieId;
     private String trailersId;
     private String castId;
+
+    @BeforeAll
+    public static void beforeAll() {
+        TestContainers.startAxonServer();
+        TestContainers.startMongo();
+    }
 
     @BeforeEach
     public void before() {

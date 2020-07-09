@@ -2,16 +2,24 @@ package com.kociszewski.moviekeeper.integration.common;
 
 import com.kociszewski.moviekeeper.infrastructure.*;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
-public class CommonIntegrationSetup extends TestContainersSetup {
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+public class CommonIntegrationSetup {
 
     protected static final String SUPER_MOVIE = "SuperMovie";
     protected static final String GET_OR_POST_MOVIES = "http://localhost:%d/movies";
@@ -26,6 +34,12 @@ public class CommonIntegrationSetup extends TestContainersSetup {
     @Autowired
     protected TestRestTemplate testRestTemplate;
     private List<MovieDTO> moviesToCleanAfterTests;
+
+    @BeforeAll
+    public static void beforeAll() {
+        TestContainers.startAxonServer();
+        TestContainers.startMongo();
+    }
 
     @BeforeEach
     public void before() {
