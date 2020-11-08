@@ -42,10 +42,7 @@ public class CommonIntegrationSetup {
         mongo = new GenericContainer("mongo:latest")
                 .withExposedPorts(MONGO_PORT)
                 .withEnv("MONGO_INITDB_DATABASE", "moviekeeper")
-                .withCommand(String.format("mongod --port %d", MONGO_PORT))
-                .waitingFor(
-                        Wait.forLogMessage(".*waiting for connections.*", 1)
-                );
+                .withCommand(String.format("mongod --port %d", MONGO_PORT));
         mongo.start();
 
         System.setProperty("ENV_MONGO_PORT", String.valueOf(mongo.getMappedPort(MONGO_PORT)));
