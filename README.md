@@ -8,6 +8,13 @@ Digital release dates of your stored movies are tracked by app.
 * Docker installed
 * [TMDb](https://www.themoviedb.org) ApiKey stored in environment variable TMDB_API_KEY
 
+## Stack
+* SpringBoot
+* AxonFramework (along with Axon Server)
+* Docker
+* MongoDB
+* NGINX
+
 ## Architecture
 ![Architecture on diagram](components.png "Architecture on diagram")
 
