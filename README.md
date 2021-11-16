@@ -51,7 +51,7 @@ Ports may vary depending on run context (through api-gateway, or directly to mic
   ```
 - Mark movie as watched
   ```
-  curl -X PUT -H "Content-Type: application/json" -d '{"watched": "false"}' http://localhost:35000/movies/{id}
+  curl -X PUT -H "Content-Type: application/json" -d '{"watched": "true"}' http://localhost:35000/movies/{id}
   ```
 - Delete movie
   ```
